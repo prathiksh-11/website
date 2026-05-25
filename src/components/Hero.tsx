@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Play, ChevronDown } from 'lucide-react';
 import { useIntersectionObserver, useCountUp } from '../hooks/useIntersectionObserver';
 
 const particles = Array.from({ length: 30 }, (_, i) => ({
@@ -128,28 +127,29 @@ export default function Hero() {
           className="w-full h-full object-cover opacity-[0.9]"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/60 to-transparent hidden md:block" />
+        <div className="absolute inset-0 bg-black/60 md:hidden" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-32 pb-12 md:pt-24 flex flex-col items-center md:items-start text-center md:text-left">
         {/* Heading */}
-        <div className="max-w-4xl text-left">
+        <div className="max-w-4xl">
           <h1
             className={`font-black leading-[1.15] tracking-tight mb-4 transition-all duration-1000 delay-100 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
           >
-            <span className="block text-[clamp(1.5rem,4vw,3.2rem)] text-white">ELEVATE YOUR</span>
-            <span className="block text-[clamp(1.5rem,4vw,3.2rem)] gradient-text-gold">PERFORMANCE</span>
-            <span className="block text-[clamp(1.5rem,4vw,3.2rem)] text-white">TO THE</span>
-            <span className="block text-[clamp(1.5rem,4vw,3.2rem)] shimmer-text">GAME ON FITNESS.</span>
+            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] text-white">ELEVATE YOUR</span>
+            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] gradient-text-gold">PERFORMANCE</span>
+            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] text-white">TO THE</span>
+            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] shimmer-text">GAME ON FITNESS.</span>
           </h1>
         </div>
 
         {/* Subtitle */}
         <p
-          className={`text-base md:text-lg text-white/50 max-w-2xl leading-relaxed mb-8 transition-all duration-1000 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          className={`text-sm md:text-lg text-white/50 max-w-2xl leading-relaxed mb-10 transition-all duration-1000 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
         >
           World-class fitness centers engineered for peak human performance.
@@ -159,7 +159,7 @@ export default function Hero() {
 
         <div
           ref={statsRef}
-          className={`grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12 transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
         >
           <StatItem value={12} suffix="+" label="Elite Branches" start={statsVisible} />

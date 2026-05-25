@@ -26,7 +26,7 @@ export default function About() {
         <div ref={headRef} className="mb-20 text-center">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
             <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ff6b35] mb-4 block">About Game On Fitness</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-none mb-6">
+            <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-6">
               <span className="gradient-text-blue">WHO WE ARE</span>
             </h2>
             <div className="divider-glow max-w-xs mx-auto" />
@@ -48,7 +48,7 @@ export default function About() {
               </div>
 
               {/* Floating smaller card */}
-              <div className="absolute -bottom-8 -right-8 w-48 glass-card rounded-xl overflow-hidden animate-float" style={{ animationDelay: '2s' }}>
+              <div className="absolute md:-bottom-8 md:-right-8 -bottom-4 -right-4 w-40 md:w-48 glass-card rounded-xl overflow-hidden animate-float" style={{ animationDelay: '2s' }}>
                 <img
                   src="https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop"
                   alt="Training"
@@ -99,7 +99,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className="fixed bottom-6 right-6 z-50 animate-float" style={{ animationDelay: '1s' }}>
+      <div className="hidden lg:block fixed bottom-6 right-6 z-50 animate-float" style={{ animationDelay: '1s' }}>
         <div className="glass-card rounded-2xl p-5 max-w-[180px]">
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="w-24 h-24 bg-white rounded-lg p-2">

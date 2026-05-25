@@ -278,7 +278,7 @@ export default function Branches() {
         <div ref={headRef} className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
             <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ffb800] mb-4 block">Locations</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-none">
+            <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none">
               <span className="text-white">FIND YOUR</span>
               <br />
               <span className="gradient-text-gold">ARENA.</span>

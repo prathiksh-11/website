@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users } from 'lucide-react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, LucideIcon } from 'lucide-react';
 
 interface BranchDetailProps {
   branchId: string;
@@ -15,7 +15,7 @@ const branchData: Record<string, {
   hours: { day: string; time: string }[];
   team: { name: string; role: string; image: string }[];
   programs: { category: string; items: string[] }[];
-  facilities: { name: string; icon: any }[];
+  facilities: { name: string; icon: LucideIcon }[];
   gallery: string[];
   mapUrl: string;
 }> = {
@@ -116,7 +116,7 @@ const branchData: Record<string, {
 };
 
 export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
-  const branch = branchData[branchId] || branchData['wilson-garden']; 
+  const branch = branchData[branchId];
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
