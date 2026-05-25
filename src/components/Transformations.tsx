@@ -273,21 +273,6 @@ export default function Transformations() {
         </div>
 
         {/* Success stats banner */}
-        <div className={`reveal ${headVisible ? 'visible' : ''} mb-16`}>
-          <div className="glass rounded-2xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 divide-x divide-white/5">
-            {[
-              { val: '50,000+', label: 'Lives Transformed' },
-              { val: '98%', label: 'Client Satisfaction' },
-              { val: '200+', label: 'Expert Coaches' },
-              { val: '15+', label: 'Years of Results' },
-            ].map((stat, i) => (
-              <div key={i} className="text-center px-4">
-                <div className="text-2xl md:text-3xl font-black gradient-text-gold">{stat.val}</div>
-                <div className="text-xs text-white/40 tracking-widest uppercase mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Trainer Cards */}
         <div

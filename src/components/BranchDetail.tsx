@@ -7,112 +7,775 @@ interface BranchDetailProps {
 }
 
 const branchData: Record<string, {
+
   name: string;
+
   location: string;
+
   address: string;
+
   phone: string;
+
   tagline: string;
+
   hours: { day: string; time: string }[];
+
   team: { name: string; role: string; image: string }[];
+
   programs: { category: string; items: string[] }[];
-  facilities: { name: string; icon: LucideIcon }[];
+
+  facilities: { name: string; icon: any }[];
+
   gallery: string[];
+
   mapUrl: string;
+
 }> = {
+
   'arekere': {
+
     name: 'GAME ON FITNESS AREKERE',
+
     location: 'Arekere, Bengaluru',
+
     address: 'Above Poorvika Mobiles, near Sai Baba temple, Arekere, Bengaluru - 560076',
+
     phone: '+91 8861737392',
-    tagline: "IT'S ALL ABOUT WHAT YOU CAN ACHIVE EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE",
+
+    tagline: 'IT\'S ALL ABOUT WHAT YOU CAN ACHIVE EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
+
     hours: [
+
       { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+
     ],
+
     team: [
+
       { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
       { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
       { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
       { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
     ],
+
     programs: [
+
       {
+
         category: 'Fitness Gym',
+
         items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettel Bell', 'Battel Rope'],
+
       },
+
       {
+
         category: 'Group Classes',
+
         items: ['Zumba', 'Pilates', 'Latin Bolly', 'HIIT', 'Dance Fit', 'Yoga', 'Power Yoga', 'Bolly-Beats', 'Tae Bo', 'Tabata', 'Bootcamp', 'Crossfit', 'Circuit Training', 'ABT', 'Dance Fitness'],
+
       },
+
     ],
+
     facilities: [
+
       { name: 'BMI Check Up', icon: Activity },
+
       { name: 'Workout Plan', icon: Dumbbell },
+
       { name: 'Diet Plan', icon: Utensils },
+
       { name: 'Showers', icon: ShowerHead },
+
       { name: 'Lockers', icon: Lock },
+
       { name: 'Steam', icon: ThermometerSun },
+
     ],
+
     gallery: [
+
       'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
     ],
+
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.59!3d12.87!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUyJzEyLjAiTiA3N8KwMzUnMjQuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
   },
-  'wilson-garden': {
-    name: 'GAME ON FITNESS WILSON GARDEN',
-    location: 'Wilson Garden, Bengaluru',
-    address: 'Opp to Traffic Police Station, Vinayaka Nagar, Wilson Garden, Bengaluru - 560027',
-    phone: '+91 9663995409',
-    tagline: 'LET THE GAINS BEGIN!',
+
+  'vijaya-bank-layout': {
+
+    name: 'GAME ON FITNESS VIJAYA BANK LAYOUT',
+
+    location: 'Vijaya Bank Layout, Bengaluru',
+
+    address: '3rd floor, Vijaya Bank Layout circle, near Indian Oil petrol bunk, Bilekahalli, Bengaluru - 560076',
+
+    phone: '+91 9035279516',
+
+    tagline: 'Game On Fitness is dedicated to covering the full fitness landscape, regularly introducing fans to new trends in training, nutrition, gear and technology',
+
     hours: [
+
       { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
       { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+
     ],
+
     team: [
+
       { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
       { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
       { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
       { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
     ],
+
     programs: [
+
       {
+
         category: 'Fitness Gym',
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training'],
+
       },
+
     ],
+
     facilities: [
+
       { name: 'BMI Check Up', icon: Activity },
+
       { name: 'Workout Plan', icon: Dumbbell },
+
       { name: 'Diet Plan', icon: Utensils },
+
       { name: 'Showers', icon: ShowerHead },
+
       { name: 'Lockers', icon: Lock },
+
       { name: 'Steam', icon: ThermometerSun },
+
     ],
+
     gallery: [
+
       'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
       'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
     ],
-    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.58!3d12.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzAwLjAiTiA3N8KwMzQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.60!3d12.88!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUyJzQ4LjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
   },
+
+  'btm-layout-1': {
+
+    name: 'GAME ON FITNESS BTM LAYOUT - 1',
+
+    location: 'BTM Layout, Bengaluru',
+
+    address: 'Opp to Canara Bank, 18th Main Road BTM 2nd Stage, Bengaluru - 560076',
+
+    phone: '+91 8722299457',
+
+    tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
+
+    hours: [
+
+      { day: 'Monday', time: '5:30 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:30 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:30 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:30 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:30 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:30 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettel Bell', 'Battel Rope'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'BMI Check Up', icon: Activity },
+
+      { name: 'Workout Plan', icon: Dumbbell },
+
+      { name: 'Diet Plan', icon: Utensils },
+
+      { name: 'Showers', icon: ShowerHead },
+
+      { name: 'Lockers', icon: Lock },
+
+      { name: 'Steam', icon: ThermometerSun },
+
+    ],
+
+    gallery: [
+
+      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.61!3d12.89!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUzJzI0LjAiTiA3N8KwMzYnMzYuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
+  'btm-layout-2': {
+
+    name: 'GAME ON FITNESS BTM LAYOUT - 2',
+
+    location: 'BTM Layout, Bengaluru',
+
+    address: 'Above Indian Bank, 7th Main Road BTM 2nd Stage, Bengaluru - 560076',
+
+    phone: '+91 8951028839',
+
+    tagline: 'DAY 1 OR 1 DAY YOU DECIDE!',
+
+    hours: [
+
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettel Bell', 'Battel Rope'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'BMI Check Up', icon: Activity },
+
+      { name: 'Workout Plan', icon: Dumbbell },
+
+      { name: 'Diet Plan', icon: Utensils },
+
+      { name: 'Showers', icon: ShowerHead },
+
+      { name: 'Lockers', icon: Lock },
+
+      { name: 'Steam', icon: ThermometerSun },
+
+    ],
+
+    gallery: [
+
+      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.62!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzcnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
+  'wilson-garden': {
+
+    name: 'GAME ON FITNESS WILSON GARDEN',
+
+    location: 'Wilson Garden, Bengaluru',
+
+    address: 'Opp to Traffic Police Station, Vinayaka Nagar, Wilson Garden, Bengaluru - 560027',
+
+    phone: '+91 9663995409',
+
+    tagline: 'LET THE GAINS BEGIN!',
+
+    hours: [
+
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'BMI Check Up', icon: Activity },
+
+      { name: 'Workout Plan', icon: Dumbbell },
+
+      { name: 'Diet Plan', icon: Utensils },
+
+      { name: 'Showers', icon: ShowerHead },
+
+      { name: 'Lockers', icon: Lock },
+
+      { name: 'Steam', icon: ThermometerSun },
+
+    ],
+
+    gallery: [
+
+      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.58!3d12.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzAwLjAiTiA3N8KwMzQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
+  'jp-nagar': {
+
+    name: 'GAME ON FITNESS JP NAGAR',
+
+    location: 'JP Nagar, Bengaluru',
+
+    address: 'Above Poorvika Mobiles, Opp to RBI Layout Bus Stop, JP Nagar 7th phase, Bengaluru - 560078',
+
+    phone: '+91 9980615580',
+
+    tagline: 'IT\'S NEVER TOO LATE AND YOU ARE NEVER TOO OLD TO BECOME BETTER!',
+
+    hours: [
+
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'BMI Check Up', icon: Activity },
+
+      { name: 'Workout Plan', icon: Dumbbell },
+
+      { name: 'Diet Plan', icon: Utensils },
+
+      { name: 'Showers', icon: ShowerHead },
+
+      { name: 'Lockers', icon: Lock },
+
+      { name: 'Steam', icon: ThermometerSun },
+
+    ],
+
+    gallery: [
+
+      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.57!3d12.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUxJzM2LjAiTiA3N8KwMzQnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
+  'akshayanagar': {
+
+    name: 'GAME ON FITNESS AKSHAYANAGAR',
+
+    location: 'Akshayanagar, Bengaluru',
+
+    address: 'Above Reliance Smart, near DLF, Akshayanagar, Bengaluru - 560068',
+
+    phone: '+91 8431198114',
+
+    tagline: 'EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
+
+    hours: [
+
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+
+      },
+
+      {
+
+        category: 'Group Classes',
+
+        items: ['Zumba', 'Pilates', 'Latin Bolly', 'HIIT', 'Dance Fit', 'Yoga', 'Power Yoga', 'Bolly-Beats', 'Tae Bo', 'Tabata', 'Bootcamp', 'Crossfit', 'Circuit Training', 'ABT', 'Dance Fitness'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'BMI Check Up', icon: Activity },
+
+      { name: 'Workout Plan', icon: Dumbbell },
+
+      { name: 'Diet Plan', icon: Utensils },
+
+      { name: 'Showers', icon: ShowerHead },
+
+      { name: 'Lockers', icon: Lock },
+
+      { name: 'Steam', icon: ThermometerSun },
+
+    ],
+
+    gallery: [
+
+      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.63!3d12.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUxJzAwLjAiTiA3N8KwMzcnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
+  'sarjapur-road': {
+
+    name: 'GAME ON FITNESS SARJAPUR ROAD',
+
+    location: 'Sarjapur Road, Bengaluru',
+
+    address: '3rd floor above Baby Store, opp to Divyasree Elan, next to More Mega Store, Bellandur gate, Sarjapur Main Road, Bengaluru - 560035',
+
+    phone: '+91 8618086458',
+
+    tagline: 'YOUR FITNESS JOURNEY STARTS HERE',
+
+    hours: [
+
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '7:00 AM – 10:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettel Bell', 'Battel Rope'],
+
+      },
+
+      {
+
+        category: 'Group Classes',
+
+        items: ['Zumba', 'Yoga', 'Power Yoga', 'Bolly-Dance', 'Tae Bo', 'Tabata', 'Body Combat', 'CrossFit', 'Circuit Training', 'ABT', 'Dance Fitness'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'BMI Check Up', icon: Activity },
+
+      { name: 'Workout Plan', icon: Dumbbell },
+
+      { name: 'Diet Plan', icon: Utensils },
+
+      { name: 'Showers', icon: ShowerHead },
+
+      { name: 'Lockers', icon: Lock },
+
+      { name: 'Steam', icon: ThermometerSun },
+
+    ],
+
+    gallery: [
+
+      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.66!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzknMzYuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
 };
 
 export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
@@ -137,7 +800,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
   return (
     <div className="min-h-screen bg-[#080808] text-gray-200 font-sans selection:bg-orange-500 selection:text-black">
-      
+
       {/* Hero Header Section */}
       <div className="relative h-[65vh] min-h-[480px] w-full overflow-hidden">
         <img
@@ -147,7 +810,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-black/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
-        
+
         {/* Absolute Floating Navigation Back Button */}
         <button
           onClick={onBack}
@@ -165,7 +828,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl">
               {branch.name}
             </h1>
-            
+
             <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-white/10">
               <div className="flex items-center gap-2.5 text-gray-300">
                 <MapPin size={18} className="text-orange-500 shrink-0" />
@@ -200,7 +863,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
       {/* Main Structural Layout Content Wrapper */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pb-24">
-        
+
         {/* Dynamic Typography Tagline */}
         <div className="text-center max-w-3xl mx-auto mb-20">
           <span className="text-4xl block text-orange-500/30 font-serif mb-2">“</span>
@@ -212,10 +875,10 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
         {/* Dynamic 12-Column Modern Grid Dashboard Template layout */}
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          
+
           {/* Left Column Section Pane (Occupies 7 Columns out of 12) */}
           <div className="lg:col-span-7 space-y-16">
-            
+
             {/* Our Training & Custom Programs Section */}
             <div>
               <div className="flex items-center gap-3 mb-8">
@@ -273,9 +936,9 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
               <div className="grid grid-cols-2 gap-4">
                 {branch.team.map((member, idx) => (
                   <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-xl flex items-center gap-4 group hover:border-white/10 transition-colors">
-                    <img 
-                      src={member.image} 
-                      alt={member.name} 
+                    <img
+                      src={member.image}
+                      alt={member.name}
                       className="w-14 h-14 rounded-lg object-cover filter grayscale group-hover:grayscale-0 transition-all duration-300 shadow-md"
                     />
                     <div>
@@ -291,7 +954,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
           {/* Right Column Sticky Panel Pane (Occupies 5 Columns out of 12) */}
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
-            
+
             {/* Hours Operations Widget Panel */}
             <div className="bg-white/[0.02] backdrop-blur-md border border-white/5 p-6 rounded-2xl">
               <div className="flex items-center gap-2.5 text-white mb-5 pb-3 border-b border-white/5">

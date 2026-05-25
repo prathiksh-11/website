@@ -173,23 +173,7 @@ export default function FAQ() {
         </div>
 
         {/* Bottom CTA */}
-        <div className={`reveal ${listVisible ? 'visible' : ''} text-center mt-16`}>
-          <div className="glass-card rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-3">Still have questions?</h3>
-            <p className="text-white/50 text-sm mb-6">Our team is available 24/7 to help you.</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-glow-blue text-black font-bold px-8 py-3 rounded-full text-sm tracking-wider uppercase"
-              >
-                Contact Us
-              </button>
-              <button className="btn-outline-glow font-semibold px-8 py-3 rounded-full text-sm tracking-wider uppercase">
-                Book a Tour
-              </button>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </section>
   );
