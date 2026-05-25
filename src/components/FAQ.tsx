@@ -4,36 +4,58 @@ import { Plus, Minus } from 'lucide-react';
 
 const faqs = [
   {
-    q: 'What makes GAME ON FITNESS different from other gyms?',
-    a: "GAME ON FITNESS is a complete performance ecosystem — not just a place to work out. We combine state-of-the-art equipment, evidence-based programming, expert coaches, and nutritional support under one roof. Our approach is rooted in sports science, personalized to each member, and relentlessly focused on measurable results. Think of it less as a gym membership and more as an investment in your peak performance.",
+    q: 'How often should I workout to see results?',
+    a: "The frequency of workouts required to see results can vary based on several factors, including age, fitness level, and goals. However, as a general guideline, it is recommended that adults engage in at least 150 minutes of moderate-intensity exercise or 75 minutes of vigorous-intensity exercise per week. This can be spread out over several sessions, such as 30 minutes of exercise on five days of the week. If your goal is to build muscle, you may need to increase the frequency and intensity of your workouts, focusing on resistance training with weights or bodyweight exercises. It's always best to consult with a certified personal trainer or a physician before starting a workout routine.",
   },
   {
-    q: 'How do I get started as a new member?',
-    a: "Getting started is simple. Book a free 45-minute Performance Assessment with one of our coaches through the Contact form or call any branch directly. During your assessment, we'll evaluate your current fitness level, discuss your goals, and create a personalized roadmap. After that, you select the membership tier that fits you best and we get to work.",
+    q: 'What are the best exercises to target specific muscle groups?',
+    a: `1. Chest: Push-ups, bench press, dumbbell flyes
+2. Back: Pull-ups, rows, deadlifts
+3. Shoulders: Military press, lateral raises, front raises
+4. Biceps: Bicep curls, hammer curls, chin-ups
+5. Triceps: Tricep dips, skull crushers, tricep extensions
+6. Legs: Squats, lunges, deadlifts, leg press
+7. Glutes: Squats, lunges, deadlifts, hip thrusts
+8. Abs: Planks, crunches, Russian twists, bicycle crunches
+
+It is important to remember that targeting specific muscle groups should be done in conjunction with a well-rounded exercise routine that includes cardio and full-body strength training.`,
   },
   {
-    q: 'What membership options are available?',
-    a: "We offer three main membership tiers: Essential (access to your home branch, standard equipment, group classes), Elite (multi-branch access, unlimited classes, monthly coaching check-in), and Game On Fitness Pro (all-access, dedicated trainer, nutrition planning, priority booking, performance testing). All tiers include our mobile app, towel service, and locker access.",
+    q: 'How can I improve my flexibility and range of motion?',
+    a: `1. Stretching: Incorporate stretching exercises into your daily routine. This helps increase muscle elasticity and flexibility, which can improve your range of motion.
+2. Yoga or Pilates: Practicing yoga or Pilates regularly can help increase flexibility, balance, and range of motion.
+3. Foam rolling: Using a foam roller can help relax tight muscles, which can improve your flexibility.
+4. Dynamic warm-up: Before exercising or engaging in any physical activity, perform a dynamic warm-up to get your body moving and increase your range of motion.
+5. Regular exercise: Regular exercise can help improve your overall fitness levels, including flexibility and range of motion.
+6. Proper nutrition: Eating a balanced diet and staying hydrated can help keep your muscles healthy and flexible.
+7. Rest and recovery: Make sure to give your body adequate time to rest and recover between workouts to reduce the risk of injury and promote flexibility.`,
   },
   {
-    q: 'Can I use multiple GAME ON FITNESS branches with one membership?',
-    a: "Yes — our Elite and Game On Fitness Pro memberships include multi-branch access across all 12 locations nationwide. The Essential membership provides access to your designated home branch. You can upgrade your membership at any time with no penalty, and we'll prorate the difference.",
+    q: 'How important is nutrition when it comes to achieving fitness goals?',
+    a: "Nutrition is essential when it comes to achieving fitness goals. A proper diet helps improve energy levels and enables an individual to perform better during workouts. Additionally, proper nutrition provides the body with the necessary nutrients needed for recovery post-workout that aids in building more muscle mass, losing fat, and improving one's overall fitness level. A lack of proper nutrition can lead to fatigue, decreased performance, and slow progress. Therefore, a well-balanced and healthy diet is important to achieve fitness goals.",
   },
   {
-    q: 'Do you offer personal training?',
-    a: "Absolutely. We have over 200 certified personal trainers across our network, each specializing in different disciplines — from strength and conditioning to athletic performance, body recomposition, and rehabilitation. Personal training packages are available as standalone or bundled add-ons to any membership tier.",
+    q: 'Is it necessary to use supplements?',
+    a: "It is not always necessary to use supplements as long as they maintain a balanced diet and live a healthy lifestyle. In some cases, supplements can be recommended by healthcare professionals to address nutrient deficiencies or medical conditions. It is important to consult with a healthcare provider before starting any supplement regimen.",
   },
   {
-    q: 'What are your operating hours?',
-    a: "Most GAME ON FITNESS locations operate 24/7. A small number of branches (Seattle and Austin) operate 5am–11pm Sunday through Thursday, and 5am–12am Friday–Saturday. Holiday hours may vary. All hours are listed on each branch's page and in our app.",
+    q: 'What are the benefits of strength training?',
+    a: `1. Increased muscle mass: Strength training helps to build muscle mass, which can improve your overall appearance and increase your metabolism.
+2. Improved bone density: Strength training can help to increase bone density, which can reduce the risk of osteoporosis, especially in older adults.
+3. Better body composition: Strength training can help you decrease body fat and increase lean muscle mass, which can improve your overall health and fitness levels.
+4. Increased strength and power: Regular strength training can help improve your strength and power, which can enhance your ability to perform daily activities and sports-specific movements.
+5. Reduced risk of injury: Strength training strengthens your muscles, tendons, and ligaments, which can help reduce the risk of injuries during physical activities.
+6. Improved balance and stability: Strength training can help to improve your balance and stability, which can reduce the risk of falls, especially in older adults.
+7. Greater overall health: Strength training has been shown to have many positive effects on overall health, including improved cardiovascular health, blood pressure, and cholesterol levels.
+8. Enhanced mental health: Strength training has been shown to be beneficial for mental health, reducing symptoms of anxiety and depression and improving overall mood.`,
   },
   {
-    q: 'Is there a free trial available?',
-    a: "Yes. We offer a 7-day free trial for new members at any GAME ON FITNESS location. No credit card required. During your trial you'll have full access to your chosen branch, group fitness classes, and a complimentary 30-minute session with a coach to experience the GAME ON FITNESS difference firsthand.",
+    q: 'Is it better to do cardio before or after strength training?',
+    a: "Studies suggest that it's better to do strength training before cardio. This is because strength training requires more focus, energy, and effort, and doing it first ensures you have the energy to perform the exercises properly without risking injury. Additionally, strength training can also help improve your cardiovascular health and burn calories, so doing cardio afterward may not be necessary. However, ultimately it depends on your fitness goals and personal preferences. It's important to find a routine that works best for you and your body.",
   },
   {
-    q: 'What nutrition support do you provide?',
-    a: "We have in-house certified nutritionists at every location. Depending on your membership tier, you'll have access to nutritional consultations, meal planning, macro tracking through our app, and our on-site nutrition bars stocked with premium supplements and fresh meals. Game On Fitness Pro members receive a comprehensive nutrition plan as part of their package.",
+    q: 'Can I build muscle without lifting heavy weights?',
+    a: "Yes, it is possible to build muscle without lifting heavy weights. Resistance training can be done with various tools such as resistance bands, bodyweight exercises, or even household items like water bottles or cans. It is also important to focus on proper nutrition and adequate rest to support muscle growth.",
   },
 ];
 
@@ -93,7 +115,7 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
         <div className={`accordion-content ${isOpen ? 'open' : ''}`}>
           <div className="px-6 pb-6 ml-12">
             <div className="w-8 h-px bg-[#ff6b35]/30 mb-4" />
-            <p className="text-white/55 leading-relaxed text-sm">{faq.a}</p>
+            <p className="text-white/55 leading-relaxed text-sm whitespace-pre-line">{faq.a}</p>
           </div>
         </div>
       </div>
