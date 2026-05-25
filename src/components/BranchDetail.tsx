@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, LucideIcon } from 'lucide-react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, } from 'lucide-react';
 
 interface BranchDetailProps {
   branchId: string;
