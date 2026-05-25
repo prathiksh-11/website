@@ -6,7 +6,7 @@ import Branches from './components/Branches';
 import BranchDetail from './components/BranchDetail';
 import Transformations from './components/Transformations';
 import FAQ from './components/FAQ';
-import Contact from './components/Contact';
+// import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
@@ -45,7 +45,7 @@ function App() {
       <Branches />
       <Transformations />
       <FAQ />
-      <Contact />
+      {/* <Contact /> */}
       <Footer />
     </div>
   );

@@ -6,7 +6,7 @@ const navLinks = [
   { label: 'Branches', href: '#branches' },
   { label: 'Trainers', href: '#trainers' },
   { label: 'FAQ', href: '#faq' },
-  { label: 'Contact', href: '#contact' },
+  // { label: 'Contact', href: '#contact' },
 ];
 
 export default function Navbar() {
