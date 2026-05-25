@@ -336,13 +336,6 @@ export default function Branches() {
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <div className={`reveal ${headVisible ? 'visible' : ''} text-center mt-16`}>
-          <p className="text-white/40 text-sm mb-4">Don't see your city? We're expanding.</p>
-          <button className="btn-outline-glow px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase">
-            Request a Branch
-          </button>
-        </div>
       </div>
     </section>
   );
