@@ -160,6 +160,10 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={() => setHovered(true)}
+      onClick={() => {
+        window.location.hash = `#branch/${branch.id}`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }}
     >
       <div
         className="relative rounded-2xl overflow-hidden branch-card-glow h-full flex flex-col"
@@ -231,6 +235,7 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
             onClick={(e) => {
               e.stopPropagation();
               window.location.hash = `#branch/${branch.id}`;
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="mt-auto w-full py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-300"
             style={{
