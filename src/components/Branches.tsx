@@ -125,22 +125,6 @@ const branches = [
   },
 ];
 
-const facilityIcons: Record<string, any> = {
-  'Weight Training': Dumbbell,
-  'Cardio Zone': Dumbbell,
-  'Group Classes': Users,
-  'Steam Room': Clock,
-  'Olympic Pool': Dumbbell,
-  'CrossFit Box': Dumbbell,
-  'Yoga Studio': Users,
-  'Recovery Center': Clock,
-  'Functional Training': Dumbbell,
-  'Zumba Studio': Users,
-  'Personal Training': Dumbbell,
-  'Cafe': Clock,
-  'default': Dumbbell,
-};
-
 interface BranchCardProps {
   branch: typeof branches[0];
   index: number;
@@ -195,7 +179,7 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
           />
           <div className={`absolute inset-0 bg-gradient-to-b ${branch.gradient} via-transparent`} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent" />
-    
+
           {/* Tag */}
           <div
             className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold tracking-wider"
@@ -207,14 +191,14 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
           >
             {branch.tag}
           </div>
-    
+
           {/* Members badge */}
           <div className="absolute top-4 right-4 glass-card rounded-lg px-3 py-1.5 flex items-center gap-1.5">
             <Users size={12} className="text-white/60" />
             <span className="text-xs font-semibold text-white">{branch.members}</span>
           </div>
         </div>
-    
+
         {/* Content */}
         <div className="p-6 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-2">
@@ -224,12 +208,12 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
               className="text-white/20 transition-all duration-300 group-hover:text-white/60 group-hover:translate-x-1 flex-shrink-0"
             />
           </div>
-    
+
           <div className="flex items-center gap-1.5 mb-4">
             <MapPin size={12} style={{ color: branch.accentColor }} />
             <span className="text-xs text-white/50">{branch.city}</span>
           </div>
-    
+
           {/* Stats row */}
           <div className="flex items-center gap-4 mb-5 pb-5 border-b border-white/5">
             <div className="flex items-center gap-1.5">
@@ -241,32 +225,14 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
               <span className="text-xs text-white/50">{branch.hours}</span>
             </div>
           </div>
-    
-          {/* Facilities */}
-          <div className="grid grid-cols-2 gap-2 mb-auto">
-            {branch.facilities.map((facility, fi) => {
-              const Icon = facilityIcons[facility] || facilityIcons.default;
-              return (
-                <div key={fi} className="flex items-center gap-2">
-                  <div
-                    className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${branch.accentColor}15` }}
-                  >
-                    <Icon size={10} className="text-white/60" />
-                  </div>
-                  <span className="text-xs text-white/50 truncate">{facility}</span>
-                </div>
-              );
-            })}
-          </div>
-    
+
           {/* CTA */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               window.location.hash = `#branch/${branch.id}`;
             }}
-            className="mt-5 w-full py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-300"
+            className="mt-auto w-full py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-300"
             style={{
               background: hovered ? `${branch.accentColor}20` : 'rgba(255,255,255,0.04)',
               border: `1px solid ${hovered ? branch.accentColor + '50' : 'rgba(255,255,255,0.08)'}`,
@@ -276,7 +242,7 @@ function BranchCard({ branch, index, isVisible }: BranchCardProps) {
             Explore Branch
           </button>
         </div>
-    
+
         {/* Bottom glow line */}
         <div
           className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-300"
@@ -318,12 +284,7 @@ export default function Branches() {
               <span className="gradient-text-gold">ARENA.</span>
             </h2>
           </div>
-          <div className={`reveal-right ${headVisible ? 'visible' : ''} max-w-sm`}>
-            <p className="text-white/50 leading-relaxed">
-              12 world-class facilities across the country. Each branch engineered
-              for peak performance with unique features tailored to its city.
-            </p>
-          </div>
+
         </div>
 
         {/* Branches Grid */}
