@@ -42,7 +42,7 @@ export default function Navbar() {
             className="flex items-center gap-2 group"
           >
             <img src="/logo.png" alt="Game On Fitness" className="w-8 h-8 rounded-lg" />
-            <span className="text-xl font-bold tracking-widest gradient-text-blue">GAME ON FITNESS</span>
+            <span className="text-base md:text-xl font-bold tracking-widest gradient-text-blue whitespace-nowrap">GAME ON FITNESS</span>
           </button>
 
           {/* Desktop Nav */}
@@ -76,12 +76,12 @@ export default function Navbar() {
           </div> */}
 
           {/* Mobile Menu Toggle */}
-          {/* <button
+          <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden text-white/80 hover:text-white transition-colors p-1"
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button> */}
+          </button>
         </div>
       </nav>
 

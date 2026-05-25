@@ -259,7 +259,7 @@ export default function Transformations() {
         <div ref={headRef} className="text-center mb-20">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
             <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ffb800] mb-4 block">Real Results</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-none mb-6">
+            <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-6">
               <span className="text-white">PROOF IN</span>
               <br />
               <span className="gradient-text-gold">EVERY BODY.</span>

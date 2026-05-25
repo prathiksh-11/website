@@ -113,7 +113,7 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
 
         {/* Answer */}
         <div className={`accordion-content ${isOpen ? 'open' : ''}`}>
-          <div className="px-6 pb-6 ml-12">
+          <div className="px-6 pb-6 md:ml-12">
             <div className="w-8 h-px bg-[#ff6b35]/30 mb-4" />
             <p className="text-white/55 leading-relaxed text-sm whitespace-pre-line">{faq.a}</p>
           </div>
@@ -146,7 +146,7 @@ export default function FAQ() {
         <div ref={headRef} className="text-center mb-16">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
             <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ff6b35] mb-4 block">Got Questions?</span>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight leading-none mb-6">
+            <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-6">
               <span className="text-white">EVERY</span>
               <br />
               <span className="gradient-text-blue">ANSWER.</span>
