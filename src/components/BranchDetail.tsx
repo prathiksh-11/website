@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, } from 'lucide-react';
+import { IMAGES } from './image_constant';
 
 interface BranchDetailProps {
   branchId: string;
@@ -64,13 +65,11 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.Arekere.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.Arekere.trainer2 },
 
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.Arekere.trainer3 },
 
     ],
 
@@ -112,17 +111,15 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Arekere.img1,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Arekere.img2,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Arekere.img4,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Arekere.img5,
 
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Arekere.img7,
 
     ],
 
@@ -162,13 +159,11 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.VijayaBankLayout.trainer2 },
 
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.VijayaBankLayout.trainer3 },
 
     ],
 
@@ -202,17 +197,13 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.VijayaBankLayout.img5,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.VijayaBankLayout.img6,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.VijayaBankLayout.img7,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.VijayaBankLayout.img9,
 
     ],
 
@@ -252,13 +243,9 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.BTM1.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.BTM1.trainer2 },
 
     ],
 
@@ -292,17 +279,15 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM1.img1,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM1.img3,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM1.img4,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM1.img6,
 
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM1.img7,
 
     ],
 
@@ -342,13 +327,11 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.BTM2.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.BTM2.trainer2 },
 
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.BTM2.trainer3 },
 
     ],
 
@@ -382,17 +365,15 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM2.img3,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM2.img4,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM2.img6,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM2.img7,
 
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.BTM2.img8,
 
     ],
 
@@ -432,13 +413,11 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.WilsonGarden.trainer2 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.WilsonGarden.trainer3 },
 
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 4', role: 'Head Trainer', image: IMAGES.WilsonGarden.trainer4 },
 
     ],
 
@@ -470,21 +449,7 @@ const branchData: Record<string, {
 
     ],
 
-    gallery: [
-
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-    ],
+    gallery: [],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.58!3d12.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzAwLjAiTiA3N8KwMzQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
@@ -522,13 +487,11 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.JPNagar.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.JPNagar.trainer2 },
 
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.JPNagar.trainer3 },
 
     ],
 
@@ -562,17 +525,13 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.JPNagar.img3,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.JPNagar.img4,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.JPNagar.img5,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.JPNagar.img6,
 
     ],
 
@@ -612,13 +571,9 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.Akshayanagar.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.Akshayanagar.trainer2 },
 
     ],
 
@@ -660,17 +615,15 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Akshayanagar.img1,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Akshayanagar.img11,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Akshayanagar.img4,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Akshayanagar.img8,
 
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.Akshayanagar.img9,
 
     ],
 
@@ -710,13 +663,11 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Rajesh Kumar', role: 'Head Trainer', image: 'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.SarjapurRoad.trainer1 },
 
-      { name: 'Priya Sharma', role: 'Yoga Instructor', image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.SarjapurRoad.trainer2 },
 
-      { name: 'Amit Patel', role: 'Strength Coach', image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
-
-      { name: 'Sneha Reddy', role: 'Zumba Instructor', image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop' },
+      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.SarjapurRoad.trainer3 },
 
     ],
 
@@ -758,17 +709,15 @@ const branchData: Record<string, {
 
     gallery: [
 
-      'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.SarjapurRoad.img1,
 
-      'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.SarjapurRoad.img4,
 
-      'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.SarjapurRoad.img5,
 
-      'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.SarjapurRoad.img7,
 
-      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
-
-      'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+      IMAGES.SarjapurRoad.img8,
 
     ],
 
@@ -780,10 +729,30 @@ const branchData: Record<string, {
 
 export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   const branch = branchData[branchId];
+  const [isVisible, setIsVisible] = useState(false);
+  const [currentTrainer, setCurrentTrainer] = useState(0);
+  const [currentGallery, setCurrentGallery] = useState(0);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsVisible(true);
   }, []);
+
+  // Auto-rotate trainers
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTrainer((prev) => (prev + 1) % branch.team.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [branch.team.length]);
+
+  // Auto-rotate gallery
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGallery((prev) => (prev + 1) % branch.gallery.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [branch.gallery.length]);
 
   if (!branch) {
     return (
@@ -800,42 +769,44 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
   return (
     <div className="min-h-screen bg-[#080808] text-gray-200 font-sans selection:bg-orange-500 selection:text-black">
-
+  
       {/* Hero Header Section */}
-      <div className="relative h-[65vh] min-h-[480px] w-full overflow-hidden">
-        <img
-          src={branch.gallery[0]}
-          alt={branch.name}
-          className="w-full h-full object-cover scale-105 filter brightness-[0.85] transition-transform duration-700 hover:scale-100"
-        />
+      <div className={`relative h-[65vh] min-h-[480px] w-full overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`absolute inset-0 transition-transform duration-[20s] ease-linear ${isVisible ? 'scale-100' : 'scale-110'}`}>
+          <img
+            src={branch.gallery[0] || IMAGES.Arekere.img1}
+            alt={branch.name}
+            className="w-full h-full object-cover filter brightness-[0.85]"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-black/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
-
+        
         {/* Absolute Floating Navigation Back Button */}
         <button
           onClick={onBack}
-          className="absolute top-6 left-6 md:left-12 p-3 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/20 hover:border-white/20 text-white transition-all group z-20 shadow-xl"
+          className={`absolute top-6 left-6 md:left-12 p-3 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/20 hover:border-white/20 text-white transition-all group z-20 shadow-xl hover:scale-110 hover:rotate-12 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}
         >
           <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
         </button>
-
+        
         {/* Hero Meta Information Overlay */}
         <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-16 pb-12">
           <div className="max-w-7xl mx-auto">
-            <span className="inline-block px-3 py-1 bg-orange-500 text-black text-[10px] font-extrabold uppercase tracking-widest rounded-md mb-4 shadow-lg shadow-orange-500/20">
+            <span className={`inline-block px-3 py-1 bg-orange-500 text-black text-[10px] font-extrabold uppercase tracking-widest rounded-md mb-4 shadow-lg shadow-orange-500/20 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               Premium Facility
             </span>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl">
+            <h1 className={`text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {branch.name}
             </h1>
-
-            <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-white/10">
-              <div className="flex items-center gap-2.5 text-gray-300">
-                <MapPin size={18} className="text-orange-500 shrink-0" />
+        
+            <div className={`flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-white/10 transition-all duration-700 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <div className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-colors group">
+                <MapPin size={18} className="text-orange-500 shrink-0 group-hover:scale-110 transition-transform" />
                 <span className="text-sm font-medium">{branch.location}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-gray-300">
-                <Phone size={18} className="text-orange-500 shrink-0" />
+              <div className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-colors group">
+                <Phone size={18} className="text-orange-500 shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform" />
                 <a href={`tel:${branch.phone}`} className="text-sm font-medium hover:text-orange-400 transition-colors">
                   {branch.phone}
                 </a>
@@ -846,7 +817,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
       </div>
 
       {/* Floating Call to Action Bar */}
-      <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-8 relative z-20 mb-16">
+      <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-8 relative z-20 mb-16 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl grid md:grid-cols-2 gap-4">
           <button className="w-full bg-orange-500 hover:bg-orange-600 text-black font-extrabold py-4 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-orange-500/10 hover:shadow-orange-500/20 transform hover:-translate-y-0.5 active:translate-y-0">
             Book Your Free Trial Now
@@ -860,90 +831,45 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           </a>
         </div>
       </div>
-
+      
       {/* Main Structural Layout Content Wrapper */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pb-24">
-
+      
         {/* Dynamic Typography Tagline */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <span className="text-4xl block text-orange-500/30 font-serif mb-2">“</span>
-          <p className="text-lg md:text-2xl font-semibold text-gray-100 tracking-wide italic leading-relaxed">
+        <div className="text-center max-w-3xl mx-auto mb-20 group">
+          <span className="text-4xl block text-orange-500/30 font-serif mb-2 group-hover:text-orange-500/50 transition-colors duration-500 animate-pulse">"</span>
+          <p className="text-lg md:text-2xl font-semibold text-gray-100 tracking-wide italic leading-relaxed group-hover:text-white transition-colors duration-500">
             {branch.tagline}
           </p>
-          <div className="w-12 h-[2px] bg-orange-500/50 mx-auto mt-6" />
+          <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mt-6 group-hover:w-24 transition-all duration-700" />
         </div>
-
+      
         {/* Dynamic 12-Column Modern Grid Dashboard Template layout */}
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* Left Column Section Pane (Occupies 7 Columns out of 12) */}
-          <div className="lg:col-span-7 space-y-16">
-
-            {/* Our Training & Custom Programs Section */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black tracking-wider text-white uppercase">Our Training</h2>
+          <div className="lg:col-span-7 space-y-12">
+          
+            {/* Our Training & Custom Programs Section - Compact */}
+            <div className="transform transition-all duration-500 hover:scale-[1.01]">
+              <div className="flex items-center gap-3 mb-6 group">
+                <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-8 transition-all duration-300" />
+                <h2 className="text-xl md:text-2xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Our Training</h2>
               </div>
-
-              {branch.programs.map((program, idx) => (
-                <div key={idx} className="mb-8 last:mb-0">
-                  <h3 className="text-sm font-bold tracking-widest text-orange-400 uppercase mb-4 flex items-center gap-2">
-                    <Dumbbell size={14} />
-                    {program.category}
-                  </h3>
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-                    <div className="space-y-2.5">
+          
+              <div className="space-y-4">
+                {branch.programs.map((program, idx) => (
+                  <div key={idx} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-orange-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5 hover:-translate-y-1">
+                    <h3 className="text-xs font-bold tracking-widest text-orange-400 uppercase mb-3 flex items-center gap-2 group-hover:gap-3 transition-all duration-300">
+                      <Dumbbell size={14} className="group-hover:rotate-12 transition-transform duration-300" />
+                      {program.category}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
                       {program.items.map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 group">
-                          <div className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 group-hover:scale-125 transition-transform"></div>
-                          <p className="text-sm text-gray-400 group-hover:text-white transition-colors font-medium leading-relaxed">
-                            {item}
-                          </p>
-                        </div>
+                        <span key={i} className="px-3 py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg text-xs text-gray-300 font-medium hover:bg-orange-500/10 hover:border-orange-500/30 hover:text-orange-300 hover:scale-110 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+                          {item}
+                        </span>
                       ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Structured Fluid Grid Photo Gallery Section */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black tracking-wider text-white uppercase">Gallery</h2>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {branch.gallery.map((imgUrl, index) => (
-                  <div key={index} className="aspect-square overflow-hidden rounded-xl border border-white/5 bg-white/5 group relative">
-                    <img
-                      src={imgUrl}
-                      alt="Gym Interior"
-                      className="w-full h-full object-cover filter brightness-95 group-hover:scale-110 group-hover:brightness-100 transition-all duration-500"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Our Team Roster Component */}
-            <div>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-1 h-6 bg-orange-500 rounded-full" />
-                <h2 className="text-xl md:text-2xl font-black tracking-wider text-white uppercase">Our Team</h2>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                {branch.team.map((member, idx) => (
-                  <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-xl flex items-center gap-4 group hover:border-white/10 transition-colors">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-14 h-14 rounded-lg object-cover filter grayscale group-hover:grayscale-0 transition-all duration-300 shadow-md"
-                    />
-                    <div>
-                      <h4 className="text-sm font-bold text-white tracking-wide">{member.name}</h4>
-                      <p className="text-xs text-orange-400 font-medium mt-0.5">{member.role}</p>
                     </div>
                   </div>
                 ))}
@@ -956,7 +882,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
 
             {/* Hours Operations Widget Panel */}
-            <div className="bg-white/[0.02] backdrop-blur-md border border-white/5 p-6 rounded-2xl">
+            <div className="bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md border border-white/5 p-6 rounded-2xl hover:border-orange-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5">
               <div className="flex items-center gap-2.5 text-white mb-5 pb-3 border-b border-white/5">
                 <Clock size={16} className="text-orange-500" />
                 <h3 className="text-sm font-bold tracking-wider uppercase">Operating Hours</h3>
@@ -965,9 +891,9 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 {branch.hours.map((h, i) => {
                   const isSunday = h.day === "Sunday";
                   return (
-                    <div key={i} className="flex justify-between items-center text-xs">
-                      <span className={`font-medium ${isSunday ? 'text-gray-500' : 'text-gray-400'}`}>{h.day}</span>
-                      <span className={`font-mono tracking-tight ${isSunday ? 'text-orange-500/80 font-medium' : 'text-gray-300'}`}>{h.time}</span>
+                    <div key={i} className="flex justify-between items-center text-xs group">
+                      <span className={`font-medium ${isSunday ? 'text-gray-500' : 'text-gray-400 group-hover:text-white'} transition-colors`}>{h.day}</span>
+                      <span className={`font-mono tracking-tight ${isSunday ? 'text-orange-500/80 font-medium' : 'text-gray-300 group-hover:text-orange-400'} transition-colors`}>{h.time}</span>
                     </div>
                   );
                 })}
@@ -975,7 +901,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
             </div>
 
             {/* Included Club Premium Facilities Layout */}
-            <div className="bg-white/[0.02] backdrop-blur-md border border-white/5 p-6 rounded-2xl">
+            <div className="bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md border border-white/5 p-6 rounded-2xl hover:border-orange-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5">
               <div className="flex items-center gap-2.5 text-white mb-5 pb-3 border-b border-white/5">
                 <Users size={16} className="text-orange-500" />
                 <h3 className="text-sm font-bold tracking-wider uppercase">Club Facilities</h3>
@@ -984,52 +910,152 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 {branch.facilities.map((facility, i) => {
                   const IconComponent = facility.icon;
                   return (
-                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.01] border border-white/[0.03]">
-                      <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500">
+                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.01] border border-white/[0.03] hover:bg-orange-500/5 hover:border-orange-500/20 transition-all duration-200 group">
+                      <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500 group-hover:bg-orange-500/20 group-hover:scale-110 transition-all">
                         <IconComponent size={14} />
                       </div>
-                      <span className="text-xs font-semibold text-gray-300 tracking-wide">{facility.name}</span>
+                      <span className="text-xs font-semibold text-gray-300 tracking-wide group-hover:text-white transition-colors">{facility.name}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* Physical Location Map Mock Component Container */}
-            <div className="bg-white/[0.02] backdrop-blur-md border border-white/5 p-6 rounded-2xl">
-              <div className="flex items-center gap-2.5 text-white mb-4 pb-3 border-b border-white/5">
-                <Map size={16} className="text-orange-500" />
-                <h3 className="text-sm font-bold tracking-wider uppercase">Location Details</h3>
+          </div>
+
+        </div>
+
+        {/* Gallery - FULL SCREEN WIDTH */}
+        <div className="mt-20 group">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-500" />
+            <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Gallery</h2>
+          </div>
+          <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/gallery hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
+            {branch.gallery.map((imgUrl, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-all duration-1000 ${
+                  index === currentGallery ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                }`}
+              >
+                <img
+                  src={imgUrl}
+                  alt="Gym Interior"
+                  className="w-full h-full object-cover group-hover/gallery:scale-105 transition-transform duration-[2s] ease-out"
+                />
               </div>
-              <p className="text-xs text-gray-400 leading-relaxed mb-4">
+            ))}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    
+            {/* Navigation Dots */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+              {branch.gallery.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentGallery(index)}
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    index === currentGallery ? 'bg-orange-500 w-12 shadow-lg shadow-orange-500/50' : 'bg-white/40 hover:bg-white hover:w-6'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Counter */}
+            <div className="absolute top-6 right-6 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-sm font-bold text-white border border-white/10 group-hover/gallery:border-orange-500/30 transition-all duration-300">
+              {currentGallery + 1} / {branch.gallery.length}
+            </div>
+          </div>
+        </div>
+
+        {/* Our Team - FULL SCREEN WIDTH */}
+        <div className="mt-20 group">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-500" />
+            <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Meet Our Trainers</h2>
+          </div>
+          <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] group/team hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
+            {branch.team.map((member, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-all duration-1000 ${
+                  index === currentTrainer ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                }`}
+              >
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-full h-full object-cover object-top group-hover/team:scale-105 transition-transform duration-[2s] ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-12 transform transition-all duration-700 group-hover/team:pb-16">
+                  <h4 className="text-5xl font-black text-white tracking-wide mb-3 group-hover/team:text-orange-400 transition-colors duration-500">{member.name}</h4>
+                  <p className="text-2xl text-orange-400 font-bold group-hover/team:text-white transition-colors duration-500">{member.role}</p>
+                </div>
+              </div>
+            ))}
+                    
+            {/* Navigation Dots */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+              {branch.team.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentTrainer(index)}
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    index === currentTrainer ? 'bg-orange-500 w-12 shadow-lg shadow-orange-500/50 animate-pulse' : 'bg-white/40 hover:bg-white hover:w-6'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Counter */}
+            <div className="absolute top-6 right-6 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-sm font-bold text-white border border-white/10 group-hover/team:border-orange-500/30 transition-all duration-300">
+              {currentTrainer + 1} / {branch.team.length}
+            </div>
+          </div>
+        </div>
+
+        {/* Location Map Section - Full Screen Big */}
+        <div className="mt-20 pt-20 border-t border-white/5 group">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-500" />
+                <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Visit Us</h2>
+              </div>
+              <p className="text-sm text-gray-400 max-w-2xl mx-auto group-hover:text-gray-300 transition-colors duration-300">
                 {branch.address}
               </p>
-              <div className="w-full h-64 rounded-xl overflow-hidden border border-white/5 shadow-inner">
-                <iframe
-                  src={branch.mapUrl}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="w-full h-full filter grayscale-[0.3] contrast-110"
-                  title="Branch Location Map"
-                ></iframe>
-              </div>
+            </div>
+            
+            <div className="relative w-full aspect-video max-h-[600px] rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] hover:border-orange-500/40 transition-all duration-700 hover:shadow-2xl hover:shadow-orange-500/20 group/map">
+              <iframe
+                src={branch.mapUrl}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full filter grayscale group-hover/map:grayscale-0 transition-all duration-[2s] ease-out"
+                title="Branch Location Map"
+              ></iframe>
+              <div className="absolute inset-0 pointer-events-none border-2 border-transparent group-hover/map:border-orange-500/30 rounded-3xl transition-all duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent opacity-0 group-hover/map:opacity-100 transition-opacity duration-700" />
+            </div>
+
+            <div className="mt-8 max-w-2xl mx-auto">
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.address)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 w-full bg-orange-500 hover:bg-orange-600 t font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
+                className="group/btn w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-black font-bold py-5 px-8 rounded-2xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60 transform hover:-translate-y-2 active:translate-y-0"
               >
-                <Map size={14} />
-                Get Directions
+                <Map size={20} className="group-hover/btn:rotate-12 transition-transform duration-300" />
+                <span className="group-hover/btn:tracking-widest transition-all duration-300">Get Directions on Google Maps</span>
               </a>
             </div>
-
           </div>
-
         </div>
 
       </div>

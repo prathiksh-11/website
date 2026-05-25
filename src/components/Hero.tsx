@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIntersectionObserver, useCountUp } from '../hooks/useIntersectionObserver';
+import { IMAGES } from './image_constant';
 
 const particles = Array.from({ length: 30 }, (_, i) => ({
   id: i,
@@ -34,6 +35,17 @@ export default function Hero() {
   const { ref: statsRef, isVisible: statsVisible } = useIntersectionObserver<HTMLDivElement>({ threshold: 0.3 });
   const heroRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
+  const [currentTransformation, setCurrentTransformation] = useState(0);
+
+  const beforeImages = Object.values(IMAGES.Before);
+
+  // Auto-rotate transformations
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTransformation((prev) => (prev + 1) % beforeImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [beforeImages.length]);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
