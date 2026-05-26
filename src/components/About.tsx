@@ -112,7 +112,7 @@ export default function About() {
             <div>
               <p className="text-sm font-bold text-white mb-1">Better Experience</p>
               <p className="text-xs text-white/60 leading-relaxed">
-                For the best experience, use our mobile app
+               use our mobile app
               </p>
               <div className="mt-2 flex items-center justify-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-[#00d4ff] animate-pulse" />
