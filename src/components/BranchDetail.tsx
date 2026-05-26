@@ -768,46 +768,50 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#080808] text-gray-200 font-sans selection:bg-orange-500 selection:text-black">
+    <div className="min-h-screen bg-[#0a0a0a] text-gray-200 font-sans selection:bg-orange-500 selection:text-black">
   
       {/* Hero Header Section */}
-      <div className={`relative h-[65vh] min-h-[480px] w-full overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-        <div className={`absolute inset-0 transition-transform duration-[20s] ease-linear ${isVisible ? 'scale-100' : 'scale-110'}`}>
+      <div className={`relative h-[75vh] min-h-[520px] w-full overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`absolute inset-0 transition-transform duration-[25s] ease-linear ${isVisible ? 'scale-100' : 'scale-110'}`}>
           <img
             src={branch.gallery[0] || IMAGES.Arekere.img1}
             alt={branch.name}
-            className="w-full h-full object-cover filter brightness-[0.85]"
+            className="w-full h-full object-cover filter brightness-[0.9]"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-black/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
         
-        {/* Absolute Floating Navigation Back Button */}
+        {/* Floating Navigation Back Button */}
         <button
           onClick={onBack}
-          className={`absolute top-6 left-6 md:left-12 p-3 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/20 hover:border-white/20 text-white transition-all group z-20 shadow-xl hover:scale-110 hover:rotate-12 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}
+          className={`absolute top-8 left-8 md:left-12 p-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 hover:border-orange-400 text-white transition-all group z-20 shadow-xl hover:shadow-2xl hover:scale-110 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}
         >
-          <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
+          <ChevronLeft size={22} className="group-hover:-translate-x-1 transition-transform" />
         </button>
         
-        {/* Hero Meta Information Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-16 pb-12">
+        {/* Hero Content Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-16 pb-16">
           <div className="max-w-7xl mx-auto">
-            <span className={`inline-block px-3 py-1 bg-orange-500 text-black text-[10px] font-extrabold uppercase tracking-widest rounded-md mb-4 shadow-lg shadow-orange-500/20 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <span className={`inline-block px-4 py-1.5 bg-orange-500 text-black text-[10px] font-bold uppercase tracking-widest rounded-full mb-5 shadow-lg shadow-orange-500/30 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               Premium Facility
             </span>
-            <h1 className={`text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <h1 className={`text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {branch.name}
             </h1>
         
-            <div className={`flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-white/10 transition-all duration-700 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <div className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-colors group">
-                <MapPin size={18} className="text-orange-500 shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-medium">{branch.location}</span>
+            <div className={`flex flex-wrap items-center gap-8 mt-8 pt-8 border-t border-white/10 transition-all duration-700 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
+                <div className="p-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+                  <MapPin size={18} className="text-orange-500 shrink-0 group-hover:scale-110 transition-transform" />
+                </div>
+                <span className="text-sm font-semibold">{branch.location}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-gray-300 hover:text-white transition-colors group">
-                <Phone size={18} className="text-orange-500 shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform" />
-                <a href={`tel:${branch.phone}`} className="text-sm font-medium hover:text-orange-400 transition-colors">
+              <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
+                <div className="p-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+                  <Phone size={18} className="text-orange-500 shrink-0 group-hover:rotate-12 transition-transform" />
+                </div>
+                <a href={`tel:${branch.phone}`} className="text-sm font-semibold hover:text-orange-400 transition-colors">
                   {branch.phone}
                 </a>
               </div>
@@ -817,14 +821,14 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
       </div>
 
       {/* Floating Call to Action Bar */}
-      <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-8 relative z-20 mb-16 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6 shadow-2xl grid md:grid-cols-2 gap-4">
-          <button className="w-full bg-orange-500 hover:bg-orange-600 text-black font-extrabold py-4 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-orange-500/10 hover:shadow-orange-500/20 transform hover:-translate-y-0.5 active:translate-y-0">
+      <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-10 relative z-20 mb-20 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl grid md:grid-cols-2 gap-4">
+          <button className="w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 transform hover:-translate-y-1 active:translate-y-0">
             Book Your Free Trial Now
           </button>
           <a
             href={`tel:${branch.phone}`}
-            className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold py-4 px-6 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2.5 transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full bg-white/5 hover:bg-white/10 border-2 border-white/10 hover:border-orange-500/50 text-white font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-3 transform hover:-translate-y-1 active:translate-y-0"
           >
             <Phone size={16} className="text-orange-500" />
             Call Front Desk
@@ -832,41 +836,41 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         </div>
       </div>
       
-      {/* Main Structural Layout Content Wrapper */}
+      {/* Main Content Wrapper */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pb-24">
       
         {/* Dynamic Typography Tagline */}
-        <div className="text-center max-w-3xl mx-auto mb-20 group">
-          <span className="text-4xl block text-orange-500/30 font-serif mb-2 group-hover:text-orange-500/50 transition-colors duration-500 animate-pulse">"</span>
-          <p className="text-lg md:text-2xl font-semibold text-gray-100 tracking-wide italic leading-relaxed group-hover:text-white transition-colors duration-500">
+        <div className="text-center max-w-3xl mx-auto mb-24 group">
+          <span className="text-5xl block text-orange-500/30 font-serif mb-3 group-hover:text-orange-500/50 transition-colors duration-500">"</span>
+          <p className="text-xl md:text-3xl font-semibold text-gray-100 tracking-wide italic leading-relaxed group-hover:text-white transition-colors duration-500">
             {branch.tagline}
           </p>
-          <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mt-6 group-hover:w-24 transition-all duration-700" />
+          <div className="w-16 h-[3px] bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mt-8 group-hover:w-32 transition-all duration-700 rounded-full" />
         </div>
       
-        {/* Dynamic 12-Column Modern Grid Dashboard Template layout */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* Modern Grid Layout */}
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
 
-          {/* Left Column Section Pane (Occupies 7 Columns out of 12) */}
-          <div className="lg:col-span-7 space-y-12">
+          {/* Left Column (7 Columns) */}
+          <div className="lg:col-span-7 space-y-14">
           
-            {/* Our Training & Custom Programs Section - Compact */}
+            {/* Training Programs Section */}
             <div className="transform transition-all duration-500 hover:scale-[1.01]">
-              <div className="flex items-center gap-3 mb-6 group">
-                <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-8 transition-all duration-300" />
+              <div className="flex items-center gap-4 mb-8 group">
+                <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-300 shadow-lg shadow-orange-500/20" />
                 <h2 className="text-xl md:text-2xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Our Training</h2>
               </div>
           
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {branch.programs.map((program, idx) => (
-                  <div key={idx} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-orange-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5 hover:-translate-y-1">
-                    <h3 className="text-xs font-bold tracking-widest text-orange-400 uppercase mb-3 flex items-center gap-2 group-hover:gap-3 transition-all duration-300">
-                      <Dumbbell size={14} className="group-hover:rotate-12 transition-transform duration-300" />
+                  <div key={idx} className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
+                    <h3 className="text-xs font-bold tracking-widest text-orange-400 uppercase mb-4 flex items-center gap-2">
+                      <Dumbbell size={14} />
                       {program.category}
                     </h3>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2.5">
                       {program.items.map((item, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg text-xs text-gray-300 font-medium hover:bg-orange-500/10 hover:border-orange-500/30 hover:text-orange-300 hover:scale-110 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+                        <span key={i} className="px-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-xl text-xs text-gray-300 font-semibold hover:bg-orange-500/10 hover:border-orange-500/30 hover:text-orange-300 hover:scale-110 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
                           {item}
                         </span>
                       ))}
@@ -878,41 +882,45 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
           </div>
 
-          {/* Right Column Sticky Panel Pane (Occupies 5 Columns out of 12) */}
-          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
+          {/* Right Sticky Panel (5 Columns) */}
+          <div className="lg:col-span-5 space-y-8 lg:sticky lg:top-8">
 
-            {/* Hours Operations Widget Panel */}
-            <div className="bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md border border-white/5 p-6 rounded-2xl hover:border-orange-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5">
-              <div className="flex items-center gap-2.5 text-white mb-5 pb-3 border-b border-white/5">
-                <Clock size={16} className="text-orange-500" />
+            {/* Operating Hours Widget */}
+            <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] p-8 rounded-3xl hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
+              <div className="flex items-center gap-3 text-white mb-6 pb-4 border-b border-white/[0.08]">
+                <div className="p-2 bg-orange-500/10 rounded-lg">
+                  <Clock size={18} className="text-orange-500" />
+                </div>
                 <h3 className="text-sm font-bold tracking-wider uppercase">Operating Hours</h3>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {branch.hours.map((h, i) => {
                   const isSunday = h.day === "Sunday";
                   return (
-                    <div key={i} className="flex justify-between items-center text-xs group">
-                      <span className={`font-medium ${isSunday ? 'text-gray-500' : 'text-gray-400 group-hover:text-white'} transition-colors`}>{h.day}</span>
-                      <span className={`font-mono tracking-tight ${isSunday ? 'text-orange-500/80 font-medium' : 'text-gray-300 group-hover:text-orange-400'} transition-colors`}>{h.time}</span>
+                    <div key={i} className="flex justify-between items-center text-sm group">
+                      <span className={`font-semibold ${isSunday ? 'text-gray-500' : 'text-gray-400 group-hover:text-white'} transition-colors`}>{h.day}</span>
+                      <span className={`font-mono tracking-tight ${isSunday ? 'text-orange-500 font-semibold' : 'text-gray-300 group-hover:text-orange-400'} transition-colors`}>{h.time}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* Included Club Premium Facilities Layout */}
-            <div className="bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md border border-white/5 p-6 rounded-2xl hover:border-orange-500/20 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5">
-              <div className="flex items-center gap-2.5 text-white mb-5 pb-3 border-b border-white/5">
-                <Users size={16} className="text-orange-500" />
+            {/* Club Facilities Widget */}
+            <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] p-8 rounded-3xl hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
+              <div className="flex items-center gap-3 text-white mb-6 pb-4 border-b border-white/[0.08]">
+                <div className="p-2 bg-orange-500/10 rounded-lg">
+                  <Users size={18} className="text-orange-500" />
+                </div>
                 <h3 className="text-sm font-bold tracking-wider uppercase">Club Facilities</h3>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 {branch.facilities.map((facility, i) => {
                   const IconComponent = facility.icon;
                   return (
-                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.01] border border-white/[0.03] hover:bg-orange-500/5 hover:border-orange-500/20 transition-all duration-200 group">
-                      <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500 group-hover:bg-orange-500/20 group-hover:scale-110 transition-all">
-                        <IconComponent size={14} />
+                    <div key={i} className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-orange-500/10 hover:border-orange-500/30 transition-all duration-200 group">
+                      <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-500 group-hover:bg-orange-500/20 group-hover:scale-110 transition-all">
+                        <IconComponent size={16} />
                       </div>
                       <span className="text-xs font-semibold text-gray-300 tracking-wide group-hover:text-white transition-colors">{facility.name}</span>
                     </div>
@@ -926,9 +934,9 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         </div>
 
         {/* Gallery - FULL SCREEN WIDTH */}
-        <div className="mt-20 group">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-500" />
+        <div className="mt-24 group">
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
             <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Gallery</h2>
           </div>
           <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/gallery hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
@@ -969,12 +977,12 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         </div>
 
         {/* Our Team - FULL SCREEN WIDTH */}
-        <div className="mt-20 group">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-500" />
+        <div className="mt-24 group">
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
             <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Meet Our Trainers</h2>
           </div>
-          <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] group/team hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
+          <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/team hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
             {branch.team.map((member, index) => (
               <div
                 key={index}
@@ -1016,19 +1024,19 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         </div>
 
         {/* Location Map Section - Full Screen Big */}
-        <div className="mt-20 pt-20 border-t border-white/5 group">
+        <div className="mt-24 pt-24 border-t border-white/5 group">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-10">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-500" />
+            <div className="text-center mb-12">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
                 <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Visit Us</h2>
               </div>
-              <p className="text-sm text-gray-400 max-w-2xl mx-auto group-hover:text-gray-300 transition-colors duration-300">
+              <p className="text-base text-gray-400 max-w-2xl mx-auto group-hover:text-gray-300 transition-colors duration-300">
                 {branch.address}
               </p>
             </div>
             
-            <div className="relative w-full aspect-video max-h-[600px] rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] hover:border-orange-500/40 transition-all duration-700 hover:shadow-2xl hover:shadow-orange-500/20 group/map">
+            <div className="relative w-full aspect-video max-h-[600px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 hover:border-orange-500/40 transition-all duration-700 hover:shadow-2xl hover:shadow-orange-500/20 group/map">
               <iframe
                 src={branch.mapUrl}
                 width="100%"
@@ -1041,15 +1049,14 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 title="Branch Location Map"
               ></iframe>
               <div className="absolute inset-0 pointer-events-none border-2 border-transparent group-hover/map:border-orange-500/30 rounded-3xl transition-all duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent opacity-0 group-hover/map:opacity-100 transition-opacity duration-700" />
             </div>
 
-            <div className="mt-8 max-w-2xl mx-auto">
+            <div className="mt-10 max-w-2xl mx-auto">
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.address)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="group/btn w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-black font-bold py-5 px-8 rounded-2xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60 transform hover:-translate-y-2 active:translate-y-0"
+                className="group/btn w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-6 px-10 rounded-2xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60 transform hover:-translate-y-2 active:translate-y-0"
               >
                 <Map size={20} className="group-hover/btn:rotate-12 transition-transform duration-300" />
                 <span className="group-hover/btn:tracking-widest transition-all duration-300">Get Directions on Google Maps</span>
