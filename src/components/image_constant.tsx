@@ -39,6 +39,16 @@ import SarjapurRoadTrainer1 from '../assets/SARJAPUR_ROAD/sarjapur-road-trainer1
 import SarjapurRoadTrainer2 from '../assets/SARJAPUR_ROAD/sarjapur-road-trainer2.jpeg';
 import SarjapurRoadTrainer3 from '../assets/SARJAPUR_ROAD/sarjapur-road-trainer3.jpeg';
 
+// BRANCH IMAGES
+import AkshayanagarBranch from '../assets/branches/akshayanagar_img1.jpeg';
+import ArekereBranch from '../assets/branches/arekere-branch.jpeg';
+import Btm1Branch from '../assets/branches/btm-1-branch.jpeg';
+import Btm2Branch from '../assets/branches/btm-2-stage-branch.jpeg';
+import JpnagarBranch from '../assets/branches/jpnagar_branch.jpeg';
+import SarjapurBranch from '../assets/branches/sarjapur-branch.jpeg';
+import VijayaBankLayoutBranch from '../assets/branches/vijaya-bank-layout-branch.jpeg';
+import WilsonGardenBranch from '../assets/branches/wilson-garden-branch.jpeg';
+
 // BEFORE/AFTER TRANSFORMATIONS
 import Before1 from '../assets/before/img1.jpeg';
 import Before2 from '../assets/before/img2.jpeg';
@@ -87,6 +97,17 @@ import WilsonGardenTrainer3 from '../assets/wilsongardon/wilson_garden_trainer_3
 import WilsonGardenTrainer4 from '../assets/wilsongardon/wilson_garden_trainer_4.jpeg';
 
 export const IMAGES = {
+  // BRANCH IMAGES
+  Branches: {
+    arekere: ArekereBranch,
+    vijayaBankLayout: VijayaBankLayoutBranch,
+    btm1: Btm1Branch,
+    btm2: Btm2Branch,
+    wilsonGarden: WilsonGardenBranch,
+    jpNagar: JpnagarBranch,
+    akshayanagar: AkshayanagarBranch,
+    sarjapurRoad: SarjapurBranch,
+  },
   // AKSHAYANAGAR
   Akshayanagar: {
     img1: Akshayanagarimg1,

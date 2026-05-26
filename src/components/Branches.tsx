@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { MapPin, Clock, Dumbbell, ChevronRight, Users } from 'lucide-react';
+import { IMAGES } from './image_constant';
 
 const branches = [
   {
@@ -10,7 +11,7 @@ const branches = [
     address: 'Above Poorvika Mobiles, near Sai Baba temple, Arekere, Bengaluru - 560076',
     phone: '+91 8861737392',
     tag: 'Premium',
-    image: 'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.arekere,
     members: '2,500+',
     area: '15,000 sq ft',
     hours: '5 AM – 11 PM',
@@ -25,7 +26,7 @@ const branches = [
     address: '3rd floor, Vijaya Bank Layout circle, near Indian Oil petrol bunk, Bilekahalli, Bengaluru - 560076',
     phone: '+91 9035279516',
     tag: 'Flagship',
-    image: 'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.vijayaBankLayout,
     members: '3,200+',
     area: '18,000 sq ft',
     hours: '5 AM – 11 PM',
@@ -40,7 +41,7 @@ const branches = [
     address: 'Opp to Canara Bank, 18th Main Road BTM 2nd Stage, Bengaluru - 560076',
     phone: '+91 8722299457',
     tag: 'Elite',
-    image: 'https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.btm1,
     members: '2,800+',
     area: '16,500 sq ft',
     hours: '5:30 AM – 11 PM',
@@ -55,7 +56,7 @@ const branches = [
     address: 'Above Indian Bank, 7th Main Road BTM 2nd Stage, Bengaluru - 560076',
     phone: '+91 8951028839',
     tag: 'Luxury',
-    image: 'https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.btm2,
     members: '2,100+',
     area: '12,000 sq ft',
     hours: '5 AM – 11 PM',
@@ -70,7 +71,7 @@ const branches = [
     address: 'Opp to Traffic Police Station, Vinayaka Nagar, Wilson Garden, Bengaluru - 560027',
     phone: '+91 9663995409',
     tag: 'Premium',
-    image: 'https://images.pexels.com/photos/1440727/pexels-photo-1440727.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.wilsonGarden,
     members: '1,900+',
     area: '14,000 sq ft',
     hours: '5 AM – 11 PM',
@@ -85,7 +86,7 @@ const branches = [
     address: 'Above Poorvika Mobiles, Opp to RBI Layout Bus Stop, JP Nagar 7th phase, Bengaluru - 560078',
     phone: '+91 9980615580',
     tag: 'Elite',
-    image: 'https://images.pexels.com/photos/3253499/pexels-photo-3253499.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.jpNagar,
     members: '1,600+',
     area: '13,500 sq ft',
     hours: '5 AM – 11 PM',
@@ -100,7 +101,7 @@ const branches = [
     address: 'Above Reliance Smart, near DLF, Akshayanagar, Bengaluru - 560068',
     phone: '+91 8431198114',
     tag: 'Flagship',
-    image: 'https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.akshayanagar,
     members: '2,200+',
     area: '14,500 sq ft',
     hours: '5 AM – 11 PM',
@@ -115,7 +116,7 @@ const branches = [
     address: '3rd floor above Baby Store, opp to Divyasree Elan, next to More Mega Store, Bellandur gate, Sarjapur Main Road, Bengaluru - 560035',
     phone: '+91 8618086458',
     tag: 'Premium',
-    image: 'https://images.pexels.com/photos/1534438/pexels-photo-1534438.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop',
+    image: IMAGES.Branches.sarjapurRoad,
     members: '2,500+',
     area: '15,000 sq ft',
     hours: '5 AM – 11 PM',
