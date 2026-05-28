@@ -96,6 +96,8 @@ import WilsonGardenTrainer2 from '../assets/wilsongardon/wilson_garden_trainer_2
 import WilsonGardenTrainer3 from '../assets/wilsongardon/wilson_garden_trainer_3.jpeg';
 import WilsonGardenTrainer4 from '../assets/wilsongardon/wilson_garden_trainer_4.jpeg';
 
+import bannerimage from '../assets/bannerImage.jpeg';
+
 export const IMAGES = {
   // BRANCH IMAGES
   Branches: {
@@ -205,4 +207,5 @@ export const IMAGES = {
     img11: Before11,
     img12: Before12,
   },
+  bannerImage: bannerimage,
 };

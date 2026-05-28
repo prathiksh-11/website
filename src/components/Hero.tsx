@@ -18,17 +18,17 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   const R = 6371; // Earth's radius in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
 function findNearestBranch(userLat: number, userLng: number) {
   let nearest = branches[0];
   let minDistance = Infinity;
-  
+
   branches.forEach(branch => {
     const distance = calculateDistance(userLat, userLng, branch.lat, branch.lng);
     if (distance < minDistance) {
@@ -36,7 +36,7 @@ function findNearestBranch(userLat: number, userLng: number) {
       nearest = branch;
     }
   });
-  
+
   return { branch: nearest, distance: minDistance };
 }
 
@@ -74,7 +74,7 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [currentTransformation, setCurrentTransformation] = useState(0);
-  const [nearestBranch, setNearestBranch] = useState<{name: string, distance: number} | null>(null);
+  const [nearestBranch, setNearestBranch] = useState<{ name: string, distance: number } | null>(null);
   const [showLocationBar, setShowLocationBar] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
   const [locationDenied, setLocationDenied] = useState(false);
@@ -126,7 +126,7 @@ export default function Hero() {
   const requestLocation = () => {
     setLocationDenied(false);
     setLocationLoading(true);
-    
+
     if (!navigator.geolocation) {
       setLocationLoading(false);
       setLocationDenied(true);
@@ -234,7 +234,7 @@ export default function Hero() {
       {/* Hero image */}
       <div className="absolute inset-0 pointer-events-none">
         <img
-          src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+          src={IMAGES.bannerImage}
           alt=""
           className="w-full h-full object-cover opacity-[0.9]"
           loading="eager"
@@ -267,7 +267,7 @@ export default function Hero() {
           World-class fitness centers engineered for peak human performance.
           Transform your body. Elevate your mind. Redefine your limits.
         </p>
-        
+
 
         <div
           ref={statsRef}
@@ -307,12 +307,12 @@ export default function Hero() {
             >
               <X size={12} />
             </button>
-            
+
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 flex items-center justify-center flex-shrink-0">
                 <MapPin size={18} className="text-[#ffb800]" />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Location Required</p>
                 <h4 className="text-white font-bold text-sm mb-2">Enable to find nearest branch</h4>
@@ -338,25 +338,25 @@ export default function Hero() {
             >
               <X size={12} />
             </button>
-            
+
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 flex items-center justify-center flex-shrink-0">
                 <Navigation size={18} className="text-[#ffb800]" />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Nearest Branch</p>
                 <h4 className="text-white font-bold text-sm truncate">{nearestBranch.name}</h4>
                 <p className="text-xs text-white/50 flex items-center gap-1 mt-0.5">
                   <MapPin size={11} className="text-[#ffb800] flex-shrink-0" />
-                  {nearestBranch.distance < 1 
+                  {nearestBranch.distance < 1
                     ? `${Math.round(nearestBranch.distance * 1000)}m`
                     : `${nearestBranch.distance.toFixed(1)} km`
                   }
                 </p>
               </div>
             </div>
-            
+
             <button
               onClick={() => {
                 window.location.hash = `#branch/${branches.find(b => b.name === nearestBranch.name)?.id || 'arekere'}`;
