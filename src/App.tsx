@@ -9,7 +9,6 @@ import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import AdminOffers from './components/AdminOffers';
 import { MessageCircle } from 'lucide-react';
-import OffersPage from './components/PromotionalOffers';
 import PromotionalOffers from './components/PromotionalOffers';
 
 function App() {
@@ -71,10 +70,11 @@ function App() {
       }}
     >
       <Navbar />
-      {/* Promotional Offers Carousel - Placed directly below the Navbar */}
-      <PromotionalOffers /> {/* Moved here as requested: below header, above Hero */}
 
       <Hero />
+
+      {/* Promotional Offers Carousel - Below Hero banner */}
+      <PromotionalOffers />
 
       <About />
 
@@ -83,9 +83,6 @@ function App() {
       <Transformations />
 
       <FAQ />
-
-      {/* Offers Preview Section */}
-      <PromotionalOffers />
 
       <Footer />
 
