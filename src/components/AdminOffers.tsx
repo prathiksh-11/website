@@ -200,7 +200,7 @@ const AdminOffers = () => {
       formData.append('banner_type', values.banner_type);
       formData.append('redirect_url', values.redirect_url || '');
       formData.append('display_order', values.display_order?.toString() || '1');
-      formData.append('is_active', values.is_active.toString());
+      formData.append('is_active', String(values.is_active ?? true));
 
       // For editing, add banner_id
       if (editingBanner) {
@@ -669,7 +669,15 @@ const AdminOffers = () => {
                       </Form.Item>
                     </Col>
 
-                 
+                    <Col xs={24} md={12}>
+                      <Form.Item
+                        label={<span style={{ color: '#1a1a1a', fontWeight: 500 }}>Active Status</span>}
+                        name="is_active"
+                        valuePropName="checked"
+                      >
+                        <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
+                      </Form.Item>
+                    </Col>
                   </Row>
                 </div>
                 <Divider style={{ borderColor: 'rgba(0, 0, 0, 0.08)' }} />
