@@ -8,10 +8,12 @@ import Transformations from './components/Transformations';
 import FAQ from './components/FAQ';
 // import Contact from './components/Contact';
 import Footer from './components/Footer';
+import AdminOffers from './components/AdminOffers';
 import { MessageCircle } from 'lucide-react';
 
 function App() {
   const [currentBranch, setCurrentBranch] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<string>('home');
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -19,7 +21,12 @@ function App() {
       if (hash.startsWith('#branch/')) {
         const branchId = hash.replace('#branch/', '');
         setCurrentBranch(branchId);
+        setCurrentPage('branch');
+      } else if (hash === '#admin') {
+        setCurrentPage('admin');
+        setCurrentBranch(null);
       } else {
+        setCurrentPage('home');
         setCurrentBranch(null);
       }
     };
@@ -32,10 +39,15 @@ function App() {
   const handleBack = () => {
     window.location.hash = '';
     setCurrentBranch(null);
+    setCurrentPage('home');
   };
 
-  if (currentBranch) {
+  if (currentBranch && currentPage === 'branch') {
     return <BranchDetail branchId={currentBranch} onBack={handleBack} />;
+  }
+
+  if (currentPage === 'admin') {
+    return <AdminOffers />;
   }
 
   return (
@@ -51,7 +63,7 @@ function App() {
 
       {/* WhatsApp Floating Button - Global */}
       <a
-        href="https://wa.me/919876543210"
+        href="https://wa.me/919148974009"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300 animate-pulse-glow"
