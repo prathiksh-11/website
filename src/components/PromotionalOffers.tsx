@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import {
-  Calendar,
   ArrowRight,
   Sparkles,
   ChevronLeft, // Added for carousel navigation
@@ -13,7 +12,7 @@ interface Banner {
   id: number;
   title: string;
   image_url: string;
-  redirect_url: string;
+  redirect_url?: string;
   banner_type: string;
   is_active: boolean;
 }
@@ -40,11 +39,7 @@ export default function PromotionalOffers() { // Renamed from OffersPage
     return `${baseUrl}/${relativePath.replace(/^\/+/, '')}`;
   }, []);
 
-  useEffect(() => {
-    fetchOffers();
-  }, []);
-
-  const fetchOffers = async () => {
+  const fetchOffers = useCallback(async () => {
     try {
       const apiUrl = `${
         import.meta.env.VITE_API_BASE_URL
@@ -64,7 +59,7 @@ export default function PromotionalOffers() { // Renamed from OffersPage
     } catch (error) {
       console.error(error);
     }
-  }, []); // Empty dependency array for useCallback
+  }, []);
 
   useEffect(() => {
     fetchOffers();
@@ -73,11 +68,11 @@ export default function PromotionalOffers() { // Renamed from OffersPage
   // Auto-play for the carousel
   useEffect(() => {
     if (offers.length <= 1) return; // No need to auto-play if 0 or 1 offer
-
+    
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % offers.length);
     }, 5000); // Change slide every 5 seconds
-
+    
     return () => clearInterval(interval);
   }, [offers.length]); // Re-run effect if number of offers changes
 
@@ -209,65 +204,10 @@ export default function PromotionalOffers() { // Renamed from OffersPage
         </div>
       </div>
 
-      {/* Sexy horizontal divider */}
+      {/* Bottom Divider */}
       <div className="absolute bottom-0 left-0 w-full">
         <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
     </section>
-  );
-}
-          {offers.map((offer) => (
-            <div
-              key={offer.id}
-              className="group overflow-hidden rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#ffb800]/40 transition-all duration-500 hover:-translate-y-2"
-            >
-              <div className="relative overflow-hidden">
-                <img
-                  src={getFullImageUrl(
-                    offer.image_url
-                  )}
-                  alt={offer.title}
-                  className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-                <div className="absolute top-4 left-4">
-                  <span className="bg-[#ffb800] text-black text-xs font-black px-4 py-2 rounded-full">
-                    LIMITED OFFER
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                <h3 className="text-2xl font-black text-white mb-3">
-                  {offer.title}
-                </h3>
-
-                <div className="flex items-center gap-2 text-white/40 text-sm mb-6">
-                  <Calendar size={14} />
-                  Active Promotion
-                </div>
-
-                <button
-                  onClick={() => {
-                    if (offer.redirect_url) {
-                      window.open(
-                        offer.redirect_url,
-                        '_blank'
-                      );
-                    }
-                  }}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#ff6b35] to-[#ff8c00] text-white font-black flex items-center justify-center gap-2 hover:scale-[1.02] transition"
-                >
-                  Claim Offer
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
   );
 }
