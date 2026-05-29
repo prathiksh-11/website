@@ -138,19 +138,19 @@ const AdminOffers = () => {
     setSelectedBannerType(value);
   }, []);
 
-  const getFullImageUrl = (relativePath: string) => {
+  const getFullImageUrl = useCallback((relativePath: string) => {
     if (!relativePath) return "";
     if (relativePath.startsWith('http')) return relativePath;
     
-    let baseUrl = import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost:5000';
+    let baseUrl = import.meta.env.VITE_IMAGE_BASE_URL || 
+                  import.meta.env.VITE_API_BASE_URL || 
+                  'http://localhost:5000';
+                
     baseUrl = baseUrl.replace(/\/+$/, '');
-    
-    const cleanPath = relativePath.replace(/^\/+/, '');
-    
+        const cleanPath = relativePath.replace(/^\/+/, '');
     const fullUrl = `${baseUrl}/${cleanPath}`;
-    console.log('Constructed URL:', fullUrl);
     return fullUrl;
-  };
+  }, []);
 
   // Fetch banners on mount
   const fetchBanners = useCallback(async () => {
@@ -170,13 +170,11 @@ const AdminOffers = () => {
         const bannersWithKeys = response.data.data.map((banner: any) => {
           const fullImageUrl = getFullImageUrl(banner.image_url);
           
-          console.log('Banner:', banner.title, 'Original Image URL:', banner.image_url, 'Full URL:', fullImageUrl);
-          
           return {
             ...banner,
             key: banner.id?.toString() || `banner-${banner.id}`,
             image: [],
-            imageUrl: fullImageUrl,
+            imageUrl: fullImageUrl, // Store the bound full path in the state
           };
         });
         setBanners(bannersWithKeys);
@@ -335,6 +333,7 @@ const AdminOffers = () => {
       render: (_, record) => {
         const template = BANNER_TEMPLATES[record.banner_type];
         if (!template) return null;
+        // Construct the full URL by binding the base API URL with the image path
         const imageUrl = getFullImageUrl(record.image_url);
         const hasError = imageErrors[record.key];
         
@@ -356,6 +355,7 @@ const AdminOffers = () => {
               <img
                 src={imageUrl}
                 alt={record.title}
+                crossOrigin="anonymous"
                 referrerPolicy="no-referrer"
                 loading="lazy"
                 style={{
@@ -367,7 +367,9 @@ const AdminOffers = () => {
                   console.log("Loaded:", imageUrl);
                   setImageErrors(prev => ({ ...prev, [record.key]: false }));
                 }}
-            
+                onError={() => {
+                  handleImageError(record.key);
+                }}
               />
             ) : (
               <div style={{ textAlign: 'center', color: '#999', fontSize: 12, padding: 10 }}>
@@ -667,19 +669,9 @@ const AdminOffers = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col xs={24} md={12}>
-                      <Form.Item
-                        label={<span style={{ color: '#1a1a1a', fontWeight: 500 }}>Active Status</span>}
-                        name="is_active"
-                        valuePropName="checked"
-                      >
-                        <Switch />
-                      </Form.Item>
-                    </Col>
+                 
                   </Row>
                 </div>
-
-                {/* Action Buttons */}
                 <Divider style={{ borderColor: 'rgba(0, 0, 0, 0.08)' }} />
 
                 <Form.Item>
@@ -893,6 +885,7 @@ const AdminOffers = () => {
                         <img
                           src={previewImage}
                           alt="Banner Preview"
+                          crossOrigin="anonymous"
                           style={{
                             width: '100%',
                             height: '100%',

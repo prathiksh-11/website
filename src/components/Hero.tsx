@@ -73,7 +73,7 @@ export default function Hero() {
   const { ref: statsRef, isVisible: statsVisible } = useIntersectionObserver<HTMLDivElement>({ threshold: 0.3 });
   const heroRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
-  const [currentTransformation, setCurrentTransformation] = useState(0);
+  const [, setCurrentTransformation] = useState(0);
   const [nearestBranch, setNearestBranch] = useState<{ name: string, distance: number } | null>(null);
   const [showLocationBar, setShowLocationBar] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
@@ -167,9 +167,6 @@ export default function Hero() {
     return () => el.removeEventListener('mousemove', onMouseMove);
   }, []);
 
-  const scrollToAbout = () => {
-    document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#050505]">
