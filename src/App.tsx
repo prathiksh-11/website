@@ -8,10 +8,12 @@ import Transformations from './components/Transformations';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import AdminOffers from './components/AdminOffers';
+import Maintenance from './components/Maintenance';
 import { MessageCircle } from 'lucide-react';
 import PromotionalOffers from './components/PromotionalOffers';
 
 function App() {
+  const isMaintenanceMode = true;
   const [currentBranch, setCurrentBranch] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<
     'home' | 'branch' | 'admin' | 'offers'
@@ -48,6 +50,10 @@ function App() {
     setCurrentBranch(null);
     setCurrentPage('home');
   };
+
+  if (isMaintenanceMode) {
+    return <Maintenance />;
+  }
 
   if (currentBranch && currentPage === 'branch') {
     return (
