@@ -78,8 +78,10 @@ import Btm1img3 from '../assets/btm1/btm1_img3.jpeg';
 import Btm1img4 from '../assets/btm1/btm1_img4.jpeg';
 import Btm1img6 from '../assets/btm1/btm1_img6.jpeg';
 import Btm1img7 from '../assets/btm1/btm1_img7.jpeg';
-import Btm1Trainer1 from '../assets/btm1/btm1_trainer_1.jpeg';
-import Btm1Trainer2 from '../assets/btm1/btm1_trainer_2.jpeg';
+import Btm1Trainer1 from '../assets/btm1/WhatsApp Image 2026-06-07 at 10.32.45 AM.jpeg';
+import Btm1Trainer2 from '../assets/btm1/WhatsApp Image 2026-06-07 at 10.32.45 AM (1).jpeg';
+import Btm1Trainer3 from '../assets/btm1/WhatsApp Image 2026-06-07 at 10.32.46 AM.jpeg';
+import Btm1Trainer4 from '../assets/btm1/WhatsApp Image 2026-06-07 at 10.32.46 AM (1).jpeg';
 
 // JP NAGAR
 import JpnagarBgImg from '../assets/jpnagar/jpnagar_bg_img.jpeg';
@@ -175,6 +177,8 @@ export const IMAGES = {
     img7: Btm1img7,
     trainer1: Btm1Trainer1,
     trainer2: Btm1Trainer2,
+    trainer3: Btm1Trainer3,
+    trainer4: Btm1Trainer4,
   },
   // JP NAGAR
   JPNagar: {
