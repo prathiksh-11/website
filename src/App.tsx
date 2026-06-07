@@ -13,7 +13,7 @@ import { MessageCircle } from 'lucide-react';
 import PromotionalOffers from './components/PromotionalOffers';
 
 function App() {
-  const isMaintenanceMode = true;
+  const isMaintenanceMode = false;
   const [currentBranch, setCurrentBranch] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<
     'home' | 'branch' | 'admin' | 'offers'

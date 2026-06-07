@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
 interface BranchDetailProps {
@@ -28,6 +28,8 @@ const branchData: Record<string, {
   facilities: { name: string; icon: any }[];
 
   gallery: string[];
+
+  pricing?: { duration: string; price: string }[];
 
   mapUrl: string;
 
@@ -212,16 +214,15 @@ const branchData: Record<string, {
   },
 
   'btm-layout-1': {
+name: 'GAME ON FITNESS BTM LAYOUT - 1',
 
-    name: 'GAME ON FITNESS BTM LAYOUT - 1',
+location: 'BTM 1st Stage, Bengaluru',
 
-    location: 'BTM Layout, Bengaluru',
+address: 'Gangotri Bar And Restaurant, Ground Floor, 8th Cross Rd, Old Madiwala, Maruti Nagar, BTM 1st Stage, Bengaluru, Karnataka 560068',
 
-    address: 'Opp to Canara Bank, 18th Main Road BTM 2nd Stage, Bengaluru - 560076',
+phone: '+91 9036054799',
 
-    phone: '+91 8722299457',
-
-    tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
+tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     hours: [
 
@@ -243,9 +244,13 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.BTM1.trainer1 },
+      { name: 'Basith', role: 'Personal Trainer', image: IMAGES.BTM1.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.BTM1.trainer2 },
+      { name: 'Santhosh', role: 'Personal Trainer', image: IMAGES.BTM1.trainer2 },
+
+      { name: 'Preetam', role: 'Personal trainer', image: IMAGES.BTM1.trainer3 },
+
+      { name: 'Thilak', role: 'Personal Trainer', image: IMAGES.BTM1.trainer4 },
 
     ],
 
@@ -263,17 +268,35 @@ const branchData: Record<string, {
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Functional Training', icon: Activity },
+
+      { name: 'Group Classes', icon: Users },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹2,500' },
+
+      { duration: '3 Months', price: '₹5,500' },
+
+      { duration: '6 Months', price: '₹7,500' },
+
+      { duration: '12 Months', price: '₹9,500' },
 
     ],
 
@@ -730,21 +753,12 @@ const branchData: Record<string, {
 export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   const branch = branchData[branchId];
   const [isVisible, setIsVisible] = useState(false);
-  const [currentTrainer, setCurrentTrainer] = useState(0);
   const [currentGallery, setCurrentGallery] = useState(0);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setIsVisible(true);
   }, []);
-
-  // Auto-rotate trainers
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTrainer((prev) => (prev + 1) % branch.team.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [branch.team.length]);
 
   // Auto-rotate gallery
   useEffect(() => {
@@ -821,7 +835,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
       </div>
 
       {/* Floating Call to Action Bar */}
-      <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-10 relative z-20 mb-20 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-10 relative z-20 mb-12 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl grid md:grid-cols-2 gap-4">
           <button className="w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 transform hover:-translate-y-1 active:translate-y-0">
             Book Your Free Trial Now
@@ -840,7 +854,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pb-24">
       
         {/* Dynamic Typography Tagline */}
-        <div className="text-center max-w-3xl mx-auto mb-24 group">
+        <div className="text-center max-w-3xl mx-auto mb-16 group">
           <span className="text-5xl block text-orange-500/30 font-serif mb-3 group-hover:text-orange-500/50 transition-colors duration-500">"</span>
           <p className="text-xl md:text-3xl font-semibold text-gray-100 tracking-wide italic leading-relaxed group-hover:text-white transition-colors duration-500">
             {branch.tagline}
@@ -852,7 +866,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
 
           {/* Left Column (7 Columns) */}
-          <div className="lg:col-span-7 space-y-14">
+          <div className="lg:col-span-7 space-y-10">
           
             {/* Training Programs Section */}
             <div className="transform transition-all duration-500 hover:scale-[1.01]">
@@ -877,6 +891,28 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Club Facilities Section - Moved here for layout balance */}
+            <div className="transform transition-all duration-500 hover:scale-[1.01]">
+              <div className="flex items-center gap-4 mb-8 group">
+                <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-10 transition-all duration-300 shadow-lg shadow-orange-500/20" />
+                <h2 className="text-xl md:text-2xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Club Facilities</h2>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {branch.facilities.map((facility, i) => {
+                  const IconComponent = facility.icon;
+                  return (
+                    <div key={i} className="flex flex-col items-start gap-3 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-orange-500/10 hover:border-orange-500/30 transition-all duration-300 group">
+                      <div className="p-3 rounded-xl bg-orange-500/10 text-orange-500 group-hover:bg-orange-500/20 group-hover:scale-110 transition-all">
+                        <IconComponent size={20} />
+                      </div>
+                      <span className="text-xs font-bold text-gray-300 tracking-wider uppercase group-hover:text-white transition-colors">{facility.name}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -906,40 +942,65 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
               </div>
             </div>
 
-            {/* Club Facilities Widget */}
-            <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] p-8 rounded-3xl hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
-              <div className="flex items-center gap-3 text-white mb-6 pb-4 border-b border-white/[0.08]">
-                <div className="p-2 bg-orange-500/10 rounded-lg">
-                  <Users size={18} className="text-orange-500" />
+            {/* Subscription Plans Widget */}
+            {branch.pricing && (
+              <div className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] p-5 rounded-3xl hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
+                <div className="flex items-center gap-3 mb-4 text-white">
+                  <div className="p-2 bg-orange-500/10 rounded-lg">
+                    <IndianRupee size={18} className="text-orange-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold tracking-widest uppercase">Membership Plans</h3>
+                    <p className="text-xs text-gray-400">Choose the best duration for you.</p>
+                  </div>
                 </div>
-                <h3 className="text-sm font-bold tracking-wider uppercase">Club Facilities</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                {branch.facilities.map((facility, i) => {
-                  const IconComponent = facility.icon;
-                  return (
-                    <div key={i} className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-orange-500/10 hover:border-orange-500/30 transition-all duration-200 group">
-                      <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-500 group-hover:bg-orange-500/20 group-hover:scale-110 transition-all">
-                        <IconComponent size={16} />
+                <div className="space-y-3">
+                  {branch.pricing.map((plan, i) => {
+                    const isBest = plan.duration === '12 Months';
+                    return (
+                      <div
+                        key={i}
+                        className={`rounded-[28px] border p-4 transition-all duration-300 ${
+                          isBest
+                            ? 'bg-orange-500/10 border-orange-500/30 shadow-lg shadow-orange-500/10'
+                            : 'bg-white/[0.02] border-white/[0.08] hover:bg-white/5 hover:border-orange-500/20'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className={`text-sm font-semibold uppercase tracking-[0.3em] ${isBest ? 'text-orange-300' : 'text-gray-300'}`}>
+                              {plan.duration}
+                            </p>
+                            <p className="mt-1 text-[11px] text-gray-400">Perfect for steady progress</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-2xl font-black text-white">{plan.price}</p>
+                            {isBest && (
+                              <span className="inline-flex items-center justify-center mt-2 rounded-full bg-orange-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-200 border border-orange-500/30">
+                                Best Value
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-xs font-semibold text-gray-300 tracking-wide group-hover:text-white transition-colors">{facility.name}</span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
           </div>
 
         </div>
 
         {/* Gallery - FULL SCREEN WIDTH */}
-        <div className="mt-24 group">
+        {branch.gallery.length > 0 && (
+        <div className="mt-20 group">
           <div className="flex items-center justify-center gap-4 mb-10">
             <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
             <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Gallery</h2>
           </div>
-          <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/gallery hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
+          <div className="relative w-full aspect-[21/9] max-h-[450px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/gallery hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
             {branch.gallery.map((imgUrl, index) => (
               <div
                 key={index}
@@ -975,56 +1036,54 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
             </div>
           </div>
         </div>
+        )}
 
-        {/* Our Team - FULL SCREEN WIDTH */}
-        <div className="mt-24 group">
-          <div className="flex items-center justify-center gap-4 mb-10">
-            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
-            <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Meet Our Trainers</h2>
-          </div>
-          <div className="relative w-full aspect-[16/9] max-h-[800px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/team hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
-            {branch.team.map((member, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-1000 ${
-                  index === currentTrainer ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
-                }`}
-              >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover object-top group-hover/team:scale-105 transition-transform duration-[2s] ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-12 transform transition-all duration-700 group-hover/team:pb-16">
-                  <h4 className="text-5xl font-black text-white tracking-wide mb-3 group-hover/team:text-orange-400 transition-colors duration-500">{member.name}</h4>
-                  <p className="text-2xl text-orange-400 font-bold group-hover/team:text-white transition-colors duration-500">{member.role}</p>
-                </div>
-              </div>
-            ))}
-                    
-            {/* Navigation Dots */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-              {branch.team.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTrainer(index)}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    index === currentTrainer ? 'bg-orange-500 w-12 shadow-lg shadow-orange-500/50 animate-pulse' : 'bg-white/40 hover:bg-white hover:w-6'
-                  }`}
-                />
-              ))}
-            </div>
+        {/* Our Team - Trainer Cards */}
+       <div className="mt-20">
+  {/* Section Title */}
+  <div className="flex items-center justify-center gap-3 mb-12">
+    <div className="w-1.5 h-10 bg-orange-500 rounded-full" />
+    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-wider text-white">
+      Meet Our Trainers
+    </h2>
+  </div>
 
-            {/* Counter */}
-            <div className="absolute top-6 right-6 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-sm font-bold text-white border border-white/10 group-hover/team:border-orange-500/30 transition-all duration-300">
-              {currentTrainer + 1} / {branch.team.length}
-            </div>
-          </div>
+  {/* Trainer Cards */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    {branch.team.map((member, index) => (
+      <div
+        key={index}
+        className="bg-[#111] border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-2"
+      >
+        {/* Trainer Image */}
+        <div className="relative h-[340px] overflow-hidden">
+          <img
+            src={member.image}
+            alt={member.name}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
         </div>
 
+        {/* Trainer Details */}
+        <div className="p-6 text-center">
+          <h3 className="text-xl font-bold text-white">
+            {member.name}
+          </h3>
+
+          <p className="mt-2 text-orange-400 uppercase tracking-widest text-sm">
+            {member.role}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
         {/* Location Map Section - Full Screen Big */}
-        <div className="mt-24 pt-24 border-t border-white/5 group">
+        <div className="mt-20 pt-16 border-t border-white/5 group">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-4 mb-6">
