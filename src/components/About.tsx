@@ -104,8 +104,8 @@ export default function About() {
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="w-24 h-24 bg-white rounded-lg p-2">
               <img
-                src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://play.google.com/store/apps/details?id=com.gameonfitness.app&pcampaignid=web_share"
-                alt="QR Code for mobile app"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gameonfitness.in/download"
+                alt="QR Code to download Game On Fitness"
                 className="w-full h-full object-contain"
               />
             </div>
