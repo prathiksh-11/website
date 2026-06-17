@@ -4,8 +4,11 @@ import Akshayanagarimg11 from '../assets/AKSHAYANAGAR/akshayanagar_img11.jpeg';
 import Akshayanagarimg4 from '../assets/AKSHAYANAGAR/akshayanagar_img4.jpeg';
 import Akshayanagarimg8 from '../assets/AKSHAYANAGAR/akshayanagar_img8.jpeg';
 import Akshayanagarimg9 from '../assets/AKSHAYANAGAR/akshayanagar_img9.jpeg';
-import Akshayanagartrainer1 from '../assets/AKSHAYANAGAR/akshayanagar_trainer_1.jpeg';
-import Akshayanagartrainer2 from '../assets/AKSHAYANAGAR/akshayanagar_trainer_2.jpeg';
+import AkshayanagartrainerAkshay from '../assets/AKSHAYANAGAR/akshayanagar_trainer_akshay.png';
+import AkshayanagartrainerAyush from '../assets/AKSHAYANAGAR/akshayanagar_trainer_ayush.png';
+import AkshayanagartrainerNagendra from '../assets/AKSHAYANAGAR/akshayanagar_trainer_nagendra.png';
+import AkshayanagartrainerRahid from '../assets/AKSHAYANAGAR/akshayanagar_trainer_rahid.png';
+import AkshayanagartrainerChandu from '../assets/AKSHAYANAGAR/akshayanagar_trainer_chandu.png';
 
 // AREKERE
 import Arekereimg1 from '../assets/AREKERE/arekere_img1.jpeg';
@@ -50,26 +53,22 @@ import VijayaBankLayoutBranch from '../assets/branches/vijaya-bank-layout-branch
 import WilsonGardenBranch from '../assets/branches/wilson-garden-branch.jpeg';
 
 // BEFORE/AFTER TRANSFORMATIONS
-import Before1 from '../assets/before/img1.jpeg';
-import Before2 from '../assets/before/img2.jpeg';
-import Before3 from '../assets/before/img3.jpeg';
-import Before4 from '../assets/before/img4.jpeg';
-import Before6 from '../assets/before/img6.jpeg';
-import Before7 from '../assets/before/img7.jpeg';
-import Before8 from '../assets/before/img8.jpeg';
-import Before9 from '../assets/before/img9.jpeg';
-import Before10 from '../assets/before/img11.jpeg';
-import Before11 from '../assets/before/img12.jpeg';
-import Before12 from '../assets/before/img13.jpeg';
+import Before1 from '../assets/before/trans1.jpeg';
+import Before2 from '../assets/before/trans2.jpeg';
+import Before3 from '../assets/before/trans3.jpeg';
+import Before4 from '../assets/before/trans4.jpeg';
+
 
 // VIJAYA BANK LAYOUT
 import VijayaBankLayoutimg5 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img5.jpeg';
 import VijayaBankLayoutimg6 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img6.jpeg';
 import VijayaBankLayoutimg7 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img7.jpeg';
 import VijayaBankLayoutimg9 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img9.jpeg';
-import VijayaBankLayoutTrainer1 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer1.jpeg';
-import VijayaBankLayoutTrainer2 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer2.jpeg';
-import VijayaBankLayoutTrainer3 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer3.jpeg';
+import VijayaBankLayoutTrainerVijaya from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_vijaya.png';
+import VijayaBankLayoutTrainer2 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_2.png';
+import VijayaBankLayoutTrainer3 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_3.png';
+import VijayaBankLayoutTrainer4 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_4.png';
+import VijayaBankLayoutImgMirror from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img_mirror.png';
 
 // BTM 1
 import Btm1BgImg from '../assets/btm1/btm1_bg_img.jpeg';
@@ -94,9 +93,30 @@ import JpnagarTrainer2 from '../assets/jpnagar/jpnagar_trainer_2.jpeg';
 import JpnagarTrainer3 from '../assets/jpnagar/jpnagar_trainer_3.jpeg';
 
 // WILSON GARDEN
-import WilsonGardenTrainer2 from '../assets/wilsongardon/wilson_garden_trainer_2.jpeg';
-import WilsonGardenTrainer3 from '../assets/wilsongardon/wilson_garden_trainer_3.jpeg';
-import WilsonGardenTrainer4 from '../assets/wilsongardon/wilson_garden_trainer_4.jpeg';
+import WilsonGardenBgImg from '../assets/wilsongardon/wilson_garden_bg_img.jpeg';
+import WilsonGardenImg1 from '../assets/wilsongardon/wilson_garden_img1.jpeg';
+import WilsonGardenImg2 from '../assets/wilsongardon/wilson_garden_img2.jpeg';
+import WilsonGardenImg3 from '../assets/wilsongardon/wilson_garden_img3.jpeg';
+import WilsonGardenTrainerPuneeth from '../assets/wilsongardon/wilson_garden_trainer_puneeth.png';
+import WilsonGardenTrainerAjay from '../assets/wilsongardon/wilson_garden_trainer_ajay.png';
+import WilsonGardenTrainerSanjay from '../assets/wilsongardon/wilson_garden_trainer_sanjay.png';
+import WilsonGardenTrainerBharath from '../assets/wilsongardon/wilson_garden_trainer_bharath.png';
+import WilsonGardenTrainerRavi from '../assets/wilsongardon/wilson_garden_trainer_ravi.png';
+
+// KASAVANAHALLI
+import KasavanahalliBranch from '../assets/KASAVANAHALLI/kasavanahalli_branch.jpeg';
+import KasavanahalliBgImg from '../assets/KASAVANAHALLI/kasavanahalli_bg_img.jpeg';
+import KasavanahalliImg1 from '../assets/KASAVANAHALLI/kasavanahalli_img1.jpg';
+import KasavanahalliImg2 from '../assets/KASAVANAHALLI/kasavanahalli_img2.jpg';
+import KasavanahalliImg3 from '../assets/KASAVANAHALLI/kasavanahalli_img3.jpg';
+import KasavanahalliImg4 from '../assets/KASAVANAHALLI/kasavanahalli_img4.jpg';
+import KasavanahalliImg5 from '../assets/KASAVANAHALLI/kasavanahalli_img5.jpg';
+import KasavanahalliTrainerSunil from '../assets/KASAVANAHALLI/kasavanahalli_trainer_sunil.png';
+import KasavanahalliTrainerVishal from '../assets/KASAVANAHALLI/kasavanahalli_trainer_vishal.png';
+import KasavanahalliTrainerChandra from '../assets/KASAVANAHALLI/kasavanahalli_trainer_chandra.png';
+import KasavanahalliTrainerAvinash from '../assets/KASAVANAHALLI/kasavanahalli_trainer_avinash.png';
+import KasavanahalliTrainerSamrat from '../assets/KASAVANAHALLI/kasavanahalli_trainer_samrat.png';
+import KasavanahalliTrainerGirish from '../assets/KASAVANAHALLI/kasavanahalli_trainer_girish.png';
 
 import bannerimage from '../assets/bannerImage.jpeg';
 
@@ -111,6 +131,7 @@ export const IMAGES = {
     jpNagar: JpnagarBranch,
     akshayanagar: AkshayanagarBranch,
     sarjapurRoad: SarjapurBranch,
+    kasavanahalli: KasavanahalliBranch,
   },
   // AKSHAYANAGAR
   Akshayanagar: {
@@ -119,8 +140,11 @@ export const IMAGES = {
     img4: Akshayanagarimg4,
     img8: Akshayanagarimg8,
     img9: Akshayanagarimg9,
-    trainer1: Akshayanagartrainer1,
-    trainer2: Akshayanagartrainer2,
+    trainer1: AkshayanagartrainerAkshay,
+    trainer2: AkshayanagartrainerAyush,
+    trainer3: AkshayanagartrainerNagendra,
+    trainer4: AkshayanagartrainerRahid,
+    trainer5: AkshayanagartrainerChandu,
   },
   // AREKERE
   Arekere: {
@@ -163,9 +187,11 @@ export const IMAGES = {
     img6: VijayaBankLayoutimg6,
     img7: VijayaBankLayoutimg7,
     img9: VijayaBankLayoutimg9,
-    trainer1: VijayaBankLayoutTrainer1,
+    imgMirror: VijayaBankLayoutImgMirror,
+    trainer1: VijayaBankLayoutTrainerVijaya,
     trainer2: VijayaBankLayoutTrainer2,
     trainer3: VijayaBankLayoutTrainer3,
+    trainer4: VijayaBankLayoutTrainer4,
   },
   // BTM 1
   BTM1: {
@@ -193,23 +219,37 @@ export const IMAGES = {
   },
   // WILSON GARDEN
   WilsonGarden: {
-    trainer2: WilsonGardenTrainer2,
-    trainer3: WilsonGardenTrainer3,
-    trainer4: WilsonGardenTrainer4,
+    bgImg: WilsonGardenBgImg,
+    img1: WilsonGardenImg1,
+    img2: WilsonGardenImg2,
+    img3: WilsonGardenImg3,
+    trainer1: WilsonGardenTrainerPuneeth,
+    trainer2: WilsonGardenTrainerAjay,
+    trainer3: WilsonGardenTrainerSanjay,
+    trainer4: WilsonGardenTrainerBharath,
+    trainer5: WilsonGardenTrainerRavi,
   },
-  // BEFORE/AFTER TRANSFORMATIONS
+  // KASAVANAHALLI
+  Kasavanahalli: {
+    bgImg: KasavanahalliBgImg,
+    img1: KasavanahalliImg1,
+    img2: KasavanahalliImg2,
+    img3: KasavanahalliImg3,
+    img4: KasavanahalliImg4,
+    img5: KasavanahalliImg5,
+    trainer1: KasavanahalliTrainerSunil,
+    trainer2: KasavanahalliTrainerVishal,
+    trainer3: KasavanahalliTrainerChandra,
+    trainer4: KasavanahalliTrainerAvinash,
+    trainer5: KasavanahalliTrainerSamrat,
+    trainer6: KasavanahalliTrainerGirish,
+  },
   Before: {
     img1: Before1,
     img2: Before2,
     img3: Before3,
     img4: Before4,
-    img6: Before6,
-    img7: Before7,
-    img8: Before8,
-    img9: Before9,
-    img10: Before10,
-    img11: Before11,
-    img12: Before12,
+  
   },
   bannerImage: bannerimage,
 };
