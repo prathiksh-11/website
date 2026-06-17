@@ -12,6 +12,7 @@ const branches = [
   { id: 'jp-nagar', name: 'JP Nagar', lat: 12.9063, lng: 77.5857 },
   { id: 'akshayanagar', name: 'Akshayanagar', lat: 12.9077, lng: 77.6317 },
   { id: 'sarjapur-road', name: 'Sarjapur Road', lat: 12.9299, lng: 77.6838 },
+  { id: 'kasavanahalli', name: 'Kasavanahalli', lat: 12.9014, lng: 77.6725 },
 ];
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {

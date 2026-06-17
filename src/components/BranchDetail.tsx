@@ -161,11 +161,13 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
+      { name: 'Vijaya', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.VijayaBankLayout.trainer2 },
+      { name: 'Trainer 2', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.VijayaBankLayout.trainer3 },
+      { name: 'Trainer 3', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer3 },
+
+      { name: 'Trainer 4', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer4 },
 
     ],
 
@@ -179,21 +181,49 @@ const branchData: Record<string, {
 
       },
 
+      {
+
+        category: 'Group Classes',
+
+        items: ['Zumba', 'Yoga', 'Power Yoga', 'HIIT', 'Dance Fitness', 'Tabata', 'Circuit Training', 'ABT'],
+
+      },
+
     ],
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Group Classes', icon: Users },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'General Training', icon: Dumbbell },
+
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,000' },
+
+      { duration: '6 Months', price: '₹7,000' },
+
+      { duration: '12 Months', price: '₹9,000' },
 
     ],
 
@@ -206,6 +236,8 @@ const branchData: Record<string, {
       IMAGES.VijayaBankLayout.img7,
 
       IMAGES.VijayaBankLayout.img9,
+
+      IMAGES.VijayaBankLayout.imgMirror,
 
     ],
 
@@ -436,11 +468,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.WilsonGarden.trainer2 },
+      { name: 'Puneeth', role: 'General Trainer', image: IMAGES.WilsonGarden.trainer1 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.WilsonGarden.trainer3 },
+      { name: 'Ajay', role: 'Personal Trainer', image: IMAGES.WilsonGarden.trainer2 },
 
-      { name: 'Trainer 4', role: 'Head Trainer', image: IMAGES.WilsonGarden.trainer4 },
+      { name: 'Sanjay', role: 'Personal Trainer', image: IMAGES.WilsonGarden.trainer3 },
+
+      { name: 'Bharath', role: 'Personal Trainer', image: IMAGES.WilsonGarden.trainer4 },
+
+      { name: 'Ravi', role: 'Personal Trainer', image: IMAGES.WilsonGarden.trainer5 },
 
     ],
 
@@ -458,21 +494,49 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
 
     ],
 
-    gallery: [],
+    pricing: [
+
+      { duration: '1 Month', price: '₹2,500' },
+
+      { duration: '3 Months', price: '₹5,000' },
+
+      { duration: '6 Months', price: '₹6,500' },
+
+      { duration: '12 Months', price: '₹8,500' },
+
+    ],
+
+    gallery: [
+
+      IMAGES.WilsonGarden.bgImg,
+
+      IMAGES.WilsonGarden.img1,
+
+      IMAGES.WilsonGarden.img2,
+
+      IMAGES.WilsonGarden.img3,
+
+    ],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.58!3d12.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzAwLjAiTiA3N8KwMzQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
@@ -594,9 +658,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.Akshayanagar.trainer1 },
+      { name: 'Akshay', role: 'Personal Trainer', image: IMAGES.Akshayanagar.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.Akshayanagar.trainer2 },
+      { name: 'Ayush', role: 'Personal Trainer', image: IMAGES.Akshayanagar.trainer2 },
+
+      { name: 'Nagendra', role: 'Personal Trainer', image: IMAGES.Akshayanagar.trainer3 },
+
+      { name: 'Rahid', role: 'Fitness Manager', image: IMAGES.Akshayanagar.trainer4 },
+
+      { name: 'Chandu', role: 'Personal Trainer', image: IMAGES.Akshayanagar.trainer5 },
 
     ],
 
@@ -622,17 +692,39 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+      { name: 'Transformation', icon: Activity },
+
+      { name: 'GX Studio', icon: Users },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,500' },
+
+      { duration: '3 Months', price: '₹6,500' },
+
+      { duration: '6 Months', price: '₹8,500' },
+
+      { duration: '12 Months', price: '₹10,500' },
 
     ],
 
@@ -748,25 +840,148 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   },
 
+  'kasavanahalli': {
+
+    name: 'GAME ON FITNESS KASAVANAHALLI',
+
+    location: 'Kasavanahalli, Bengaluru',
+
+    address: 'Kasavanahalli, Sarjapur Main Road, Bengaluru - 560035',
+
+    phone: '+91 8618086458',
+
+    tagline: 'YOUR FITNESS JOURNEY STARTS HERE',
+
+    hours: [
+
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
+
+      { day: 'Sunday', time: '7:00 AM – 10:00 PM' },
+
+    ],
+
+    team: [
+
+      { name: 'R Sunil', role: 'Personal Trainer', image: IMAGES.Kasavanahalli.trainer1 },
+
+      { name: 'Vishal Manjunath', role: 'Personal Trainer', image: IMAGES.Kasavanahalli.trainer2 },
+
+      { name: 'BS Chandra', role: 'Personal Trainer', image: IMAGES.Kasavanahalli.trainer3 },
+
+      { name: 'Avinash', role: 'Personal Trainer', image: IMAGES.Kasavanahalli.trainer4 },
+
+      { name: 'Samrat Singh', role: 'Personal Trainer', image: IMAGES.Kasavanahalli.trainer5 },
+
+      { name: 'Girish', role: 'Personal Trainer', image: IMAGES.Kasavanahalli.trainer6 },
+
+    ],
+
+    programs: [
+
+      {
+
+        category: 'Fitness Gym',
+
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettel Bell', 'Battel Rope'],
+
+      },
+
+      {
+
+        category: 'Group Classes',
+
+        items: ['Zumba', 'Yoga', 'Power Yoga', 'HIIT', 'Dance Fitness', 'Tabata', 'Circuit Training', 'ABT'],
+
+      },
+
+    ],
+
+    facilities: [
+
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
+
+      { name: 'BMI Report', icon: Activity },
+
+      { name: 'Gym Orientation', icon: Compass },
+
+      { name: 'Locker Facility', icon: Lock },
+
+      { name: 'General Training', icon: Dumbbell },
+
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+      { name: 'Group Classes', icon: Users },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,500' },
+
+      { duration: '3 Months', price: '₹7,500' },
+
+      { duration: '6 Months', price: '₹9,500' },
+
+      { duration: '12 Months', price: '₹12,000' },
+
+    ],
+
+    gallery: [
+
+      IMAGES.Kasavanahalli.bgImg,
+
+      IMAGES.Kasavanahalli.img1,
+
+      IMAGES.Kasavanahalli.img2,
+
+      IMAGES.Kasavanahalli.img3,
+
+      IMAGES.Kasavanahalli.img4,
+
+      IMAGES.Kasavanahalli.img5,
+
+    ],
+
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.67!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzA1LjAiTiA3N8KwNDAnMjEuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+  },
+
 };
 
 export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   const branch = branchData[branchId];
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [currentGallery, setCurrentGallery] = useState(0);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
     setIsVisible(true);
-  }, []);
+    setCurrentGallery(0);
+  }, [branchId]);
 
-  // Auto-rotate gallery
   useEffect(() => {
+    if (!branch?.gallery?.length) return;
     const interval = setInterval(() => {
       setCurrentGallery((prev) => (prev + 1) % branch.gallery.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, [branch.gallery.length]);
+  }, [branchId, branch?.gallery?.length]);
 
   if (!branch) {
     return (
@@ -852,6 +1067,49 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
       
       {/* Main Content Wrapper */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pb-24">
+
+        {/* Gallery - shown early so banner is visible */}
+        {branch.gallery.length > 0 && (
+        <div className="mb-16 group">
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
+            <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Gallery</h2>
+          </div>
+          <div className="relative w-full aspect-[21/9] max-h-[450px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/gallery hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
+            {branch.gallery.map((imgUrl, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-all duration-1000 ${
+                  index === currentGallery ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                }`}
+              >
+                <img
+                  src={imgUrl}
+                  alt="Gym Interior"
+                  className="w-full h-full object-cover group-hover/gallery:scale-105 transition-transform duration-[2s] ease-out"
+                />
+              </div>
+            ))}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+              {branch.gallery.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentGallery(index)}
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    index === currentGallery ? 'bg-orange-500 w-12 shadow-lg shadow-orange-500/50' : 'bg-white/40 hover:bg-white hover:w-6'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="absolute top-6 right-6 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-sm font-bold text-white border border-white/10 group-hover/gallery:border-orange-500/30 transition-all duration-300">
+              {currentGallery + 1} / {branch.gallery.length}
+            </div>
+          </div>
+        </div>
+        )}
       
         {/* Dynamic Typography Tagline */}
         <div className="text-center max-w-3xl mx-auto mb-16 group">
@@ -992,51 +1250,6 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           </div>
 
         </div>
-
-        {/* Gallery - FULL SCREEN WIDTH */}
-        {branch.gallery.length > 0 && (
-        <div className="mt-20 group">
-          <div className="flex items-center justify-center gap-4 mb-10">
-            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-orange-500/20" />
-            <h2 className="text-2xl md:text-3xl font-black tracking-wider text-white uppercase group-hover:text-orange-400 transition-colors duration-300">Gallery</h2>
-          </div>
-          <div className="relative w-full aspect-[21/9] max-h-[450px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group/gallery hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/20">
-            {branch.gallery.map((imgUrl, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-1000 ${
-                  index === currentGallery ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
-                }`}
-              >
-                <img
-                  src={imgUrl}
-                  alt="Gym Interior"
-                  className="w-full h-full object-cover group-hover/gallery:scale-105 transition-transform duration-[2s] ease-out"
-                />
-              </div>
-            ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    
-            {/* Navigation Dots */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-              {branch.gallery.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentGallery(index)}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    index === currentGallery ? 'bg-orange-500 w-12 shadow-lg shadow-orange-500/50' : 'bg-white/40 hover:bg-white hover:w-6'
-                  }`}
-                />
-              ))}
-            </div>
-
-            {/* Counter */}
-            <div className="absolute top-6 right-6 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-sm font-bold text-white border border-white/10 group-hover/gallery:border-orange-500/30 transition-all duration-300">
-              {currentGallery + 1} / {branch.gallery.length}
-            </div>
-          </div>
-        </div>
-        )}
 
         {/* Our Team - Trainer Cards */}
        <div className="mt-20">
