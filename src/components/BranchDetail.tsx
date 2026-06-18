@@ -67,11 +67,17 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.Arekere.trainer1 },
+      { name: 'Chethan Kumar', role: 'Personal Trainer', image: IMAGES.Arekere.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.Arekere.trainer2 },
+      { name: 'Vinod', role: 'Personal Trainer', image: IMAGES.Arekere.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.Arekere.trainer3 },
+      { name: 'Abhi', role: 'Personal Trainer & General Trainer', image: IMAGES.Arekere.trainer3 },
+
+      { name: 'Samhitaa', role: 'Personal Trainer & General Trainer', image: IMAGES.Arekere.trainer4 },
+
+      { name: 'Shakir Ahmed', role: 'Personal Trainer', image: IMAGES.Arekere.trainer5 },
+
+      { name: 'Abhishek', role: 'Personal Trainer', image: IMAGES.Arekere.trainer6 },
 
     ],
 
@@ -97,17 +103,37 @@ const branchData: Record<string, {
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+      { name: 'Group Classes', icon: Users },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹2,500' },
+
+      { duration: '3 Months', price: '₹5,000' },
+
+      { duration: '6 Months', price: '₹6,500' },
+
+      { duration: '12 Months', price: '₹8,500' },
 
     ],
 
@@ -161,13 +187,13 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Vijaya', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
+      { name: 'Shivam', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
 
-      { name: 'Trainer 2', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer2 },
+      { name: 'Nithul', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer2 },
 
-      { name: 'Trainer 3', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer3 },
+      { name: 'Jeevan', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer3 },
 
-      { name: 'Trainer 4', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer4 },
+      { name: 'Kabir', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer4 },
 
     ],
 
@@ -197,8 +223,6 @@ const branchData: Record<string, {
 
       { name: 'BMI Report', icon: Activity },
 
-      { name: 'Group Classes', icon: Users },
-
       { name: 'Gym Orientation', icon: Compass },
 
       { name: 'Locker Facility', icon: Lock },
@@ -213,17 +237,21 @@ const branchData: Record<string, {
 
       { name: 'Functional Training', icon: Activity },
 
+      { name: 'Transformation', icon: Activity },
+
+      { name: 'GX Studio', icon: Users },
+
     ],
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,000' },
+      { duration: '1 Month', price: '₹2,500' },
 
-      { duration: '3 Months', price: '₹6,000' },
+      { duration: '3 Months', price: '₹5,000' },
 
-      { duration: '6 Months', price: '₹7,000' },
+      { duration: '6 Months', price: '₹6,500' },
 
-      { duration: '12 Months', price: '₹9,000' },
+      { duration: '12 Months', price: '₹8,000' },
 
     ],
 
@@ -382,11 +410,17 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.BTM2.trainer1 },
+      { name: 'Monalisa', role: 'Personal Trainer', image: IMAGES.BTM2.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.BTM2.trainer2 },
+      { name: 'Deekshith', role: 'Personal Trainer', image: IMAGES.BTM2.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.BTM2.trainer3 },
+      { name: 'Mohan Raj', role: 'Personal Trainer', image: IMAGES.BTM2.trainer3 },
+
+      { name: 'Vikram', role: 'Fitness Manager', image: IMAGES.BTM2.trainer4 },
+
+      { name: 'Nidhin', role: 'Personal Trainer', image: IMAGES.BTM2.trainer5 },
+
+      { name: 'Deelip', role: 'Personal Trainer', image: IMAGES.BTM2.trainer6 },
 
     ],
 
@@ -404,17 +438,35 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,500' },
+
+      { duration: '6 Months', price: '₹8,500' },
+
+      { duration: '12 Months', price: '₹11,000' },
 
     ],
 
@@ -778,11 +830,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.SarjapurRoad.trainer1 },
+      { name: 'Monika', role: 'Membership Coordinator', image: IMAGES.SarjapurRoad.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.SarjapurRoad.trainer2 },
+      { name: 'Shivam', role: 'Personal Trainer', image: IMAGES.SarjapurRoad.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.SarjapurRoad.trainer3 },
+      { name: 'Gowtham', role: 'General Trainer', image: IMAGES.SarjapurRoad.trainer3 },
+
+      { name: 'Arun', role: 'Personal Trainer', image: IMAGES.SarjapurRoad.trainer4 },
+
+      { name: 'Arun Kittu', role: 'Fitness Manager & Personal Trainer', image: IMAGES.SarjapurRoad.trainer5 },
 
     ],
 
@@ -808,17 +864,35 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,000' },
+
+      { duration: '6 Months', price: '₹9,000' },
+
+      { duration: '12 Months', price: '₹12,000' },
 
     ],
 
