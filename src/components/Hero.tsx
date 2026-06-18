@@ -9,7 +9,7 @@ const branches = [
   { id: 'btm-layout-1', name: 'BTM Layout 1', lat: 12.9135, lng: 77.6089 },
   { id: 'btm-layout-2', name: 'BTM Layout 2', lat: 12.9142, lng: 77.6095 },
   { id: 'wilson-garden', name: 'Wilson Garden', lat: 12.9519, lng: 77.5944 },
-  { id: 'jp-nagar', name: 'JP Nagar', lat: 12.9063, lng: 77.5857 },
+  { id: 'vijayanagar', name: 'Vijayanagar', lat: 12.9716, lng: 77.5375 },
   { id: 'akshayanagar', name: 'Akshayanagar', lat: 12.9077, lng: 77.6317 },
   { id: 'sarjapur-road', name: 'Sarjapur Road', lat: 12.9299, lng: 77.6838 },
   { id: 'kasavanahalli', name: 'Kasavanahalli', lat: 12.9014, lng: 77.6725 },

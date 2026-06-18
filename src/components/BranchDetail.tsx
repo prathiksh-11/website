@@ -17,6 +17,8 @@ const branchData: Record<string, {
 
   phone: string;
 
+  comfort: string;
+
   tagline: string;
 
   hours: { day: string; time: string }[];
@@ -37,13 +39,15 @@ const branchData: Record<string, {
 
   'arekere': {
 
-    name: 'GAME ON FITNESS AREKERE',
+    name: 'Game On Fitness - Arekere',
 
     location: 'Arekere, Bengaluru',
 
-    address: 'Above Poorvika Mobiles, near Sai Baba temple, Arekere, Bengaluru - 560076',
+    address: 'No.97,1st & 2nd floor, Saibaba Temple road, 2nd Main, Royal Residency Layout BTM 4th Stage, 80, Feet Rd, near Arekere, Bengaluru, Karnataka 560076',
 
     phone: '+91 8861737392',
+
+    comfort: 'Normal',
 
     tagline: 'IT\'S ALL ABOUT WHAT YOU CAN ACHIVE EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
 
@@ -131,13 +135,15 @@ const branchData: Record<string, {
 
   'vijaya-bank-layout': {
 
-    name: 'GAME ON FITNESS VIJAYA BANK LAYOUT',
+    name: 'Game On Fitness Premium Club - Vijaya Bank Layout',
 
     location: 'Vijaya Bank Layout, Bengaluru',
 
-    address: '3rd floor, Vijaya Bank Layout circle, near Indian Oil petrol bunk, Bilekahalli, Bengaluru - 560076',
+    address: '3rd floor, 8883 886, Bannerghatta Rd, Vijaya Bank Layout, Bilekahalli, Bengaluru, Karnataka 560076',
 
     phone: '+91 9035279516',
+
+    comfort: 'Premium',
 
     tagline: 'Game On Fitness is dedicated to covering the full fitness landscape, regularly introducing fans to new trends in training, nutrition, gear and technology',
 
@@ -246,13 +252,15 @@ const branchData: Record<string, {
   },
 
   'btm-layout-1': {
-name: 'GAME ON FITNESS BTM LAYOUT - 1',
+    name: 'Game On Fitness Premium Club - BTM 1st Stage',
 
-location: 'BTM 1st Stage, Bengaluru',
+    location: 'BTM 1st Stage, Bengaluru',
 
-address: 'Gangotri Bar And Restaurant, Ground Floor, 8th Cross Rd, Old Madiwala, Maruti Nagar, BTM 1st Stage, Bengaluru, Karnataka 560068',
+    address: 'Gangotri Bar And Restaurant, Ground, 8th Cross Rd, Old Madiwala, Maruti Nagar, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka 560068',
 
-phone: '+91 9036054799',
+    phone: '+91 9036054799',
+
+    comfort: 'Premium',
 
 tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
@@ -352,13 +360,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'btm-layout-2': {
 
-    name: 'GAME ON FITNESS BTM LAYOUT - 2',
+    name: 'Game On Fitness Premium Club - BTM 2nd Stage',
 
-    location: 'BTM Layout, Bengaluru',
+    location: 'BTM 2nd Stage, Bengaluru',
 
-    address: 'Above Indian Bank, 7th Main Road BTM 2nd Stage, Bengaluru - 560076',
+    address: '689-670 2nd floor , 7th main, 7th Cross Rd, BTM Layout 2nd Stage, Bengaluru, Karnataka 560076',
 
     phone: '+91 8951028839',
+
+    comfort: 'Premium',
 
     tagline: 'DAY 1 OR 1 DAY YOU DECIDE!',
 
@@ -438,13 +448,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'wilson-garden': {
 
-    name: 'GAME ON FITNESS WILSON GARDEN',
+    name: 'Game On Fitness - Wilson Garden',
 
     location: 'Wilson Garden, Bengaluru',
 
-    address: 'Opp to Traffic Police Station, Vinayaka Nagar, Wilson Garden, Bengaluru - 560027',
+    address: 'No.376, 21, 6th Cross Rd, opp. to traffic police station, Vinayaka Nagar, NGO Colony, Wilson Garden, Bengaluru, Karnataka 560027',
 
     phone: '+91 9663995409',
+
+    comfort: 'Normal',
 
     tagline: 'LET THE GAINS BEGIN!',
 
@@ -542,15 +554,17 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   },
 
-  'jp-nagar': {
+  'vijayanagar': {
 
-    name: 'GAME ON FITNESS JP NAGAR',
+    name: 'Game On Fitness Premium Club - Vijayanagar',
 
-    location: 'JP Nagar, Bengaluru',
+    location: 'Vijayanagar, Bengaluru',
 
-    address: 'Above Poorvika Mobiles, Opp to RBI Layout Bus Stop, JP Nagar 7th phase, Bengaluru - 560078',
+    address: '119, 1st Floor 6th Main, 8th Cross Rd, next to BGS Stadium, MC Layout, Vijayanagar, Bengaluru, Karnataka 560040',
 
-    phone: '+91 9980615580',
+    phone: '+91 9008589955',
+
+    comfort: 'Premium',
 
     tagline: 'IT\'S NEVER TOO LATE AND YOU ARE NEVER TOO OLD TO BECOME BETTER!',
 
@@ -628,13 +642,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'akshayanagar': {
 
-    name: 'GAME ON FITNESS AKSHAYANAGAR',
+    name: 'Game On Fitness Luxury Club - Akshayanagar',
 
     location: 'Akshayanagar, Bengaluru',
 
-    address: 'Above Reliance Smart, near DLF, Akshayanagar, Bengaluru - 560068',
+    address: '2nd Floor, near, above Reliance Smart, Bhagyalakshmi Avenue, DLF Newtown, Akshayanagar, Bengaluru, Karnataka 560114',
 
     phone: '+91 8431198114',
+
+    comfort: 'Luxury',
 
     tagline: 'EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
 
@@ -748,13 +764,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'sarjapur-road': {
 
-    name: 'GAME ON FITNESS SARJAPUR ROAD',
+    name: 'Game On Fitness Premium Club - Sarjapur Road (Bellandur gate)',
 
     location: 'Sarjapur Road, Bengaluru',
 
-    address: '3rd floor above Baby Store, opp to Divyasree Elan, next to More Mega Store, Bellandur gate, Sarjapur Main Road, Bengaluru - 560035',
+    address: 'No 648 E 3rd floor, next to more mega store, Marathahalli - Sarjapur Main rd, gate, Bellandur, Bengaluru, Karnataka 560035',
 
     phone: '+91 8618086458',
+
+    comfort: 'Premium',
 
     tagline: 'YOUR FITNESS JOURNEY STARTS HERE',
 
@@ -842,13 +860,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'kasavanahalli': {
 
-    name: 'GAME ON FITNESS KASAVANAHALLI',
+    name: 'Game On Fitness Luxury Club - Kasavanahalli',
 
     location: 'Kasavanahalli, Bengaluru',
 
-    address: 'Kasavanahalli, Sarjapur Main Road, Bengaluru - 560035',
+    address: '3rd Floor, Hosa Rd, next to Vishal Mega Mart, Kasavanahalli, Bengaluru, Karnataka 560035',
 
-    phone: '+91 8618086458',
+    phone: '+91 7259348811',
+
+    comfort: 'Luxury',
 
     tagline: 'YOUR FITNESS JOURNEY STARTS HERE',
 
@@ -1023,7 +1043,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-16 pb-16">
           <div className="max-w-7xl mx-auto">
             <span className={`inline-block px-4 py-1.5 bg-orange-500 text-black text-[10px] font-bold uppercase tracking-widest rounded-full mb-5 shadow-lg shadow-orange-500/30 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              Premium Facility
+              {branch.comfort} Club
             </span>
             <h1 className={`text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {branch.name}
@@ -1034,7 +1054,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 <div className="p-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
                   <MapPin size={18} className="text-orange-500 shrink-0 group-hover:scale-110 transition-transform" />
                 </div>
-                <span className="text-sm font-semibold">{branch.location}</span>
+                <span className="text-sm font-semibold max-w-md">{branch.address}</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
                 <div className="p-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
