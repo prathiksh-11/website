@@ -105,7 +105,7 @@ export default function Transformations() {
   }, [cardWidth, paused]);
 
   return (
-    <section id="trainers" className="relative py-32 overflow-hidden" style={{ background: '#060606' }}>
+    <section id="transformations" className="relative py-32 overflow-hidden" style={{ background: '#060606' }}>
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div
