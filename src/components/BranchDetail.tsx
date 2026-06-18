@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, MessageCircle } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
-function getWhatsAppLink(phone: string, message: string) {
-  const digits = phone.replace(/\D/g, '');
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+const WHATSAPP_NUMBER = '919148974009';
+
+function getWhatsAppLink(message: string) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 interface BranchDetailProps {
@@ -72,7 +73,7 @@ export const branchData: Record<string, {
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -196,7 +197,7 @@ export const branchData: Record<string, {
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -305,17 +306,17 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     hours: [
 
-      { day: 'Monday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Tuesday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Wednesday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Thursday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Friday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Saturday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
       { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
@@ -427,7 +428,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -541,7 +542,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -651,7 +652,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -763,7 +764,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -887,7 +888,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 10:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -1007,7 +1008,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 10:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -1207,7 +1208,6 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           </a>
           <a
             href={getWhatsAppLink(
-              branch.phone,
               `Hi, I'd like to reach out about ${branch.name}. Please share more details.`
             )}
             target="_blank"
@@ -1417,21 +1417,21 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   </div>
 
   {/* Trainer Cards */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
     {branch.team.map((member, index) => (
       <div
         key={index}
         className="bg-[#111] border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-2"
       >
         {/* Trainer Image */}
-        <div className="relative h-[340px] overflow-hidden">
+        <div className="relative aspect-[3/4] overflow-hidden bg-[#0a0a0a]">
           <img
             src={member.image}
             alt={member.name}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
         </div>
 
         {/* Trainer Details */}
