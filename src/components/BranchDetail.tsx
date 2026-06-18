@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, MessageCircle } from 'lucide-react';
 import { IMAGES } from './image_constant';
+
+function getWhatsAppLink(phone: string, message: string) {
+  const digits = phone.replace(/\D/g, '');
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+}
 
 interface BranchDetailProps {
   branchId: string;
@@ -1189,7 +1194,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
       {/* Floating Call to Action Bar */}
       <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-10 relative z-20 mb-12 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl grid md:grid-cols-2 gap-4">
+        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl grid md:grid-cols-3 gap-4">
           <button className="w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 transform hover:-translate-y-1 active:translate-y-0">
             Start Your Fitness Journey
           </button>
@@ -1199,6 +1204,18 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           >
             <Phone size={16} className="text-orange-500" />
             Call Front Desk
+          </a>
+          <a
+            href={getWhatsAppLink(
+              branch.phone,
+              `Hi, I'd like to reach out about ${branch.name}. Please share more details.`
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-[#25D366]/20 hover:shadow-[#25D366]/40 flex items-center justify-center gap-3 transform hover:-translate-y-1 active:translate-y-0"
+          >
+            <MessageCircle size={16} />
+            Reach Out on WhatsApp
           </a>
         </div>
       </div>
