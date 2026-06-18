@@ -16,9 +16,12 @@ import Arekereimg2 from '../assets/AREKERE/arekere_img2.jpeg';
 import Arekereimg4 from '../assets/AREKERE/arekere_img4.jpeg';
 import Arekereimg5 from '../assets/AREKERE/arekere_img5.jpeg';
 import Arekereimg7 from '../assets/AREKERE/arekere_img7.jpeg';
-import ArekereTrainer1 from '../assets/AREKERE/arekere_trainer_1.jpeg';
-import ArekereTrainer2 from '../assets/AREKERE/arekere_trainer_2.jpeg';
-import ArekereTrainer3 from '../assets/AREKERE/arekere_trainer_3.jpeg';
+import ArekereTrainerChethanKumar from '../assets/AREKERE/arekere_trainer_chethan_kumar.png';
+import ArekereTrainerVinod from '../assets/AREKERE/arekere_trainer_vinod.png';
+import ArekereTrainerAbhi from '../assets/AREKERE/arekere_trainer_abhi.png';
+import ArekereTrainerSamhitaa from '../assets/AREKERE/arekere_trainer_samhitaa.png';
+import ArekereTrainerShakirAhmed from '../assets/AREKERE/arekere_trainer_shakir_ahmed.png';
+import ArekereTrainerAbhishek from '../assets/AREKERE/arekere_trainer_abhishek.png';
 
 // BTM 2
 import Btm2BgImg from '../assets/BTM_2/btm2_bg_img.jpeg';
@@ -27,9 +30,12 @@ import Btm2img4 from '../assets/BTM_2/btm2_img4.jpeg';
 import Btm2img6 from '../assets/BTM_2/btm2_img6.jpeg';
 import Btm2img7 from '../assets/BTM_2/btm2_img7.jpeg';
 import Btm2img8 from '../assets/BTM_2/btm2_img8.jpeg';
-import Btm2Trainer1 from '../assets/BTM_2/btm2_trainer_1.jpeg';
-import Btm2Trainer2 from '../assets/BTM_2/btm2_trainer_2.jpeg';
-import Btm2Trainer3 from '../assets/BTM_2/btm2_trainer_3.jpeg';
+import Btm2TrainerMonalisa from '../assets/BTM_2/btm2_trainer_monalisa.png';
+import Btm2TrainerDeekshith from '../assets/BTM_2/btm2_trainer_deekshith.png';
+import Btm2TrainerMohanRaj from '../assets/BTM_2/btm2_trainer_mohan_raj.png';
+import Btm2TrainerVikram from '../assets/BTM_2/btm2_trainer_vikram.png';
+import Btm2TrainerNidhin from '../assets/BTM_2/btm2_trainer_nidhin.png';
+import Btm2TrainerDeelip from '../assets/BTM_2/btm2_trainer_deelip.png';
 
 // SARJAPUR ROAD
 import SarjapurBgImg from '../assets/SARJAPUR_ROAD/sarjapur-bg-img.jpeg';
@@ -38,9 +44,11 @@ import Sarjapurimg4 from '../assets/SARJAPUR_ROAD/sarjapur-img4.jpg';
 import Sarjapurimg5 from '../assets/SARJAPUR_ROAD/sarjapur-img5.jpg';
 import Sarjapurimg7 from '../assets/SARJAPUR_ROAD/sarjapur-img7.jpg';
 import Sarjapurimg8 from '../assets/SARJAPUR_ROAD/sarjapur-img8.jpg';
-import SarjapurRoadTrainer1 from '../assets/SARJAPUR_ROAD/sarjapur-road-trainer1.jpeg';
-import SarjapurRoadTrainer2 from '../assets/SARJAPUR_ROAD/sarjapur-road-trainer2.jpeg';
-import SarjapurRoadTrainer3 from '../assets/SARJAPUR_ROAD/sarjapur-road-trainer3.jpeg';
+import SarjapurTrainerMonika from '../assets/SARJAPUR_ROAD/sarjapur_trainer_monika.png';
+import SarjapurTrainerShivam from '../assets/SARJAPUR_ROAD/sarjapur_trainer_shivam.png';
+import SarjapurTrainerGowtham from '../assets/SARJAPUR_ROAD/sarjapur_trainer_gowtham.png';
+import SarjapurTrainerArun from '../assets/SARJAPUR_ROAD/sarjapur_trainer_arun.png';
+import SarjapurTrainerArunKittu from '../assets/SARJAPUR_ROAD/sarjapur_trainer_arun_kittu.png';
 
 // BRANCH IMAGES
 import AkshayanagarBranch from '../assets/branches/akshayanagar_img1.jpeg';
@@ -64,10 +72,10 @@ import VijayaBankLayoutimg5 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layou
 import VijayaBankLayoutimg6 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img6.jpeg';
 import VijayaBankLayoutimg7 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img7.jpeg';
 import VijayaBankLayoutimg9 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img9.jpeg';
-import VijayaBankLayoutTrainerVijaya from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_vijaya.png';
-import VijayaBankLayoutTrainer2 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_2.png';
-import VijayaBankLayoutTrainer3 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_3.png';
-import VijayaBankLayoutTrainer4 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_4.png';
+import VijayaBankLayoutTrainerShivam from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_shivam.png';
+import VijayaBankLayoutTrainerNithul from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_nithul.png';
+import VijayaBankLayoutTrainerJeevan from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_jeevan.png';
+import VijayaBankLayoutTrainerKabir from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_trainer_kabir.png';
 import VijayaBankLayoutImgMirror from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img_mirror.png';
 
 // BTM 1
@@ -153,9 +161,12 @@ export const IMAGES = {
     img4: Arekereimg4,
     img5: Arekereimg5,
     img7: Arekereimg7,
-    trainer1: ArekereTrainer1,
-    trainer2: ArekereTrainer2,
-    trainer3: ArekereTrainer3,
+    trainer1: ArekereTrainerChethanKumar,
+    trainer2: ArekereTrainerVinod,
+    trainer3: ArekereTrainerAbhi,
+    trainer4: ArekereTrainerSamhitaa,
+    trainer5: ArekereTrainerShakirAhmed,
+    trainer6: ArekereTrainerAbhishek,
   },
   // BTM 2
   BTM2: {
@@ -165,9 +176,12 @@ export const IMAGES = {
     img6: Btm2img6,
     img7: Btm2img7,
     img8: Btm2img8,
-    trainer1: Btm2Trainer1,
-    trainer2: Btm2Trainer2,
-    trainer3: Btm2Trainer3,
+    trainer1: Btm2TrainerMonalisa,
+    trainer2: Btm2TrainerDeekshith,
+    trainer3: Btm2TrainerMohanRaj,
+    trainer4: Btm2TrainerVikram,
+    trainer5: Btm2TrainerNidhin,
+    trainer6: Btm2TrainerDeelip,
   },
   // SARJAPUR ROAD
   SarjapurRoad: {
@@ -177,9 +191,11 @@ export const IMAGES = {
     img5: Sarjapurimg5,
     img7: Sarjapurimg7,
     img8: Sarjapurimg8,
-    trainer1: SarjapurRoadTrainer1,
-    trainer2: SarjapurRoadTrainer2,
-    trainer3: SarjapurRoadTrainer3,
+    trainer1: SarjapurTrainerMonika,
+    trainer2: SarjapurTrainerShivam,
+    trainer3: SarjapurTrainerGowtham,
+    trainer4: SarjapurTrainerArun,
+    trainer5: SarjapurTrainerArunKittu,
   },
   // VIJAYA BANK LAYOUT
   VijayaBankLayout: {
@@ -188,10 +204,10 @@ export const IMAGES = {
     img7: VijayaBankLayoutimg7,
     img9: VijayaBankLayoutimg9,
     imgMirror: VijayaBankLayoutImgMirror,
-    trainer1: VijayaBankLayoutTrainerVijaya,
-    trainer2: VijayaBankLayoutTrainer2,
-    trainer3: VijayaBankLayoutTrainer3,
-    trainer4: VijayaBankLayoutTrainer4,
+    trainer1: VijayaBankLayoutTrainerShivam,
+    trainer2: VijayaBankLayoutTrainerNithul,
+    trainer3: VijayaBankLayoutTrainerJeevan,
+    trainer4: VijayaBankLayoutTrainerKabir,
   },
   // BTM 1
   BTM1: {

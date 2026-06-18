@@ -126,7 +126,7 @@ const branches = [
     image: IMAGES.Branches.sarjapurRoad,
     area: '15,000 sq ft',
     hours: '5 AM – 11 PM',
-    facilities: ['Weight Training', 'Cardio Zone', 'Group Classes', 'Steam Room'],
+    facilities: ['Weight Training & Cardio', 'Personal Training', 'Functional Training', 'Steam & Shower'],
     accentColor: '#ff6b35',
     gradient: 'from-[#ff6b35]/30 to-transparent',
     lat: 12.9299,
