@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
 interface BranchDetailProps {
@@ -640,11 +640,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.JPNagar.trainer1 },
+      { name: 'Trainer 1', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.JPNagar.trainer2 },
+      { name: 'Trainer 2', role: 'General Trainer & Personal Trainer', image: IMAGES.Vijayanagar.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.JPNagar.trainer3 },
+      { name: 'Trainer 3', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer3 },
+
+      { name: 'Trainer 4', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer4 },
+
+      { name: 'Trainer 5', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer5 },
 
     ],
 
@@ -662,17 +666,37 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Group Classes', icon: Users },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'General Training', icon: Dumbbell },
+
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,000' },
+
+      { duration: '6 Months', price: '₹7,000' },
+
+      { duration: '12 Months', price: '₹9,000' },
 
     ],
 

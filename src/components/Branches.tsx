@@ -94,7 +94,7 @@ const branches = [
     image: IMAGES.Branches.jpNagar,
     area: '13,500 sq ft',
     hours: '5 AM – 11 PM',
-    facilities: ['Rock Climbing', 'Martial Arts', 'Outdoor Deck', 'Juice Bar'],
+    facilities: ['Weight Training & Cardio', 'Group Classes', 'Personal Training', 'Steam & Shower'],
     accentColor: '#ff6b35',
     gradient: 'from-[#ff6b35]/25 to-transparent',
     lat: 12.9716,

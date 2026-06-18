@@ -100,6 +100,13 @@ import JpnagarTrainer1 from '../assets/jpnagar/jpnagar_trainer_1.jpeg';
 import JpnagarTrainer2 from '../assets/jpnagar/jpnagar_trainer_2.jpeg';
 import JpnagarTrainer3 from '../assets/jpnagar/jpnagar_trainer_3.jpeg';
 
+// VIJAYANAGAR
+import VijayanagarTrainer1 from '../assets/VIJAYANAGAR/vijayanagar_trainer_1.png';
+import VijayanagarTrainer2 from '../assets/VIJAYANAGAR/vijayanagar_trainer_2.png';
+import VijayanagarTrainer3 from '../assets/VIJAYANAGAR/vijayanagar_trainer_3.png';
+import VijayanagarTrainer4 from '../assets/VIJAYANAGAR/vijayanagar_trainer_4.png';
+import VijayanagarTrainer5 from '../assets/VIJAYANAGAR/vijayanagar_trainer_5.png';
+
 // WILSON GARDEN
 import WilsonGardenBgImg from '../assets/wilsongardon/wilson_garden_bg_img.jpeg';
 import WilsonGardenImg1 from '../assets/wilsongardon/wilson_garden_img1.jpeg';
@@ -232,6 +239,14 @@ export const IMAGES = {
     trainer1: JpnagarTrainer1,
     trainer2: JpnagarTrainer2,
     trainer3: JpnagarTrainer3,
+  },
+  // VIJAYANAGAR
+  Vijayanagar: {
+    trainer1: VijayanagarTrainer1,
+    trainer2: VijayanagarTrainer2,
+    trainer3: VijayanagarTrainer3,
+    trainer4: VijayanagarTrainer4,
+    trainer5: VijayanagarTrainer5,
   },
   // WILSON GARDEN
   WilsonGarden: {
