@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, Utensils, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
 interface BranchDetailProps {
@@ -16,6 +16,8 @@ const branchData: Record<string, {
   address: string;
 
   phone: string;
+
+  comfort: string;
 
   tagline: string;
 
@@ -37,13 +39,15 @@ const branchData: Record<string, {
 
   'arekere': {
 
-    name: 'GAME ON FITNESS AREKERE',
+    name: 'Game On Fitness - Arekere',
 
     location: 'Arekere, Bengaluru',
 
-    address: 'Above Poorvika Mobiles, near Sai Baba temple, Arekere, Bengaluru - 560076',
+    address: 'No.97,1st & 2nd floor, Saibaba Temple road, 2nd Main, Royal Residency Layout BTM 4th Stage, 80, Feet Rd, near Arekere, Bengaluru, Karnataka 560076',
 
     phone: '+91 8861737392',
+
+    comfort: 'Normal',
 
     tagline: 'IT\'S ALL ABOUT WHAT YOU CAN ACHIVE EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
 
@@ -67,11 +71,17 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.Arekere.trainer1 },
+      { name: 'Chethan Kumar', role: 'Personal Trainer', image: IMAGES.Arekere.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.Arekere.trainer2 },
+      { name: 'Vinod', role: 'Personal Trainer', image: IMAGES.Arekere.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.Arekere.trainer3 },
+      { name: 'Abhi', role: 'Personal Trainer & General Trainer', image: IMAGES.Arekere.trainer3 },
+
+      { name: 'Samhitaa', role: 'Personal Trainer & General Trainer', image: IMAGES.Arekere.trainer4 },
+
+      { name: 'Shakir Ahmed', role: 'Personal Trainer', image: IMAGES.Arekere.trainer5 },
+
+      { name: 'Abhishek', role: 'Personal Trainer', image: IMAGES.Arekere.trainer6 },
 
     ],
 
@@ -97,17 +107,37 @@ const branchData: Record<string, {
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+      { name: 'Group Classes', icon: Users },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹2,500' },
+
+      { duration: '3 Months', price: '₹5,000' },
+
+      { duration: '6 Months', price: '₹6,500' },
+
+      { duration: '12 Months', price: '₹8,500' },
 
     ],
 
@@ -131,13 +161,15 @@ const branchData: Record<string, {
 
   'vijaya-bank-layout': {
 
-    name: 'GAME ON FITNESS VIJAYA BANK LAYOUT',
+    name: 'Game On Fitness Premium Club - Vijaya Bank Layout',
 
     location: 'Vijaya Bank Layout, Bengaluru',
 
-    address: '3rd floor, Vijaya Bank Layout circle, near Indian Oil petrol bunk, Bilekahalli, Bengaluru - 560076',
+    address: '3rd floor, 8883 886, Bannerghatta Rd, Vijaya Bank Layout, Bilekahalli, Bengaluru, Karnataka 560076',
 
     phone: '+91 9035279516',
+
+    comfort: 'Premium',
 
     tagline: 'Game On Fitness is dedicated to covering the full fitness landscape, regularly introducing fans to new trends in training, nutrition, gear and technology',
 
@@ -161,13 +193,13 @@ const branchData: Record<string, {
 
     team: [
 
-      { name: 'Vijaya', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
+      { name: 'Shivam', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer1 },
 
-      { name: 'Trainer 2', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer2 },
+      { name: 'Nithul', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer2 },
 
-      { name: 'Trainer 3', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer3 },
+      { name: 'Jeevan', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer3 },
 
-      { name: 'Trainer 4', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer4 },
+      { name: 'Kabir', role: 'Personal Trainer', image: IMAGES.VijayaBankLayout.trainer4 },
 
     ],
 
@@ -197,8 +229,6 @@ const branchData: Record<string, {
 
       { name: 'BMI Report', icon: Activity },
 
-      { name: 'Group Classes', icon: Users },
-
       { name: 'Gym Orientation', icon: Compass },
 
       { name: 'Locker Facility', icon: Lock },
@@ -213,17 +243,21 @@ const branchData: Record<string, {
 
       { name: 'Functional Training', icon: Activity },
 
+      { name: 'Transformation', icon: Activity },
+
+      { name: 'GX Studio', icon: Users },
+
     ],
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,000' },
+      { duration: '1 Month', price: '₹2,500' },
 
-      { duration: '3 Months', price: '₹6,000' },
+      { duration: '3 Months', price: '₹5,000' },
 
-      { duration: '6 Months', price: '₹7,000' },
+      { duration: '6 Months', price: '₹6,500' },
 
-      { duration: '12 Months', price: '₹9,000' },
+      { duration: '12 Months', price: '₹8,000' },
 
     ],
 
@@ -246,13 +280,15 @@ const branchData: Record<string, {
   },
 
   'btm-layout-1': {
-name: 'GAME ON FITNESS BTM LAYOUT - 1',
+    name: 'Game On Fitness Premium Club - BTM 1st Stage',
 
-location: 'BTM 1st Stage, Bengaluru',
+    location: 'BTM 1st Stage, Bengaluru',
 
-address: 'Gangotri Bar And Restaurant, Ground Floor, 8th Cross Rd, Old Madiwala, Maruti Nagar, BTM 1st Stage, Bengaluru, Karnataka 560068',
+    address: 'Gangotri Bar And Restaurant, Ground, 8th Cross Rd, Old Madiwala, Maruti Nagar, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka 560068',
 
-phone: '+91 9036054799',
+    phone: '+91 9036054799',
+
+    comfort: 'Premium',
 
 tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
@@ -352,13 +388,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'btm-layout-2': {
 
-    name: 'GAME ON FITNESS BTM LAYOUT - 2',
+    name: 'Game On Fitness Premium Club - BTM 2nd Stage',
 
-    location: 'BTM Layout, Bengaluru',
+    location: 'BTM 2nd Stage, Bengaluru',
 
-    address: 'Above Indian Bank, 7th Main Road BTM 2nd Stage, Bengaluru - 560076',
+    address: '689-670 2nd floor , 7th main, 7th Cross Rd, BTM Layout 2nd Stage, Bengaluru, Karnataka 560076',
 
     phone: '+91 8951028839',
+
+    comfort: 'Premium',
 
     tagline: 'DAY 1 OR 1 DAY YOU DECIDE!',
 
@@ -382,11 +420,17 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.BTM2.trainer1 },
+      { name: 'Monalisa', role: 'Personal Trainer', image: IMAGES.BTM2.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.BTM2.trainer2 },
+      { name: 'Deekshith', role: 'Personal Trainer', image: IMAGES.BTM2.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.BTM2.trainer3 },
+      { name: 'Mohan Raj', role: 'Personal Trainer', image: IMAGES.BTM2.trainer3 },
+
+      { name: 'Vikram', role: 'Fitness Manager', image: IMAGES.BTM2.trainer4 },
+
+      { name: 'Nidhin', role: 'Personal Trainer', image: IMAGES.BTM2.trainer5 },
+
+      { name: 'Deelip', role: 'Personal Trainer', image: IMAGES.BTM2.trainer6 },
 
     ],
 
@@ -404,17 +448,35 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,500' },
+
+      { duration: '6 Months', price: '₹8,500' },
+
+      { duration: '12 Months', price: '₹11,000' },
 
     ],
 
@@ -438,13 +500,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'wilson-garden': {
 
-    name: 'GAME ON FITNESS WILSON GARDEN',
+    name: 'Game On Fitness - Wilson Garden',
 
     location: 'Wilson Garden, Bengaluru',
 
-    address: 'Opp to Traffic Police Station, Vinayaka Nagar, Wilson Garden, Bengaluru - 560027',
+    address: 'No.376, 21, 6th Cross Rd, opp. to traffic police station, Vinayaka Nagar, NGO Colony, Wilson Garden, Bengaluru, Karnataka 560027',
 
     phone: '+91 9663995409',
+
+    comfort: 'Normal',
 
     tagline: 'LET THE GAINS BEGIN!',
 
@@ -542,15 +606,17 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   },
 
-  'jp-nagar': {
+  'vijayanagar': {
 
-    name: 'GAME ON FITNESS JP NAGAR',
+    name: 'Game On Fitness Premium Club - Vijayanagar',
 
-    location: 'JP Nagar, Bengaluru',
+    location: 'Vijayanagar, Bengaluru',
 
-    address: 'Above Poorvika Mobiles, Opp to RBI Layout Bus Stop, JP Nagar 7th phase, Bengaluru - 560078',
+    address: '119, 1st Floor 6th Main, 8th Cross Rd, next to BGS Stadium, MC Layout, Vijayanagar, Bengaluru, Karnataka 560040',
 
-    phone: '+91 9980615580',
+    phone: '+91 9008589955',
+
+    comfort: 'Premium',
 
     tagline: 'IT\'S NEVER TOO LATE AND YOU ARE NEVER TOO OLD TO BECOME BETTER!',
 
@@ -574,11 +640,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.JPNagar.trainer1 },
+      { name: 'Trainer 1', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.JPNagar.trainer2 },
+      { name: 'Trainer 2', role: 'General Trainer & Personal Trainer', image: IMAGES.Vijayanagar.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.JPNagar.trainer3 },
+      { name: 'Trainer 3', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer3 },
+
+      { name: 'Trainer 4', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer4 },
+
+      { name: 'Trainer 5', role: 'Personal Trainer', image: IMAGES.Vijayanagar.trainer5 },
 
     ],
 
@@ -596,17 +666,37 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Group Classes', icon: Users },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'General Training', icon: Dumbbell },
+
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,000' },
+
+      { duration: '6 Months', price: '₹7,000' },
+
+      { duration: '12 Months', price: '₹9,000' },
 
     ],
 
@@ -628,13 +718,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'akshayanagar': {
 
-    name: 'GAME ON FITNESS AKSHAYANAGAR',
+    name: 'Game On Fitness Luxury Club - Akshayanagar',
 
     location: 'Akshayanagar, Bengaluru',
 
-    address: 'Above Reliance Smart, near DLF, Akshayanagar, Bengaluru - 560068',
+    address: '2nd Floor, near, above Reliance Smart, Bhagyalakshmi Avenue, DLF Newtown, Akshayanagar, Bengaluru, Karnataka 560114',
 
     phone: '+91 8431198114',
+
+    comfort: 'Luxury',
 
     tagline: 'EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
 
@@ -748,13 +840,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'sarjapur-road': {
 
-    name: 'GAME ON FITNESS SARJAPUR ROAD',
+    name: 'Game On Fitness Premium Club - Sarjapur Road (Bellandur gate)',
 
     location: 'Sarjapur Road, Bengaluru',
 
-    address: '3rd floor above Baby Store, opp to Divyasree Elan, next to More Mega Store, Bellandur gate, Sarjapur Main Road, Bengaluru - 560035',
+    address: 'No 648 E 3rd floor, next to more mega store, Marathahalli - Sarjapur Main rd, gate, Bellandur, Bengaluru, Karnataka 560035',
 
     phone: '+91 8618086458',
+
+    comfort: 'Premium',
 
     tagline: 'YOUR FITNESS JOURNEY STARTS HERE',
 
@@ -778,11 +872,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     team: [
 
-      { name: 'Trainer 1', role: 'Head Trainer', image: IMAGES.SarjapurRoad.trainer1 },
+      { name: 'Monika', role: 'Membership Coordinator', image: IMAGES.SarjapurRoad.trainer1 },
 
-      { name: 'Trainer 2', role: 'Fitness Instructor', image: IMAGES.SarjapurRoad.trainer2 },
+      { name: 'Shivam', role: 'Personal Trainer', image: IMAGES.SarjapurRoad.trainer2 },
 
-      { name: 'Trainer 3', role: 'Strength Coach', image: IMAGES.SarjapurRoad.trainer3 },
+      { name: 'Gowtham', role: 'General Trainer', image: IMAGES.SarjapurRoad.trainer3 },
+
+      { name: 'Arun', role: 'Personal Trainer', image: IMAGES.SarjapurRoad.trainer4 },
+
+      { name: 'Arun Kittu', role: 'Fitness Manager & Personal Trainer', image: IMAGES.SarjapurRoad.trainer5 },
 
     ],
 
@@ -808,17 +906,35 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     facilities: [
 
-      { name: 'BMI Check Up', icon: Activity },
+      { name: 'Weight Training & Cardio', icon: Dumbbell },
 
-      { name: 'Workout Plan', icon: Dumbbell },
+      { name: 'BMI Report', icon: Activity },
 
-      { name: 'Diet Plan', icon: Utensils },
+      { name: 'Gym Orientation', icon: Compass },
 
-      { name: 'Showers', icon: ShowerHead },
+      { name: 'Locker Facility', icon: Lock },
 
-      { name: 'Lockers', icon: Lock },
+      { name: 'General Training', icon: Dumbbell },
 
-      { name: 'Steam', icon: ThermometerSun },
+      { name: 'Personal Training', icon: Users },
+
+      { name: 'Changing Room & Rest Room', icon: ShowerHead },
+
+      { name: 'Steam and Shower Facilities', icon: ThermometerSun },
+
+      { name: 'Functional Training', icon: Activity },
+
+    ],
+
+    pricing: [
+
+      { duration: '1 Month', price: '₹3,000' },
+
+      { duration: '3 Months', price: '₹6,000' },
+
+      { duration: '6 Months', price: '₹9,000' },
+
+      { duration: '12 Months', price: '₹12,000' },
 
     ],
 
@@ -842,13 +958,15 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
   'kasavanahalli': {
 
-    name: 'GAME ON FITNESS KASAVANAHALLI',
+    name: 'Game On Fitness Luxury Club - Kasavanahalli',
 
     location: 'Kasavanahalli, Bengaluru',
 
-    address: 'Kasavanahalli, Sarjapur Main Road, Bengaluru - 560035',
+    address: '3rd Floor, Hosa Rd, next to Vishal Mega Mart, Kasavanahalli, Bengaluru, Karnataka 560035',
 
-    phone: '+91 8618086458',
+    phone: '+91 7259348811',
+
+    comfort: 'Luxury',
 
     tagline: 'YOUR FITNESS JOURNEY STARTS HERE',
 
@@ -1023,7 +1141,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-16 pb-16">
           <div className="max-w-7xl mx-auto">
             <span className={`inline-block px-4 py-1.5 bg-orange-500 text-black text-[10px] font-bold uppercase tracking-widest rounded-full mb-5 shadow-lg shadow-orange-500/30 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              Premium Facility
+              {branch.comfort} Club
             </span>
             <h1 className={`text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {branch.name}
@@ -1034,7 +1152,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 <div className="p-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
                   <MapPin size={18} className="text-orange-500 shrink-0 group-hover:scale-110 transition-transform" />
                 </div>
-                <span className="text-sm font-semibold">{branch.location}</span>
+                <span className="text-sm font-semibold max-w-md">{branch.address}</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
                 <div className="p-2 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
