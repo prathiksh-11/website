@@ -87,7 +87,7 @@ export default function About() {
                 'Top of the line machines, weights and workout accessories',
                 'High quality cardio & strength equipment in every club',
                 'Exceptional ambience with high quality interiors',
-                'Ace certified Advanced Personal Trainers',
+                'Certified Advanced Personal Trainers',
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <CheckCircle size={16} className="text-[#ff6b35] flex-shrink-0" />
