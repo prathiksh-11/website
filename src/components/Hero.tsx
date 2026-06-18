@@ -1,19 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIntersectionObserver, useCountUp } from '../hooks/useIntersectionObserver';
 import { IMAGES } from './image_constant';
+import { branchData } from './BranchDetail';
 import { MapPin, Navigation, X } from 'lucide-react';
 
-const branches = [
-  { id: 'arekere', name: 'Arekere', lat: 12.9077, lng: 77.6176 },
-  { id: 'vijaya-bank-layout', name: 'Vijaya Bank Layout', lat: 12.9165, lng: 77.6101 },
-  { id: 'btm-layout-1', name: 'BTM Layout 1', lat: 12.9135, lng: 77.6089 },
-  { id: 'btm-layout-2', name: 'BTM Layout 2', lat: 12.9142, lng: 77.6095 },
-  { id: 'wilson-garden', name: 'Wilson Garden', lat: 12.9519, lng: 77.5944 },
-  { id: 'vijayanagar', name: 'Vijayanagar', lat: 12.9716, lng: 77.5375 },
-  { id: 'akshayanagar', name: 'Akshayanagar', lat: 12.9077, lng: 77.6317 },
-  { id: 'sarjapur-road', name: 'Sarjapur Road', lat: 12.9299, lng: 77.6838 },
-  { id: 'kasavanahalli', name: 'Kasavanahalli', lat: 12.9014, lng: 77.6725 },
-];
+const branchCoords: Record<string, { lat: number; lng: number }> = {
+  'arekere': { lat: 12.9077, lng: 77.6176 },
+  'vijaya-bank-layout': { lat: 12.9165, lng: 77.6101 },
+  'btm-layout-1': { lat: 12.9135, lng: 77.6089 },
+  'btm-layout-2': { lat: 12.9142, lng: 77.6095 },
+  'wilson-garden': { lat: 12.9519, lng: 77.5944 },
+  'vijayanagar': { lat: 12.9716, lng: 77.5375 },
+  'akshayanagar': { lat: 12.9077, lng: 77.6317 },
+  'sarjapur-road': { lat: 12.9299, lng: 77.6838 },
+  'kasavanahalli': { lat: 12.9014, lng: 77.6725 },
+};
+
+const branches = Object.entries(branchData)
+  .filter(([id]) => branchCoords[id])
+  .map(([id, data]) => ({
+    id,
+    name: data.name,
+    lat: branchCoords[id].lat,
+    lng: branchCoords[id].lng,
+  }));
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371; // Earth's radius in km
@@ -75,7 +85,7 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [, setCurrentTransformation] = useState(0);
-  const [nearestBranch, setNearestBranch] = useState<{ name: string, distance: number } | null>(null);
+  const [nearestBranch, setNearestBranch] = useState<{ id: string; name: string; distance: number } | null>(null);
   const [showLocationBar, setShowLocationBar] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
   const [locationDenied, setLocationDenied] = useState(false);
@@ -108,6 +118,7 @@ export default function Hero() {
         const { latitude, longitude } = position.coords;
         const nearest = findNearestBranch(latitude, longitude);
         setNearestBranch({
+          id: nearest.branch.id,
           name: nearest.branch.name,
           distance: nearest.distance,
         });
@@ -139,6 +150,7 @@ export default function Hero() {
         const { latitude, longitude } = position.coords;
         const nearest = findNearestBranch(latitude, longitude);
         setNearestBranch({
+          id: nearest.branch.id,
           name: nearest.branch.name,
           distance: nearest.distance,
         });
@@ -272,10 +284,10 @@ export default function Hero() {
           className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12 transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
         >
-          <StatItem value={12} suffix="+" label="Elite Branches" start={statsVisible} />
-          <StatItem value={50} suffix="K+" label="Active Members" start={statsVisible} />
+          <StatItem value={10} suffix="+" label="Elite Branches" start={statsVisible} />
+          <StatItem value={15} suffix="K+" label="Active Members" start={statsVisible} />
           <StatItem value={98} suffix="%" label="Success Rate" start={statsVisible} />
-          <StatItem value={15} suffix="+" label="Years of Excellence" start={statsVisible} />
+          <StatItem value={10} suffix="+" label="Years of Excellence" start={statsVisible} />
         </div>
       </div>
 
@@ -284,7 +296,7 @@ export default function Hero() {
         <div className="glass py-3">
           <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
             <div className="flex items-center gap-6 overflow-x-auto hide-scrollbar">
-              {['State-of-the-Art Equipment', '24/7 Access', 'Expert Trainers', 'Nutrition Plans', 'Personal Coaching'].map((item, i) => (
+              {['State-of-the-Art Equipment', '18/7 Access', 'Expert Trainers', 'Nutrition Plans', 'Personal Coaching'].map((item, i) => (
                 <div key={i} className="flex items-center gap-2 whitespace-nowrap">
                   <div className="w-1 h-1 rounded-full bg-[#ff6b35]" />
                   <span className="text-xs text-white/50 tracking-wider uppercase">{item}</span>
@@ -357,7 +369,7 @@ export default function Hero() {
 
             <button
               onClick={() => {
-                window.location.hash = `#branch/${branches.find(b => b.name === nearestBranch.name)?.id || 'arekere'}`;
+                window.location.hash = `#branch/${nearestBranch.id}`;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className="w-full mt-3 py-2 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 text-[#ffb800] text-xs font-semibold hover:bg-[#ffb800]/25 transition-all duration-200"

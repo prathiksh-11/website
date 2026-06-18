@@ -7,7 +7,7 @@ interface BranchDetailProps {
   onBack: () => void;
 }
 
-const branchData: Record<string, {
+export const branchData: Record<string, {
 
   name: string;
 
@@ -34,6 +34,8 @@ const branchData: Record<string, {
   pricing?: { duration: string; price: string }[];
 
   mapUrl: string;
+
+  mapsLink: string;
 
 }> = {
 
@@ -157,6 +159,8 @@ const branchData: Record<string, {
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.59!3d12.87!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUyJzEyLjAiTiA3N8KwMzUnMjQuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/XKryGG1gFoAJpgUL7?g_st=ac',
+
   },
 
   'vijaya-bank-layout': {
@@ -277,6 +281,8 @@ const branchData: Record<string, {
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.60!3d12.88!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUyJzQ4LjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/U9SGXjKByrrZr3EN7?g_st=ac',
+
   },
 
   'btm-layout-1': {
@@ -383,6 +389,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
     ],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.61!3d12.89!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUzJzI0LjAiTiA3N8KwMzYnMzYuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+    mapsLink: 'https://maps.app.goo.gl/12ugVxTwMYAHkgrZA?g_st=ac',
 
   },
 
@@ -496,6 +504,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.62!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzcnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/oHZDcSENCPx86TMJ7?g_st=ac',
+
   },
 
   'wilson-garden': {
@@ -603,6 +613,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
     ],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.58!3d12.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzAwLjAiTiA3N8KwMzQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+    mapsLink: 'https://maps.app.goo.gl/6yza43p2DJmX9stb7',
 
   },
 
@@ -713,6 +725,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
     ],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.57!3d12.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUxJzM2LjAiTiA3N8KwMzQnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+    mapsLink: 'https://maps.app.goo.gl/PHcJbpHfeF8nPHZAA?g_st=ac',
 
   },
 
@@ -836,6 +850,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.63!3d12.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUxJzAwLjAiTiA3N8KwMzcnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/SfTTMEdjzdjsesRU9?g_st=ac',
+
   },
 
   'sarjapur-road': {
@@ -953,6 +969,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
     ],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.66!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzknMzYuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+    mapsLink: 'https://maps.app.goo.gl/aqFxt3q8RMwPYbmH7?g_st=ac',
 
   },
 
@@ -1077,6 +1095,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
     ],
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.67!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzA1LjAiTiA3N8KwNDAnMjEuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
+
+    mapsLink: 'https://maps.app.goo.gl/V4mjLpWDW9zsA6FZ7?g_st=ac',
 
   },
 
@@ -1443,7 +1463,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
             <div className="mt-10 max-w-2xl mx-auto">
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.address)}`}
+                href={branch.mapsLink}
                 target="_blank"
                 rel="noreferrer"
                 className="group/btn w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-6 px-10 rounded-2xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60 transform hover:-translate-y-2 active:translate-y-0"
