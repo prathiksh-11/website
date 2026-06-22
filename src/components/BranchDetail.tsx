@@ -139,13 +139,13 @@ export const branchData: Record<string, {
 
     pricing: [
 
-      { duration: '1 Month', price: '₹2,500' },
+      { duration: '1 Month', price: '₹3,000' },
 
-      { duration: '3 Months', price: '₹5,000' },
+      { duration: '3 Months', price: '₹6,000' },
 
-      { duration: '6 Months', price: '₹6,500' },
+      { duration: '6 Months', price: '₹7,500' },
 
-      { duration: '12 Months', price: '₹8,500' },
+      { duration: '12 Months', price: '₹9,500' },
 
     ],
 
@@ -261,13 +261,13 @@ export const branchData: Record<string, {
 
     pricing: [
 
-      { duration: '1 Month', price: '₹2,500' },
+      { duration: '1 Month', price: '₹3,000' },
 
-      { duration: '3 Months', price: '₹5,000' },
+      { duration: '3 Months', price: '₹5,500' },
 
-      { duration: '6 Months', price: '₹6,500' },
+      { duration: '6 Months', price: '₹7,000' },
 
-      { duration: '12 Months', price: '₹8,000' },
+      { duration: '12 Months', price: '₹9,000' },
 
     ],
 
@@ -370,11 +370,11 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹2,500' },
+      { duration: '1 Month', price: '₹3,000' },
 
       { duration: '3 Months', price: '₹5,500' },
 
-      { duration: '6 Months', price: '₹7,500' },
+      { duration: '6 Months', price: '₹7,000' },
 
       { duration: '12 Months', price: '₹9,500' },
 
@@ -484,13 +484,13 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,000' },
+      { duration: '1 Month', price: '₹3,500' },
 
-      { duration: '3 Months', price: '₹6,500' },
+      { duration: '3 Months', price: '₹6,000' },
 
-      { duration: '6 Months', price: '₹8,500' },
+      { duration: '6 Months', price: '₹7,500' },
 
-      { duration: '12 Months', price: '₹11,000' },
+      { duration: '12 Months', price: '₹10,000' },
 
     ],
 
@@ -596,13 +596,13 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹2,500' },
+      { duration: '1 Month', price: '₹3,000' },
 
-      { duration: '3 Months', price: '₹5,000' },
+      { duration: '3 Months', price: '₹6,000' },
 
-      { duration: '6 Months', price: '₹6,500' },
+      { duration: '6 Months', price: '₹7,500' },
 
-      { duration: '12 Months', price: '₹8,500' },
+      { duration: '12 Months', price: '₹9,000' },
 
     ],
 
@@ -708,13 +708,13 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,000' },
+      { duration: '1 Month', price: '₹3,500' },
 
       { duration: '3 Months', price: '₹6,000' },
 
-      { duration: '6 Months', price: '₹7,000' },
+      { duration: '6 Months', price: '₹8,500' },
 
-      { duration: '12 Months', price: '₹9,000' },
+      { duration: '12 Months', price: '₹10,000' },
 
     ],
 
@@ -830,13 +830,13 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,500' },
+      { duration: '1 Month', price: '₹4,000' },
 
-      { duration: '3 Months', price: '₹6,500' },
+      { duration: '3 Months', price: '₹7,000' },
 
-      { duration: '6 Months', price: '₹8,500' },
+      { duration: '6 Months', price: '₹8,000' },
 
-      { duration: '12 Months', price: '₹10,500' },
+      { duration: '12 Months', price: '₹11,000' },
 
     ],
 
@@ -950,13 +950,13 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,000' },
+      { duration: '1 Month', price: '₹3,500' },
 
-      { duration: '3 Months', price: '₹6,000' },
+      { duration: '3 Months', price: '₹7,000' },
 
-      { duration: '6 Months', price: '₹9,000' },
+      { duration: '6 Months', price: '₹8,500' },
 
-      { duration: '12 Months', price: '₹12,000' },
+      { duration: '12 Months', price: '₹10,500' },
 
     ],
 
@@ -1074,13 +1074,13 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     pricing: [
 
-      { duration: '1 Month', price: '₹3,500' },
+      { duration: '1 Month', price: '₹4,000' },
 
-      { duration: '3 Months', price: '₹7,500' },
+      { duration: '3 Months', price: '₹8,500' },
 
-      { duration: '6 Months', price: '₹9,500' },
+      { duration: '6 Months', price: '₹11,000' },
 
-      { duration: '12 Months', price: '₹12,000' },
+      { duration: '12 Months', price: '₹16,000' },
 
     ],
 
