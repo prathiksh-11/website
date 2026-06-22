@@ -105,7 +105,7 @@ export default function Transformations() {
   }, [cardWidth, paused]);
 
   return (
-    <section id="trainers" className="relative py-32 overflow-hidden" style={{ background: '#060606' }}>
+    <section id="transformations" className="relative py-32 overflow-hidden" style={{ background: '#060606' }}>
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div
@@ -176,7 +176,7 @@ export default function Transformations() {
               onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="group relative bg-[#ffb800] hover:bg-orange-500 text-black font-black px-12 py-5 rounded-full text-xs tracking-[0.2em] uppercase transition-all duration-500 hover:shadow-[0_0_50px_rgba(255,184,0,0.4)] hover:scale-105 active:scale-95"
             >
-              Start Your Story
+              Start Your Journey
               <div className="absolute inset-0 rounded-full bg-white/20 scale-0 group-hover:scale-100 transition-transform duration-700 pointer-events-none" />
             </button>
           </div>

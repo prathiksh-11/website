@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, } from 'lucide-react';
+import { MapPin, Phone, Clock, ChevronLeft, Dumbbell, Activity, ShowerHead, Lock, ThermometerSun, Map, Users, IndianRupee, Compass, MessageCircle } from 'lucide-react';
 import { IMAGES } from './image_constant';
+
+const WHATSAPP_NUMBER = '919148974009';
+
+function getWhatsAppLink(message: string) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 
 interface BranchDetailProps {
   branchId: string;
   onBack: () => void;
 }
 
-const branchData: Record<string, {
+export const branchData: Record<string, {
 
   name: string;
 
@@ -34,6 +40,8 @@ const branchData: Record<string, {
   pricing?: { duration: string; price: string }[];
 
   mapUrl: string;
+
+  mapsLink: string;
 
 }> = {
 
@@ -65,7 +73,7 @@ const branchData: Record<string, {
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -157,6 +165,8 @@ const branchData: Record<string, {
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.59!3d12.87!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUyJzEyLjAiTiA3N8KwMzUnMjQuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/XKryGG1gFoAJpgUL7?g_st=ac',
+
   },
 
   'vijaya-bank-layout': {
@@ -187,7 +197,7 @@ const branchData: Record<string, {
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -277,6 +287,8 @@ const branchData: Record<string, {
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.60!3d12.88!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUyJzQ4LjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/U9SGXjKByrrZr3EN7?g_st=ac',
+
   },
 
   'btm-layout-1': {
@@ -294,17 +306,17 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     hours: [
 
-      { day: 'Monday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Monday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Tuesday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Tuesday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Wednesday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Wednesday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Thursday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Thursday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Friday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Friday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Saturday', time: '5:30 AM – 11:00 PM' },
+      { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
       { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
@@ -384,6 +396,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.61!3d12.89!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUzJzI0LjAiTiA3N8KwMzYnMzYuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/12ugVxTwMYAHkgrZA?g_st=ac',
+
   },
 
   'btm-layout-2': {
@@ -414,7 +428,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -496,6 +510,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.62!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzcnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/oHZDcSENCPx86TMJ7?g_st=ac',
+
   },
 
   'wilson-garden': {
@@ -526,7 +542,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -604,6 +620,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.58!3d12.95!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU3JzAwLjAiTiA3N8KwMzQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/6yza43p2DJmX9stb7',
+
   },
 
   'vijayanagar': {
@@ -634,7 +652,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -714,6 +732,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.57!3d12.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUxJzM2LjAiTiA3N8KwMzQnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/PHcJbpHfeF8nPHZAA?g_st=ac',
+
   },
 
   'akshayanagar': {
@@ -744,7 +764,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 09:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -836,6 +856,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.63!3d12.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDUxJzAwLjAiTiA3N8KwMzcnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/SfTTMEdjzdjsesRU9?g_st=ac',
+
   },
 
   'sarjapur-road': {
@@ -866,7 +888,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 10:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -954,6 +976,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.66!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzknMzYuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/aqFxt3q8RMwPYbmH7?g_st=ac',
+
   },
 
   'kasavanahalli': {
@@ -984,7 +1008,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
       { day: 'Saturday', time: '5:00 AM – 11:00 PM' },
 
-      { day: 'Sunday', time: '7:00 AM – 10:00 PM' },
+      { day: 'Sunday', time: '6:00 AM – 10:00 PM' },
 
     ],
 
@@ -1078,6 +1102,8 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.67!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzA1LjAiTiA3N8KwNDAnMjEuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
+    mapsLink: 'https://maps.app.goo.gl/V4mjLpWDW9zsA6FZ7?g_st=ac',
+
   },
 
 };
@@ -1169,9 +1195,9 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
       {/* Floating Call to Action Bar */}
       <div className={`max-w-7xl mx-auto px-4 md:px-12 lg:px-16 -mt-10 relative z-20 mb-12 transition-all duration-700 delay-900 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl grid md:grid-cols-2 gap-4">
+        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl grid md:grid-cols-3 gap-4">
           <button className="w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-orange-500/20 hover:shadow-orange-500/40 transform hover:-translate-y-1 active:translate-y-0">
-            Book Your Free Trial Now
+            Start Your Fitness Journey
           </button>
           <a
             href={`tel:${branch.phone}`}
@@ -1179,6 +1205,17 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           >
             <Phone size={16} className="text-orange-500" />
             Call Front Desk
+          </a>
+          <a
+            href={getWhatsAppLink(
+              `Hi, I'd like to reach out about ${branch.name}. Please share more details.`
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-5 px-8 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-xl shadow-[#25D366]/20 hover:shadow-[#25D366]/40 flex items-center justify-center gap-3 transform hover:-translate-y-1 active:translate-y-0"
+          >
+            <MessageCircle size={16} />
+            Reach Out on WhatsApp
           </a>
         </div>
       </div>
@@ -1380,21 +1417,21 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   </div>
 
   {/* Trainer Cards */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
     {branch.team.map((member, index) => (
       <div
         key={index}
         className="bg-[#111] border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-2"
       >
         {/* Trainer Image */}
-        <div className="relative h-[340px] overflow-hidden">
+        <div className="relative aspect-[3/4] overflow-hidden bg-[#0a0a0a]">
           <img
             src={member.image}
             alt={member.name}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
         </div>
 
         {/* Trainer Details */}
@@ -1443,7 +1480,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
             <div className="mt-10 max-w-2xl mx-auto">
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.address)}`}
+                href={branch.mapsLink}
                 target="_blank"
                 rel="noreferrer"
                 className="group/btn w-full bg-orange-500 hover:bg-orange-600 text-black font-bold py-6 px-10 rounded-2xl text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60 transform hover:-translate-y-2 active:translate-y-0"
