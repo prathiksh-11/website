@@ -1,19 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { useIntersectionObserver, useCountUp } from '../hooks/useIntersectionObserver';
 import { IMAGES } from './image_constant';
 import { branchData } from './BranchDetail';
-import { MapPin, Navigation, X } from 'lucide-react';
+import { MapPin, Navigation, X, ArrowRight } from 'lucide-react';
 
 const branchCoords: Record<string, { lat: number; lng: number }> = {
-  'arekere': { lat: 12.9077, lng: 77.6176 },
+  arekere: { lat: 12.9077, lng: 77.6176 },
   'vijaya-bank-layout': { lat: 12.9165, lng: 77.6101 },
   'btm-layout-1': { lat: 12.9135, lng: 77.6089 },
   'btm-layout-2': { lat: 12.9142, lng: 77.6095 },
   'wilson-garden': { lat: 12.9519, lng: 77.5944 },
-  'vijayanagar': { lat: 12.9716, lng: 77.5375 },
-  'akshayanagar': { lat: 12.9077, lng: 77.6317 },
+  vijayanagar: { lat: 12.9716, lng: 77.5375 },
+  akshayanagar: { lat: 12.9077, lng: 77.6317 },
   'sarjapur-road': { lat: 12.9299, lng: 77.6838 },
-  'kasavanahalli': { lat: 12.9014, lng: 77.6725 },
+  kasavanahalli: { lat: 12.9014, lng: 77.6725 },
 };
 
 const branches = Object.entries(branchData)
@@ -26,12 +25,15 @@ const branches = Object.entries(branchData)
   }));
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371; // Earth's radius in km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -40,7 +42,7 @@ function findNearestBranch(userLat: number, userLng: number) {
   let nearest = branches[0];
   let minDistance = Infinity;
 
-  branches.forEach(branch => {
+  branches.forEach((branch) => {
     const distance = calculateDistance(userLat, userLng, branch.lat, branch.lng);
     if (distance < minDistance) {
       minDistance = distance;
@@ -51,61 +53,23 @@ function findNearestBranch(userLat: number, userLng: number) {
   return { branch: nearest, distance: minDistance };
 }
 
-const particles = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: Math.random() * 3 + 1,
-  delay: Math.random() * 5,
-  duration: Math.random() * 8 + 6,
-  opacity: Math.random() * 0.6 + 0.2,
-}));
-
-interface StatItemProps {
-  value: number;
-  suffix: string;
-  label: string;
-  start: boolean;
-}
-
-function StatItem({ value, suffix, label, start }: StatItemProps) {
-  const count = useCountUp(value, 2000, start);
-  return (
-    <div className="text-center">
-      <div className="text-3xl md:text-4xl font-black gradient-text-blue">
-        {count}{suffix}
-      </div>
-      <div className="text-xs text-white/40 tracking-widest uppercase mt-1">{label}</div>
-    </div>
-  );
-}
-
 export default function Hero() {
-  const { ref: statsRef, isVisible: statsVisible } = useIntersectionObserver<HTMLDivElement>({ threshold: 0.3 });
   const heroRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
-  const [, setCurrentTransformation] = useState(0);
-  const [nearestBranch, setNearestBranch] = useState<{ id: string; name: string; distance: number } | null>(null);
+  const [nearestBranch, setNearestBranch] = useState<{
+    id: string;
+    name: string;
+    distance: number;
+  } | null>(null);
   const [showLocationBar, setShowLocationBar] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
   const [locationDenied, setLocationDenied] = useState(false);
 
-  const beforeImages = Object.values(IMAGES.Before);
-
-  // Auto-rotate transformations
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTransformation((prev) => (prev + 1) % beforeImages.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [beforeImages.length]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoaded(true), 100);
+    const timer = setTimeout(() => setLoaded(true), 80);
     return () => clearTimeout(timer);
   }, []);
 
-  // Detect user location and find nearest branch
   useEffect(() => {
     if (!navigator.geolocation) {
       setLocationLoading(false);
@@ -127,9 +91,7 @@ export default function Hero() {
       },
       (error) => {
         setLocationLoading(false);
-        if (error.code === 1) { // Permission denied
-          setLocationDenied(true);
-        }
+        if (error.code === 1) setLocationDenied(true);
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -165,170 +127,182 @@ export default function Hero() {
     );
   };
 
-  useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    const onMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { width, height, left, top } = el.getBoundingClientRect();
-      const x = ((clientX - left) / width - 0.5) * 20;
-      const y = ((clientY - top) / height - 0.5) * 20;
-      el.style.setProperty('--mouse-x', `${x}px`);
-      el.style.setProperty('--mouse-y', `${y}px`);
-    };
-    el.addEventListener('mousemove', onMouseMove);
-    return () => el.removeEventListener('mousemove', onMouseMove);
-  }, []);
-
-
   return (
-    <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-[#050505]">
-      {/* Animated background glows */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 animate-gradient"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,107,53,0.4) 0%, transparent 70%)',
-            filter: 'blur(80px)',
-          }}
+    <section ref={heroRef} className="relative min-h-screen flex items-end overflow-hidden">
+      {/* Full-bleed banner */}
+      <div className="absolute inset-0">
+        <img
+          src={IMAGES.bannerImage}
+          alt=""
+          className={`hero-banner-img w-full h-full object-cover object-[68%_center] transition-opacity duration-[1.4s] ease-out ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          loading="eager"
         />
         <div
-          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full opacity-15 animate-float-slow"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,184,0,0.3) 0%, transparent 70%)',
-            filter: 'blur(80px)',
-            animationDelay: '3s',
-          }}
+          className={`absolute inset-0 bg-gradient-to-t from-[#16181f]/75 via-[#16181f]/20 to-[#16181f]/10 transition-opacity duration-[1.6s] ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
         />
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,107,53,0.2) 0%, transparent 60%)',
-            filter: 'blur(120px)',
-          }}
+          className={`absolute inset-0 bg-gradient-to-r from-[#16181f]/55 via-[#16181f]/15 to-transparent transition-opacity duration-[1.8s] delay-100 ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
         />
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#e07a72]/12" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f7f8fb] to-transparent" />
       </div>
 
-      {/* Particles */}
+      {/* Soft floating light sparks */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {particles.map((p) => (
-          <div
-            key={p.id}
-            className="absolute rounded-full"
+        {[...Array(8)].map((_, i) => (
+          <span
+            key={i}
+            className="hero-spark absolute rounded-full"
             style={{
-              left: `${p.x}%`,
-              top: `${p.y}%`,
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              background: p.id % 3 === 0 ? '#ff6b35' : p.id % 3 === 1 ? '#ffb800' : '#ffffff',
-              opacity: p.opacity,
-              animation: `float ${p.duration}s ease-in-out ${p.delay}s infinite`,
-              boxShadow: `0 0 ${p.size * 3}px currentColor`,
+              left: `${12 + i * 10}%`,
+              top: `${20 + (i % 4) * 18}%`,
+              width: i % 2 === 0 ? 4 : 3,
+              height: i % 2 === 0 ? 4 : 3,
+              animationDelay: `${i * 0.7}s`,
+              animationDuration: `${5 + (i % 3)}s`,
             }}
           />
         ))}
       </div>
 
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-5"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,107,53,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,107,53,0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '80px 80px',
-        }}
-      />
-
-      {/* Hero image */}
-      <div className="absolute inset-0 pointer-events-none">
-        <img
-          src={IMAGES.bannerImage}
-          alt=""
-          className="w-full h-full object-cover opacity-[0.9]"
-          loading="eager"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/60 to-transparent hidden md:block" />
-        <div className="absolute inset-0 bg-black/60 md:hidden" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-32 pb-12 md:pt-24 flex flex-col items-center md:items-start text-center md:text-left">
-        {/* Heading */}
-        <div className="max-w-4xl">
-          <h1
-            className={`font-black leading-[1.15] tracking-tight mb-4 transition-all duration-1000 delay-100 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-32 pb-24 md:pb-32">
+        <div className="max-w-2xl">
+          <div
+            className={`section-ornament mb-6 ${loaded ? 'hero-fade-up' : 'opacity-0'}`}
+            style={{ animationDelay: '0.15s' }}
           >
-            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] text-white">ELEVATE YOUR</span>
-            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] gradient-text-gold">PERFORMANCE</span>
-            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] text-white">TO THE</span>
-            <span className="block text-[clamp(1.5rem,8vw,4.5rem)] shimmer-text">GAME ON FITNESS.</span>
+            <span className="font-display italic text-base md:text-lg text-[#f0a8a2] tracking-wide drop-shadow-sm">
+              Game On Fitness
+            </span>
+          </div>
+
+          <h1
+            className="font-display font-bold leading-[1.08] tracking-tight text-white mb-7"
+            style={{ textShadow: '0 8px 40px rgba(0,0,0,0.35)' }}
+          >
+            <span
+              className={`block text-[clamp(2.6rem,7.5vw,5.2rem)] overflow-hidden ${
+                loaded ? '' : 'opacity-0'
+              }`}
+            >
+              <span
+                className={`inline-block ${loaded ? 'hero-line-reveal' : ''}`}
+                style={{ animationDelay: '0.35s' }}
+              >
+                Move beautifully.
+              </span>
+            </span>
+            <span
+              className={`block text-[clamp(2.6rem,7.5vw,5.2rem)] italic text-[#f2b4ae] overflow-hidden ${
+                loaded ? '' : 'opacity-0'
+              }`}
+            >
+              <span
+                className={`inline-block ${loaded ? 'hero-line-reveal' : ''}`}
+                style={{ animationDelay: '0.55s' }}
+              >
+                Train powerfully.
+              </span>
+            </span>
           </h1>
-        </div>
 
-        {/* Subtitle */}
-        <p
-          className={`text-sm md:text-lg text-white/50 max-w-2xl leading-relaxed mb-10 transition-all duration-1000 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          <div
+            className={`h-[2px] mb-7 rounded-full overflow-hidden ${
+              loaded ? 'hero-accent-line' : 'opacity-0 w-0'
             }`}
-        >
-          World-class fitness centers engineered for peak human performance.
-          Transform your body. Elevate your mind. Redefine your limits.
-        </p>
+          >
+            <div className="h-full w-full bg-gradient-to-r from-[#e07a72] via-[#f2b4ae] to-transparent hero-accent-shimmer" />
+          </div>
 
-
-        <div
-          ref={statsRef}
-          className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12 transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          <p
+            className={`text-base md:text-lg text-white/75 max-w-md leading-relaxed mb-10 ${
+              loaded ? 'hero-fade-up' : 'opacity-0'
             }`}
-        >
-          <StatItem value={10} suffix="+" label="Elite Branches" start={statsVisible} />
-          <StatItem value={15} suffix="K+" label="Active Members" start={statsVisible} />
-          <StatItem value={98} suffix="%" label="Success Rate" start={statsVisible} />
-          <StatItem value={10} suffix="+" label="Years of Excellence" start={statsVisible} />
-        </div>
-      </div>
+            style={{
+              textShadow: '0 4px 20px rgba(0,0,0,0.35)',
+              animationDelay: '0.75s',
+            }}
+          >
+            Premium fitness clubs across Bengaluru — designed for people who take their
+            body, mind, and style seriously.
+          </p>
 
-      <div className="absolute bottom-0 left-0 right-0">
-        <div className="divider-glow mb-0" />
-        <div className="glass py-3">
-          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <div className="flex items-center gap-6 overflow-x-auto hide-scrollbar">
-              {['State-of-the-Art Equipment', '18/7 Access', 'Expert Trainers', 'Nutrition Plans', 'Personal Coaching'].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 whitespace-nowrap">
-                  <div className="w-1 h-1 rounded-full bg-[#ff6b35]" />
-                  <span className="text-xs text-white/50 tracking-wider uppercase">{item}</span>
-                </div>
-              ))}
-            </div>
+          <div
+            className={`flex flex-wrap items-center gap-4 ${
+              loaded ? 'hero-fade-up' : 'opacity-0'
+            }`}
+            style={{ animationDelay: '0.95s' }}
+          >
+            <button
+              onClick={() =>
+                document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' })
+              }
+              className="hero-cta-primary group inline-flex items-center gap-2 text-sm font-semibold px-8 py-4 rounded-full text-white"
+            >
+              Explore Clubs
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </button>
+            <button
+              onClick={() =>
+                document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })
+              }
+              className="hero-cta-secondary text-sm font-semibold px-8 py-4 rounded-full text-white"
+            >
+              Our Story
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Location Permission Prompt */}
+      {/* Scroll hint */}
+      <button
+        onClick={() =>
+          document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })
+        }
+        className={`absolute bottom-10 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-white/50 hover:text-white/80 transition-colors ${
+          loaded ? 'hero-fade-up' : 'opacity-0'
+        }`}
+        style={{ animationDelay: '1.3s' }}
+        aria-label="Scroll down"
+      >
+        <span className="text-[10px] uppercase tracking-[0.25em] font-medium">Scroll</span>
+        <span className="hero-scroll-mouse relative w-5 h-8 rounded-full border border-white/35">
+          <span className="absolute top-1.5 left-1/2 -translate-x-1/2 w-1 h-1.5 rounded-full bg-white/70" />
+        </span>
+      </button>
+
       {locationDenied && (
-        <div className="fixed top-20 right-4 z-50 animate-slide-in-right">
-          <div className="relative glass rounded-xl p-4 min-w-[280px] border border-white/10 shadow-xl">
+        <div className="fixed top-24 right-4 z-50 animate-slide-in-right">
+          <div className="relative glass rounded-2xl p-4 min-w-[280px]">
             <button
               onClick={() => setLocationDenied(false)}
-              className="absolute top-2 right-2 w-6 h-6 rounded-md hover:bg-white/10 flex items-center justify-center text-white/30 hover:text-white/60 transition-all"
+              className="absolute top-2 right-2 w-6 h-6 rounded-md hover:bg-black/5 flex items-center justify-center text-[#6f7685]"
             >
               <X size={12} />
             </button>
-
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 flex items-center justify-center flex-shrink-0">
-                <MapPin size={18} className="text-[#ffb800]" />
+              <div className="w-10 h-10 rounded-xl bg-[#f6e4e1] flex items-center justify-center flex-shrink-0">
+                <MapPin size={18} className="text-[#e07a72]" />
               </div>
-
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Location Required</p>
-                <h4 className="text-white font-bold text-sm mb-2">Enable to find nearest branch</h4>
+                <p className="text-[10px] text-[#6f7685] uppercase tracking-wider mb-0.5">
+                  Location
+                </p>
+                <h4 className="text-[#16181f] font-semibold text-sm mb-2">
+                  Enable to find nearest club
+                </h4>
                 <button
                   onClick={requestLocation}
-                  className="w-full py-2 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 text-[#ffb800] text-xs font-semibold hover:bg-[#ffb800]/25 transition-all duration-200"
+                  className="w-full py-2 rounded-xl bg-[#16181f] text-white text-xs font-semibold hover:bg-[#e07a72] transition-all"
                 >
                   Enable Location
                 </button>
@@ -338,41 +312,40 @@ export default function Hero() {
         </div>
       )}
 
-      {/* Nearest Branch Notification */}
       {!locationLoading && nearestBranch && showLocationBar && (
-        <div className="fixed top-20 right-4 z-50 animate-slide-in-right">
-          <div className="relative glass rounded-xl p-4 min-w-[280px] border border-white/10 shadow-xl">
+        <div className="fixed top-24 right-4 z-50 animate-slide-in-right">
+          <div className="relative glass rounded-2xl p-4 min-w-[280px]">
             <button
               onClick={() => setShowLocationBar(false)}
-              className="absolute top-2 right-2 w-6 h-6 rounded-md hover:bg-white/10 flex items-center justify-center text-white/30 hover:text-white/60 transition-all"
+              className="absolute top-2 right-2 w-6 h-6 rounded-md hover:bg-black/5 flex items-center justify-center text-[#6f7685]"
             >
               <X size={12} />
             </button>
-
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 flex items-center justify-center flex-shrink-0">
-                <Navigation size={18} className="text-[#ffb800]" />
+              <div className="w-10 h-10 rounded-xl bg-[#f6e4e1] flex items-center justify-center flex-shrink-0">
+                <Navigation size={18} className="text-[#e07a72]" />
               </div>
-
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Nearest Branch</p>
-                <h4 className="text-white font-bold text-sm truncate">{nearestBranch.name}</h4>
-                <p className="text-xs text-white/50 flex items-center gap-1 mt-0.5">
-                  <MapPin size={11} className="text-[#ffb800] flex-shrink-0" />
+                <p className="text-[10px] text-[#6f7685] uppercase tracking-wider mb-0.5">
+                  Nearest Club
+                </p>
+                <h4 className="text-[#16181f] font-semibold text-sm truncate">
+                  {nearestBranch.name}
+                </h4>
+                <p className="text-xs text-[#6f7685] flex items-center gap-1 mt-0.5">
+                  <MapPin size={11} className="text-[#e07a72] flex-shrink-0" />
                   {nearestBranch.distance < 1
                     ? `${Math.round(nearestBranch.distance * 1000)}m`
-                    : `${nearestBranch.distance.toFixed(1)} km`
-                  }
+                    : `${nearestBranch.distance.toFixed(1)} km`}
                 </p>
               </div>
             </div>
-
             <button
               onClick={() => {
                 window.location.hash = `#branch/${nearestBranch.id}`;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="w-full mt-3 py-2 rounded-lg bg-[#ffb800]/15 border border-[#ffb800]/30 text-[#ffb800] text-xs font-semibold hover:bg-[#ffb800]/25 transition-all duration-200"
+              className="w-full mt-3 py-2 rounded-xl bg-[#16181f] text-white text-xs font-semibold hover:bg-[#e07a72] transition-all"
             >
               View Details →
             </button>

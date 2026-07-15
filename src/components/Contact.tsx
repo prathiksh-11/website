@@ -65,9 +65,9 @@ export default function Contact() {
         {/* Header */}
         <div ref={headRef} className="text-center mb-20">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
-            <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ff6b35] mb-4 block">Begin Today</span>
+            <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#e07a72] mb-4 block">Begin Today</span>
             <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-6">
-              <span className="text-white">START YOUR</span>
+              <span className="text-[#16181f]">START YOUR</span>
               <br />
               <span className="gradient-text-blue">TRANSFORMATION.</span>
             </h2>
@@ -78,8 +78,8 @@ export default function Contact() {
         <div className="grid lg:grid-cols-5 gap-12 items-start">
           {/* Left — Info */}
           <div ref={leftRef} className={`lg:col-span-2 reveal-left ${leftVisible ? 'visible' : ''}`}>
-            <h3 className="text-2xl font-bold text-white mb-3">Let's Talk.</h3>
-            <p className="text-white/50 leading-relaxed mb-10 text-sm">
+            <h3 className="text-2xl font-bold text-[#16181f] mb-3">Let's Talk.</h3>
+            <p className="text-[#6f7685] leading-relaxed mb-10 text-sm">
               Whether you're ready to join, want a tour, or just have questions — our team is here to help
               you take the first step.
             </p>
@@ -89,15 +89,15 @@ export default function Contact() {
               {contactInfo.map(({ Icon, label, value, sub }, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 glass rounded-xl p-4 card-hover"
+                  className="flex items-center gap-4 bg-white border border-[rgba(18,20,26,0.06)] rounded-xl p-4 card-hover"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#ff6b35]/10 border border-[#ff6b35]/20 flex items-center justify-center flex-shrink-0">
-                    <Icon size={18} className="text-[#ff6b35]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#e07a72]/10 border border-[#e07a72]/20 flex items-center justify-center flex-shrink-0">
+                    <Icon size={18} className="text-[#e07a72]" />
                   </div>
                   <div>
-                    <p className="text-xs text-white/40 uppercase tracking-wider">{label}</p>
-                    <p className="text-sm font-semibold text-white">{value}</p>
-                    <p className="text-xs text-white/30">{sub}</p>
+                    <p className="text-xs text-[#6f7685] uppercase tracking-wider">{label}</p>
+                    <p className="text-sm font-semibold text-[#16181f]">{value}</p>
+                    <p className="text-xs text-[#9aa0ab]">{sub}</p>
                   </div>
                 </div>
               ))}
@@ -105,12 +105,12 @@ export default function Contact() {
 
             {/* Social links */}
             <div>
-              <p className="text-xs text-white/40 uppercase tracking-widest mb-4">Follow Us</p>
+              <p className="text-xs text-[#6f7685] uppercase tracking-widest mb-4">Follow Us</p>
               <div className="grid grid-cols-2 gap-3">
                 {socials.map(({ Icon, label, handle, color }, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 glass rounded-xl p-3 cursor-pointer group card-hover"
+                    className="flex items-center gap-3 bg-white border border-[rgba(18,20,26,0.06)] rounded-xl p-3 cursor-pointer group card-hover"
                   >
                     <div
                       className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300"
@@ -122,8 +122,8 @@ export default function Contact() {
                       <Icon size={14} style={{ color }} />
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-white/70 group-hover:text-white transition-colors">{label}</p>
-                      <p className="text-xs text-white/30">{handle}</p>
+                      <p className="text-xs font-semibold text-[#3a3f4b] group-hover:text-[#16181f] transition-colors">{label}</p>
+                      <p className="text-xs text-[#9aa0ab]">{handle}</p>
                     </div>
                   </div>
                 ))}
@@ -133,7 +133,7 @@ export default function Contact() {
 
           {/* Right — Form */}
           <div ref={rightRef} className={`lg:col-span-3 reveal-right ${rightVisible ? 'visible' : ''}`}>
-            <div className="glass-strong rounded-3xl p-8 md:p-10 relative overflow-hidden">
+            <div className="bg-white border border-[rgba(18,20,26,0.06)]-card rounded-3xl p-8 md:p-10 relative overflow-hidden">
               {/* Corner glow */}
               <div
                 className="absolute -top-20 -right-20 w-40 h-40 rounded-full pointer-events-none"
@@ -145,22 +145,22 @@ export default function Contact() {
 
               {status === 'success' ? (
                 <div className="text-center py-16">
-                  <div className="w-16 h-16 rounded-full bg-[#ff6b35]/10 border border-[#ff6b35]/30 flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
-                    <CheckCircle size={28} className="text-[#ff6b35]" />
+                  <div className="w-16 h-16 rounded-full bg-[#e07a72]/10 border border-[#e07a72]/30 flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
+                    <CheckCircle size={28} className="text-[#e07a72]" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">Message Received!</h3>
-                  <p className="text-white/50 text-sm">Our team will reach out within 2 hours to schedule your free assessment.</p>
+                  <h3 className="text-2xl font-bold text-[#16181f] mb-3">Message Received!</h3>
+                  <p className="text-[#6f7685] text-sm">Our team will reach out within 2 hours to schedule your free assessment.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-1">Free Performance Assessment</h3>
-                    <p className="text-xs text-white/40">No commitment required. Just results-driven conversation.</p>
+                    <h3 className="text-xl font-bold text-[#16181f] mb-1">Free Performance Assessment</h3>
+                    <p className="text-xs text-[#6f7685]">No commitment required. Just results-driven conversation.</p>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Full Name *</label>
+                      <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">Full Name *</label>
                       <input
                         type="text"
                         name="name"
@@ -172,7 +172,7 @@ export default function Contact() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Email *</label>
+                      <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">Email *</label>
                       <input
                         type="email"
                         name="email"
@@ -187,7 +187,7 @@ export default function Contact() {
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Phone</label>
+                      <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">Phone</label>
                       <input
                         type="tel"
                         name="phone"
@@ -198,7 +198,7 @@ export default function Contact() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Primary Goal</label>
+                      <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">Primary Goal</label>
                       <select
                         name="goal"
                         value={form.goal}
@@ -215,7 +215,7 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Tell Us About Yourself</label>
+                    <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">Tell Us About Yourself</label>
                     <textarea
                       name="message"
                       value={form.message}
@@ -244,7 +244,7 @@ export default function Contact() {
                     )}
                   </button>
 
-                  <p className="text-center text-xs text-white/25">
+                  <p className="text-center text-xs text-[#9aa0ab]">
                     By submitting, you agree to our Privacy Policy. No spam, ever.
                   </p>
                 </form>

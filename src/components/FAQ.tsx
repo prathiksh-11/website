@@ -36,7 +36,7 @@ It is important to remember that targeting specific muscle groups should be done
   },
   {
     q: 'Is it necessary to use supplements?',
-    a: "It is not always necessary to use supplements as long as they maintain a balanced diet and live a healthy lifestyle. In some cases, supplements can be recommended by healthcare professionals to address nutrient deficiencies or medical conditions. It is important to consult with a healthcare provider before starting any supplement regimen.",
+    a: 'It is not always necessary to use supplements as long as they maintain a balanced diet and live a healthy lifestyle. In some cases, supplements can be recommended by healthcare professionals to address nutrient deficiencies or medical conditions. It is important to consult with a healthcare provider before starting any supplement regimen.',
   },
   {
     q: 'What are the benefits of strength training?',
@@ -55,12 +55,12 @@ It is important to remember that targeting specific muscle groups should be done
   },
   {
     q: 'Can I build muscle without lifting heavy weights?',
-    a: "Yes, it is possible to build muscle without lifting heavy weights. Resistance training can be done with various tools such as resistance bands, bodyweight exercises, or even household items like water bottles or cans. It is also important to focus on proper nutrition and adequate rest to support muscle growth.",
+    a: 'Yes, it is possible to build muscle without lifting heavy weights. Resistance training can be done with various tools such as resistance bands, bodyweight exercises, or even household items like water bottles or cans. It is also important to focus on proper nutrition and adequate rest to support muscle growth.',
   },
 ];
 
 interface FAQItemProps {
-  faq: typeof faqs[0];
+  faq: (typeof faqs)[0];
   index: number;
   isOpen: boolean;
   onToggle: () => void;
@@ -71,51 +71,44 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
   return (
     <div
       className={`reveal ${isVisible ? 'visible' : ''}`}
-      style={{ transitionDelay: `${index * 0.07}s` }}
+      style={{ transitionDelay: `${index * 0.06}s` }}
     >
       <div
-        className={`rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer group ${isOpen
-            ? 'glass-strong border border-[#ff6b35]/20'
-            : 'glass border border-white/5 hover:border-white/10'
-          }`}
+        className={`rounded-2xl overflow-hidden transition-all duration-400 cursor-pointer group border ${
+          isOpen
+            ? 'bg-white border-[#e07a72]/30 shadow-[0_16px_40px_rgba(224,122,114,0.1)] -translate-y-0.5'
+            : 'bg-white/70 border-[rgba(18,20,26,0.06)] hover:border-[#e07a72]/20 hover:shadow-[0_12px_30px_rgba(22,24,31,0.06)] hover:-translate-y-0.5'
+        }`}
         onClick={onToggle}
-        style={{
-          boxShadow: isOpen ? '0 0 30px rgba(0, 212, 255, 0.05)' : 'none',
-        }}
       >
-        {/* Question row */}
-        <div className="flex items-center gap-4 p-6">
+        <div className="flex items-center gap-4 p-5 md:p-6">
           <div
-            className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen
-                ? 'bg-[#ff6b35]/20 border border-[#ff6b35]/40'
-                : 'bg-white/5 border border-white/10 group-hover:border-white/20'
-              }`}
+            className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-400 ${
+              isOpen
+                ? 'bg-[#e07a72] text-white rotate-180'
+                : 'bg-[#f6e4e1] text-[#e07a72] group-hover:scale-110'
+            }`}
           >
-            {isOpen ? (
-              <Minus size={14} className="text-[#ff6b35]" />
-            ) : (
-              <Plus size={14} className="text-white/50 group-hover:text-white/80 transition-colors" />
-            )}
+            {isOpen ? <Minus size={14} /> : <Plus size={14} />}
           </div>
 
           <h3
-            className={`text-sm md:text-base font-semibold leading-relaxed transition-colors duration-300 ${isOpen ? 'text-white' : 'text-white/70 group-hover:text-white/90'
-              }`}
+            className={`text-sm md:text-base font-semibold leading-relaxed transition-colors duration-300 ${
+              isOpen ? 'text-[#16181f]' : 'text-[#3a3f4b] group-hover:text-[#16181f]'
+            }`}
           >
             {faq.q}
           </h3>
 
-          {/* Index number */}
-          <span className="ml-auto flex-shrink-0 text-xs font-mono text-white/20">
+          <span className="ml-auto flex-shrink-0 text-xs font-mono text-[#c4c8d0]">
             {String(index + 1).padStart(2, '0')}
           </span>
         </div>
 
-        {/* Answer */}
         <div className={`accordion-content ${isOpen ? 'open' : ''}`}>
           <div className="px-6 pb-6 md:ml-12">
-            <div className="w-8 h-px bg-[#ff6b35]/30 mb-4" />
-            <p className="text-white/55 leading-relaxed text-sm whitespace-pre-line">{faq.a}</p>
+            <div className="w-8 h-px bg-[#e07a72]/30 mb-4" />
+            <p className="text-[#6f7685] leading-relaxed text-sm whitespace-pre-line">{faq.a}</p>
           </div>
         </div>
       </div>
@@ -126,39 +119,34 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const { ref: headRef, isVisible: headVisible } = useIntersectionObserver<HTMLDivElement>();
-  const { ref: listRef, isVisible: listVisible } = useIntersectionObserver<HTMLDivElement>({ threshold: 0.05 });
+  const { ref: listRef, isVisible: listVisible } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.05,
+  });
 
   return (
-    <section id="faq" className="relative py-32 bg-[#050505] overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
-          style={{
-            background: 'radial-gradient(circle, rgba(0,212,255,0.5) 0%, transparent 70%)',
-            filter: 'blur(100px)',
-          }}
-        />
-      </div>
-
-      <div className="max-w-4xl mx-auto px-6">
-        {/* Header */}
-        <div ref={headRef} className="text-center mb-16">
+    <section id="faq" className="relative py-24 md:py-36 atmosphere overflow-hidden">
+      <div
+        className="soft-blob w-[380px] h-[380px] top-10 left-1/2 -translate-x-1/2"
+        style={{ background: 'rgba(224,122,114,0.12)' }}
+      />
+      <div className="max-w-3xl mx-auto px-6 relative">
+        <div ref={headRef} className="text-center mb-14">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
-            <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ff6b35] mb-4 block">Got Questions?</span>
-            <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none mb-6">
-              <span className="text-white">EVERY</span>
-              <br />
-              <span className="gradient-text-blue">ANSWER.</span>
+            <div className="section-ornament justify-center mb-5">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+                Got Questions?
+              </span>
+            </div>
+            <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f] mb-5">
+              Clear <span className="italic text-[#e07a72]">answers.</span>
             </h2>
-            <div className="divider-glow max-w-xs mx-auto mb-6" />
-            <p className="text-white/50 max-w-md mx-auto leading-relaxed">
-              Everything you need to know about GAME ON FITNESS membership, facilities, and programs.
+            <p className="text-[#6f7685] max-w-md mx-auto leading-relaxed text-lg">
+              Everything you need to know about GAME ON FITNESS membership, facilities, and
+              programs.
             </p>
           </div>
         </div>
 
-        {/* FAQ List */}
         <div ref={listRef} className="space-y-3">
           {faqs.map((faq, i) => (
             <FAQItem
@@ -171,9 +159,6 @@ export default function FAQ() {
             />
           ))}
         </div>
-
-        {/* Bottom CTA */}
-        
       </div>
     </section>
   );
