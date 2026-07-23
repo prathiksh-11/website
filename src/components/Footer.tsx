@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Instagram, MessageCircle, ArrowUpRight } from 'lucide-react';
 
 const navLinks = [
@@ -125,6 +126,14 @@ export default function Footer() {
                   </button>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/privacy"
+                  className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -164,7 +173,15 @@ export default function Footer() {
           <p className="text-white/30 text-xs">
             © {new Date().getFullYear()} Game On Fitness. All rights reserved.
           </p>
-          <p className="text-white/25 text-xs font-display italic">Move beautifully.</p>
+          <div className="flex items-center gap-5">
+            <Link
+              to="/privacy"
+              className="text-white/35 text-xs hover:text-[#f2b4ae] transition-colors duration-300"
+            >
+              Privacy Policy
+            </Link>
+            <p className="text-white/25 text-xs font-display italic">Move beautifully.</p>
+          </div>
         </div>
       </div>
     </footer>
