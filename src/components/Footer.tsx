@@ -96,6 +96,14 @@ export default function Footer() {
                   Privacy Policy
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/account-deletion"
+                  className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
+                >
+                  Account Deletion
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -193,9 +201,20 @@ export default function Footer() {
           <p className="text-white/30 text-xs">
             © {new Date().getFullYear()} Game On Fitness. All Rights Reserved.
           </p>
-          <p className="text-white/25 text-xs font-display italic">
-            Stronger than yesterday.
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/privacy"
+              className="text-white/35 text-xs hover:text-[#f2b4ae] transition-colors duration-300"
+            >
+              Privacy
+            </Link>
+            <Link
+              to="/account-deletion"
+              className="text-white/35 text-xs hover:text-[#f2b4ae] transition-colors duration-300"
+            >
+              Delete Account
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
