@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, ChevronDown, MapPin } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import BackToTop from './BackToTop';
@@ -10,93 +9,65 @@ import { IMAGES } from './image_constant';
 const destinations = [
   {
     id: 'btm-layout-1',
-    name: 'BTM Layout',
-    tagline: 'Built for Strength.',
-    lines: [
-      'Heavy lifting.',
-      'Functional training.',
-      'Performance-focused environment.',
-      'For people who love pushing limits.',
-    ],
+    name: 'Game On Fitness Premium Club - BTM 1st Stage',
+    address:
+      'Gangotri Bar And Restaurant, Ground, 8th Cross Rd, Old Madiwala, Maruti Nagar, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka 560068',
     image: IMAGES.Branches.btm1,
   },
   {
     id: 'btm-layout-2',
-    name: 'BTM 2nd Stage',
-    tagline: 'Built for Performance.',
-    lines: [
-      'Premium equipment.',
-      'Progressive training.',
-      'Expert coaching.',
-      'Designed for serious fitness goals.',
-    ],
+    name: 'Game On Fitness Premium Club - BTM 2nd Stage',
+    address:
+      '689-670, 2nd Floor, 7th Main, 7th Cross Rd, BTM Layout 2nd Stage, Bengaluru, Karnataka 560076',
     image: IMAGES.Branches.btm2,
   },
   {
     id: 'vijayanagar',
-    name: 'Vijayanagar',
-    tagline: 'Built for Community.',
-    lines: [
-      'Friendly.',
-      'Energetic.',
-      'Welcoming.',
-      'A place where every member belongs.',
-    ],
+    name: 'Game On Fitness Premium Club - Vijayanagar',
+    address:
+      '119, 1st Floor, 6th Main, 8th Cross Rd, next to BGS Stadium, MC Layout, Vijayanagar, Bengaluru, Karnataka 560040',
     image: IMAGES.Branches.jpNagar,
   },
   {
     id: 'sarjapur-road',
-    name: 'Sarjapur Road',
-    tagline: 'Built for Athletes.',
-    lines: [
-      'Strength.',
-      'Speed.',
-      'Endurance.',
-      'Performance training for people who demand more.',
-    ],
+    name: 'Game On Fitness Premium Club - Sarjapur Road (Bellandur gate)',
+    address:
+      'No. 648 E, 3rd Floor, next to More Mega Store, Marathahalli-Sarjapur Main Rd, Bellandur Gate, Bengaluru, Karnataka 560035',
     image: IMAGES.Branches.sarjapurRoad,
   },
   {
     id: 'wilson-garden',
-    name: 'Wilson Garden',
-    tagline: 'Built for Everyone.',
-    lines: [
-      "Whether you're stepping into a gym for the first time or chasing your next milestone, this is where confidence grows.",
-    ],
+    name: 'Game On Fitness - Wilson Garden',
+    address:
+      'No. 376, 21, 6th Cross Rd, opposite Traffic Police Station, Vinayaka Nagar, NGO Colony, Wilson Garden, Bengaluru, Karnataka 560027',
     image: IMAGES.Branches.wilsonGarden,
   },
   {
     id: 'akshayanagar',
-    name: 'Akshayanagar',
-    tagline: 'Built for Progress.',
-    lines: [
-      'Strength training.',
-      'Functional fitness.',
-      'Cardio.',
-      'Personal coaching.',
-      'Everything you need to keep moving forward.',
-    ],
+    name: 'Game On Fitness Luxury Club - Akshayanagar',
+    address:
+      '2nd Floor, above Reliance Smart, Bhagyalakshmi Avenue, DLF Newtown, Akshayanagar, Bengaluru, Karnataka 560114',
     image: IMAGES.Branches.akshayanagar,
   },
-];
-
-const moreBranches = [
   {
     id: 'arekere',
-    name: 'Arekere',
-    description: 'Train with intention in a focused neighbourhood club.',
+    name: 'Game On Fitness - Arekere',
+    address:
+      'No. 97, 1st & 2nd Floor, Saibaba Temple Road, 2nd Main, Royal Residency Layout, BTM 4th Stage, 80 Feet Rd, near Arekere, Bengaluru, Karnataka 560076',
     image: IMAGES.Branches.arekere,
   },
   {
     id: 'vijaya-bank-layout',
-    name: 'Vijaya Bank Layout',
-    description: 'A polished space for members who want more from every session.',
+    name: 'Game On Fitness Premium Club - Vijaya Bank Layout',
+    address:
+      '3rd Floor, 8883 886, Bannerghatta Rd, Vijaya Bank Layout, Bilekahalli, Bengaluru, Karnataka 560076',
     image: IMAGES.Branches.vijayaBankLayout,
   },
   {
     id: 'kasavanahalli',
-    name: 'Kasavanahalli',
-    description: 'Elevated facilities designed to keep you moving forward.',
+    name: 'Game On Fitness Luxury Club - Kasavanahalli',
+    address:
+      '3rd Floor, Hosa Rd, next to Vishal Mega Mart, Kasavanahalli, Bengaluru, Karnataka 560035',
     image: IMAGES.Branches.kasavanahalli,
   },
 ];
@@ -106,8 +77,6 @@ function openBranch(id: string) {
 }
 
 export default function LocationsPage() {
-  const [showAll, setShowAll] = useState(false);
-
   return (
     <div className="min-h-screen bg-[#f7f8fb]">
       <Navbar />
@@ -162,7 +131,7 @@ export default function LocationsPage() {
             return (
               <article
                 key={branch.id}
-                className={`grid md:grid-cols-2 gap-0 overflow-hidden rounded-[2rem] border border-[rgba(22,24,31,0.06)] bg-white shadow-[0_18px_50px_rgba(22,24,31,0.06)]`}
+                className="grid md:grid-cols-2 gap-0 overflow-hidden rounded-[2rem] border border-[rgba(22,24,31,0.06)] bg-white shadow-[0_18px_50px_rgba(22,24,31,0.06)]"
               >
                 <div
                   className={`relative min-h-[260px] md:min-h-[360px] ${
@@ -183,19 +152,12 @@ export default function LocationsPage() {
                     reverse ? 'md:order-1' : ''
                   }`}
                 >
-                  <span className="text-xs font-semibold tracking-[0.3em] uppercase text-[#e07a72] mb-3">
+                  <h3 className="font-display text-2xl md:text-3xl font-bold text-[#16181f] leading-tight mb-5">
                     {branch.name}
-                  </span>
-                  <h3 className="font-display text-3xl md:text-4xl font-bold text-[#16181f] leading-tight mb-5">
-                    {branch.tagline.replace(/\.$/, '')}
-                    <span className="italic text-[#e07a72]">.</span>
                   </h3>
-                  <div className="space-y-1.5 mb-8">
-                    {branch.lines.map((line) => (
-                      <p key={line} className="text-[#6f7685] text-base md:text-lg leading-relaxed">
-                        {line}
-                      </p>
-                    ))}
+                  <div className="flex items-start gap-3 mb-8 text-[#6f7685]">
+                    <MapPin size={20} className="mt-1 shrink-0 text-[#e07a72]" />
+                    <p className="text-base md:text-lg leading-relaxed">{branch.address}</p>
                   </div>
                   <button
                     type="button"
@@ -245,53 +207,10 @@ export default function LocationsPage() {
           <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-4">
             There&apos;s no perfect branch. Only the perfect branch for you.
           </p>
-          <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+          <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto">
             Explore each location. Meet the people. Discover the atmosphere. Find the place where
             your next chapter begins.
           </p>
-
-          <button
-            type="button"
-            onClick={() => setShowAll((v) => !v)}
-            className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
-          >
-            {showAll ? 'Hide Extra Branches' : 'Explore All Branches'}
-            <ArrowUpRight size={16} />
-          </button>
-
-          {showAll && (
-            <div className="mt-12 grid sm:grid-cols-3 gap-5 text-left">
-              {moreBranches.map((branch) => (
-                <button
-                  key={branch.id}
-                  type="button"
-                  onClick={() => openBranch(branch.id)}
-                  className="group text-left rounded-[1.5rem] border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] overflow-hidden hover:border-[#e07a72]/30 hover:shadow-[0_16px_40px_rgba(22,24,31,0.08)] transition-all duration-300"
-                >
-                  <div className="relative h-40 overflow-hidden">
-                    <img
-                      src={branch.image}
-                      alt={branch.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-display text-xl font-bold text-[#16181f] mb-2">
-                      {branch.name}
-                    </h3>
-                    <p className="text-[#6f7685] text-sm leading-relaxed mb-3">
-                      {branch.description}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#e07a72]">
-                      Experience This Branch
-                      <ArrowRight size={14} />
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 

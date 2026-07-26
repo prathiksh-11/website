@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { MapPin, ArrowUpRight, Navigation } from 'lucide-react';
 import { IMAGES } from './image_constant';
@@ -256,7 +257,6 @@ export default function Branches() {
     threshold: 0.05,
   });
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -272,7 +272,7 @@ export default function Branches() {
     );
   }, []);
 
-  const visibleBranches = showAll ? branches : featuredBranches;
+  const visibleBranches = featuredBranches;
 
   return (
     <section id="branches" className="relative py-24 md:py-36 overflow-hidden atmosphere">
@@ -319,20 +319,13 @@ export default function Branches() {
         </div>
 
         <div className="mt-12 text-center">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
-              onClick={() => setShowAll((v) => !v)}
-              className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
-            >
-              {showAll ? 'Show Featured Branches' : 'Explore All Locations'}
-            </button>
-            <a
-              href="/locations"
-              className="btn-premium-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
-            >
-              Find Your Game On
-            </a>
-          </div>
+          <Link
+            to="/locations"
+            className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
+          >
+            Explore All Locations
+            <ArrowUpRight size={16} />
+          </Link>
           <p className="mt-8 text-[#6f7685] text-sm max-w-md mx-auto">
             You aren&apos;t choosing a gym. You&apos;re choosing where your transformation
             begins.
