@@ -278,7 +278,7 @@ export default function Branches() {
     <section id="branches" className="relative py-24 md:py-36 overflow-hidden atmosphere">
       <div
         className="soft-blob w-[420px] h-[420px] -top-24 right-0 opacity-70"
-        style={{ background: 'rgba(246,228,225,0.75)' }}
+        style={{ background: 'rgba(255,241,224,0.75)' }}
       />
       <div
         className="soft-blob w-[340px] h-[340px] bottom-10 -left-20 opacity-60"
@@ -293,7 +293,7 @@ export default function Branches() {
           <div className={`reveal ${headVisible ? 'visible' : ''} max-w-2xl`}>
             <div className="section-ornament mb-5">
               <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-                Chapter Three
+                Locations
               </span>
             </div>
             <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f]">

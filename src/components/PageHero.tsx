@@ -24,7 +24,7 @@ export default function PageHero({
         className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           background:
-            'radial-gradient(ellipse 55% 70% at 12% 40%, rgba(246,228,225,0.9), transparent 60%), radial-gradient(ellipse 40% 50% at 35% 80%, rgba(228,236,246,0.55), transparent 55%)',
+            'radial-gradient(ellipse 55% 70% at 12% 40%, rgba(255,241,224,0.9), transparent 60%), radial-gradient(ellipse 40% 50% at 35% 80%, rgba(228,236,246,0.55), transparent 55%)',
         }}
       />
 

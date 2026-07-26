@@ -15,8 +15,7 @@ const sections: Section[] = [
     id: 'overview',
     title: 'Overview',
     paragraphs: [
-      'This Account Deletion Policy explains how users of the Game On Fitness mobile application can request deletion of their account and associated personal data.',
-      'This page is provided to meet Google Play Store requirements for apps that allow account creation and to help users understand what happens when an account is deleted.',
+      'This Account Deletion Policy explains how users of the Game On Fitness mobile application can request deletion of their account and associated personal data, and what happens after a request is completed.',
     ],
   },
   {
@@ -204,7 +203,7 @@ export default function AccountDeletionPolicy() {
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f6e4e1]/80 border border-[rgba(224,122,114,0.2)] mb-6">
           <Trash2 size={14} className="text-[#e07a72]" />
           <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c45f58]">
-            Play Store · Account Deletion
+            Account Deletion
           </span>
         </div>
 
@@ -213,7 +212,7 @@ export default function AccountDeletionPolicy() {
         </h1>
         <p className="mt-5 text-[#6f7685] text-base md:text-lg leading-relaxed max-w-2xl">
           How to request deletion of your Game On Fitness app account and what happens to your
-          data — for Google Play Store compliance and user transparency.
+          data.
         </p>
         <p className="mt-3 text-sm text-[#9aa0ab]">Last updated: July 26, 2026</p>
       </div>
@@ -363,7 +362,7 @@ export default function AccountDeletionPolicy() {
             © {new Date().getFullYear()} Game On Fitness. All rights reserved.
           </p>
           <p className="text-xs text-[#c5c9d1] font-display italic">
-            Account deletion for Play Store compliance.
+            Stronger than yesterday.
           </p>
         </div>
       </footer>

@@ -20,9 +20,15 @@ const features = [
   'Celebrate milestones',
 ];
 
-const chapters = [
+const screenshots = [
+  { src: '/app-screenshots/screen-1.jpg', label: 'Explore' },
+  { src: '/app-screenshots/screen-2.jpg', label: 'Home' },
+  { src: '/app-screenshots/screen-3.jpg', label: 'Profile' },
+];
+
+const stories = [
   {
-    num: 'Chapter One',
+    label: 'Daily Habits',
     title: (
       <>
         Fitness isn&apos;t
@@ -33,7 +39,7 @@ const chapters = [
     body: "It's the choices you make every day. The Game On App is designed to keep you moving, motivated, and focused—whether you're inside the gym or anywhere else.",
   },
   {
-    num: 'Chapter Three',
+    label: 'Progress',
     title: (
       <>
         Every workout
@@ -44,7 +50,7 @@ const chapters = [
     body: "Every check-in. Every completed session. Every milestone. Every personal best. Becomes part of your journey. Progress isn't remembered. It's recorded.",
   },
   {
-    num: 'Chapter Four',
+    label: 'Stay Connected',
     title: (
       <>
         Stay connected.
@@ -55,7 +61,7 @@ const chapters = [
     body: "Receive reminders that keep you consistent. Get updates from your branch. Discover new challenges. Celebrate achievements with your community. Because motivation grows when you're connected.",
   },
   {
-    num: 'Chapter Five',
+    label: 'Community',
     title: (
       <>
         Your community.
@@ -66,7 +72,7 @@ const chapters = [
     body: "You're never training alone. Celebrate victories. Cheer others on. Take part in community events. Stay inspired by people walking the same path. Great journeys are built together.",
   },
   {
-    num: 'Chapter Six',
+    label: 'Simple Design',
     title: (
       <>
         Simple. Fast.
@@ -157,29 +163,68 @@ export default function DownloadPage() {
         }
       />
 
-      {/* Chapter One */}
+      {/* App screenshots */}
+      <section className="py-20 md:py-28 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="section-ornament justify-center mb-5">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+                App Preview
+              </span>
+            </div>
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-4">
+              See the app in <span className="italic text-[#e07a72]">action.</span>
+            </h2>
+            <p className="text-[#6f7685] text-lg max-w-xl mx-auto">
+              Book sessions, track progress, and stay connected with your branch — all in one place.
+            </p>
+          </div>
+
+          <div className="flex gap-5 md:gap-8 overflow-x-auto pb-6 px-1 snap-x snap-mandatory hide-scrollbar justify-start md:justify-center">
+            {screenshots.map((shot) => (
+              <figure
+                key={shot.src}
+                className="snap-center shrink-0 w-[200px] sm:w-[230px] md:w-[250px]"
+              >
+                <div className="relative rounded-[2rem] border-[6px] border-[#16181f] bg-[#16181f] shadow-[0_28px_60px_rgba(22,24,31,0.18)] overflow-hidden aspect-[9/19.5]">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-4 rounded-full bg-[#0a0a0b] z-10" />
+                  <img
+                    src={shot.src}
+                    alt={`Game On Fitness app — ${shot.label}`}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                  />
+                </div>
+                <figcaption className="mt-4 text-center text-sm font-semibold text-[#6f7685]">
+                  {shot.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-              {chapters[0].num}
+              {stories[0].label}
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-            {chapters[0].title}
+            {stories[0].title}
           </h2>
           <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto">
-            {chapters[0].body}
+            {stories[0].body}
           </p>
         </div>
       </section>
 
-      {/* Chapter Two — features */}
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center mb-14">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-              Chapter Two
+              Features
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-5">
@@ -204,34 +249,32 @@ export default function DownloadPage() {
         </div>
       </section>
 
-      {/* Chapters 3–6 */}
-      {chapters.slice(1).map((chapter, i) => (
+      {stories.slice(1).map((story, i) => (
         <section
-          key={chapter.num}
+          key={story.label}
           className={`py-24 ${i % 2 === 0 ? 'atmosphere' : 'bg-white'}`}
         >
           <div className="max-w-4xl mx-auto px-6 text-center">
             <div className="section-ornament justify-center mb-5">
               <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-                {chapter.num}
+                {story.label}
               </span>
             </div>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-              {chapter.title}
+              {story.title}
             </h2>
             <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto">
-              {chapter.body}
+              {story.body}
             </p>
           </div>
         </section>
       ))}
 
-      {/* Final Chapter */}
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-              Final Chapter
+              Get Started
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-5">
@@ -239,9 +282,7 @@ export default function DownloadPage() {
             <br />
             <span className="italic text-[#e07a72]">Your journey never does.</span>
           </h2>
-          <p className="text-[#6f7685] mb-4 leading-relaxed">
-            Take Game On with you.
-          </p>
+          <p className="text-[#6f7685] mb-4 leading-relaxed">Take Game On with you.</p>
           <p className="text-[#6f7685] mb-10 leading-relaxed">
             Every workout. Every milestone. Every tomorrow.
           </p>

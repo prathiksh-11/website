@@ -176,14 +176,14 @@ h1, h2, h3, h4, .font-display {
 .gradient-text-accent,
 .gradient-text-gold,
 .gradient-text-silver {
-  background: linear-gradient(135deg, #1a1714 10%, #d4726a 55%, #b85a52 100%);
+  background: linear-gradient(135deg, #1a1714 10%, #e07a72 55%, #b85a52 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .shimmer-text {
-  background: linear-gradient(90deg, #1a1714 0%, #d4726a 35%, #1a1714 55%, #d4726a 100%);
+  background: linear-gradient(90deg, #1a1714 0%, #e07a72 35%, #1a1714 55%, #e07a72 100%);
   background-size: 220% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -219,7 +219,7 @@ h1, h2, h3, h4, .font-display {
 .btn-glow-gold:hover {
   transform: translateY(-3px);
   box-shadow: 0 20px 44px rgba(26, 23, 20, 0.28), var(--shadow-glow);
-  background: linear-gradient(135deg, #d4726a 0%, #b85a52 100%);
+  background: linear-gradient(135deg, #e07a72 0%, #b85a52 100%);
 }
 .btn-premium-primary:hover::after,
 .btn-glow-blue:hover::after,
@@ -292,7 +292,7 @@ h1, h2, h3, h4, .font-display {
 .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-.star-rating { color: #d4726a; }
+.star-rating { color: #e07a72; }
 
 .branch-card-glow:hover {
   box-shadow: var(--shadow-lift);
@@ -336,7 +336,7 @@ h1, h2, h3, h4, .font-display {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(212,114,106,0.25), rgba(255,255,255,0.4));
+  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(224,122,114,0.25), rgba(255,255,255,0.4));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -355,11 +355,11 @@ h1, h2, h3, h4, .font-display {
   content: '';
   width: 28px;
   height: 1.5px;
-  background: linear-gradient(90deg, transparent, #d4726a);
+  background: linear-gradient(90deg, transparent, #e07a72);
   border-radius: 2px;
 }
 .section-ornament::after {
-  background: linear-gradient(90deg, #d4726a, transparent);
+  background: linear-gradient(90deg, #e07a72, transparent);
 }
 
 .soft-blob {
@@ -413,7 +413,7 @@ h1, h2, h3, h4, .font-display {
 .nav-cta:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 16px 36px rgba(224, 122, 114, 0.45);
-  background: linear-gradient(135deg, #e88982 0%, #d4726a 100%);
+  background: linear-gradient(135deg, #e88982 0%, #e07a72 100%);
 }
 
 .nav-cta:hover::before {
@@ -661,8 +661,6 @@ h1, h2, h3, h4, .font-display {
   background: #e07a72;
   transform: translateY(-3px);
 }
-
-
 
 
 

@@ -30,7 +30,7 @@ export default function Pathways() {
         >
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-              Chapter Two
+              Who You Become
             </span>
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-[#16181f] leading-[1.1]">

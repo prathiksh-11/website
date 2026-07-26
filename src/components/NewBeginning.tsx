@@ -17,7 +17,7 @@ export default function NewBeginning() {
       >
         <div className="section-ornament justify-center mb-5">
           <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-            Chapter Four
+            Your Beginning
           </span>
         </div>
 
@@ -28,8 +28,8 @@ export default function NewBeginning() {
         </h2>
 
         <p className="text-[#6f7685] text-lg leading-relaxed max-w-xl mx-auto mb-10">
-          Natural light fills the space. People are training. Someone is encouraging a beginner.
-          Someone is celebrating a personal best. No words — just moments.
+          Walk into a space full of energy — coaches who care, members who motivate, and moments
+          that push you forward every day.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3 mb-10">

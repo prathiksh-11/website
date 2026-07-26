@@ -26,7 +26,7 @@ export default function JoinCTA() {
           className={`relative max-w-4xl mx-auto px-6 text-center reveal ${isVisible ? 'visible' : ''}`}
         >
           <p className="text-xs font-semibold tracking-[0.35em] uppercase text-[#f0a8a2] mb-4">
-            Chapter Seven
+            Ready When You Are
           </p>
           <h2 className="font-display text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.08] mb-5">
             The next version of you
@@ -63,15 +63,12 @@ export default function JoinCTA() {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-              Chapter Eight
+              Download the App
             </span>
           </div>
           <h3 className="font-display text-3xl md:text-4xl font-bold text-[#16181f] tracking-tight mb-4">
             Your journey <span className="italic text-[#e07a72]">continues.</span>
           </h3>
-          <p className="text-[#6f7685] max-w-md mx-auto mb-3 leading-relaxed">
-            Not as a product. As a companion.
-          </p>
           <p className="text-[#6f7685] max-w-md mx-auto mb-8 leading-relaxed">
             Morning reminder. Workout completed. Community challenge. Goal achieved. See you
             tomorrow.
@@ -81,17 +78,38 @@ export default function JoinCTA() {
               href={PLAY_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Get it on Google Play"
               className="btn-premium-secondary inline-flex items-center gap-3 rounded-2xl px-5 py-3.5 text-sm font-semibold"
             >
-              Download on Google Play
+              <img
+                src="/play-store.png"
+                alt=""
+                className="w-8 h-8 shrink-0 object-contain"
+              />
+              <span className="text-left leading-tight">
+                <span className="block text-[10px] font-medium text-[#6f7685]">Get it on</span>
+                <span className="block text-sm font-semibold text-[#16181f]">Google Play</span>
+              </span>
             </a>
             <a
               href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Download on the App Store"
               className="btn-premium-secondary inline-flex items-center gap-3 rounded-2xl px-5 py-3.5 text-sm font-semibold"
             >
-              Download on the App Store
+              <svg
+                viewBox="0 0 24 24"
+                className="w-7 h-7 text-[#16181f] shrink-0"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M16.365 1.43c0 1.14-.42 2.28-1.26 3.17-.9.96-2.37 1.7-3.78 1.6-.14-1.09.45-2.24 1.2-3.03.9-.98 2.46-1.68 3.84-1.74ZM20.88 17.13c-.57 1.31-.85 1.9-1.59 3.06-1.03 1.58-2.48 3.55-4.28 3.57-1.6.02-2.01-1.04-4.18-1.03-2.17.01-2.63 1.05-4.23 1.03-1.8-.02-3.18-1.8-4.21-3.38-2.88-4.4-3.18-9.56-1.4-12.3 1.26-1.92 3.26-3.04 5.13-3.04 1.91 0 3.11 1.04 4.69 1.04 1.52 0 2.44-1.04 4.62-1.04 1.65 0 3.4.9 4.66 2.45-4.1 2.23-3.44 8.05.79 9.64Z" />
+              </svg>
+              <span className="text-left leading-tight">
+                <span className="block text-[10px] font-medium text-[#6f7685]">Download on the</span>
+                <span className="block text-sm font-semibold text-[#16181f]">App Store</span>
+              </span>
             </a>
           </div>
           <p className="mt-10 text-[#9aa0ab] text-xs font-medium tracking-[0.2em] uppercase">

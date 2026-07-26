@@ -37,7 +37,7 @@ export default function Transformations() {
         <div ref={headRef} className={`text-center mb-16 reveal ${headVisible ? 'visible' : ''}`}>
             <div className="section-ornament justify-center mb-5">
               <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-                Chapter Five
+                Real Journeys
               </span>
             </div>
           <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f] mb-5">

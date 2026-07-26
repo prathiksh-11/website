@@ -16,7 +16,7 @@ export default function Momentum() {
             isVisible ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          Chapter Six
+          Keep Going
         </p>
         <p
           className={`font-display text-xl md:text-3xl font-semibold text-[#6f7685] mb-6 transition-all duration-1000 ${

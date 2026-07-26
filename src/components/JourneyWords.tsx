@@ -37,25 +37,17 @@ export default function JourneyWords() {
           className={`section-ornament justify-center mb-5 reveal ${isVisible ? 'visible' : ''}`}
         >
           <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-            Chapter One
+            The Journey
           </span>
         </div>
         <h2
-          className={`font-display text-2xl md:text-4xl font-bold text-[#16181f] mb-4 reveal ${
+          className={`font-display text-2xl md:text-4xl font-bold text-[#16181f] mb-14 reveal ${
             isVisible ? 'visible' : ''
           }`}
           style={{ transitionDelay: '0.1s' }}
         >
           It was never about the weights.
         </h2>
-        <p
-          className={`text-[#6f7685] text-base md:text-lg mb-14 max-w-md mx-auto reveal ${
-            isVisible ? 'visible' : ''
-          }`}
-          style={{ transitionDelay: '0.15s' }}
-        >
-          The screen becomes quiet. One word appears.
-        </p>
 
         <div className="relative h-24 md:h-32 flex items-center justify-center">
           {started && (
@@ -77,7 +69,7 @@ export default function JourneyWords() {
             isFinal ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          This journey has always been about them — about you.
+          This journey has always been about you.
         </p>
       </div>
     </section>
