@@ -43,9 +43,7 @@ export default function Transformations() {
           <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f] mb-5">
             Hundreds of stories.
           </h2>
-          <p className="text-[#6f7685] max-w-xl mx-auto leading-relaxed text-lg">
-            No ratings. No stars. Only journeys.
-          </p>
+          
         </div>
 
         <div ref={gridRef} className="grid md:grid-cols-3 gap-5 md:gap-6">

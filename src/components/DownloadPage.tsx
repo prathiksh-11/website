@@ -139,8 +139,8 @@ export default function DownloadPage() {
           </>
         }
         description="The workout ends. The journey doesn't. Stay connected to your goals, progress, and community—every single day."
-        image="https://images.pexels.com/photos/4498155/pexels-photo-4498155.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop"
-        imagePosition="center top"
+        image="/app-screenshots/screen-2.jpg"
+        variant="app"
         actions={
           <>
             <a
@@ -278,9 +278,11 @@ export default function DownloadPage() {
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-5">
-            The gym may close for the day.
+            The journey doesn&apos;t stop at the gym.
             <br />
-            <span className="italic text-[#e07a72]">Your journey never does.</span>
+            <span className="italic text-[#e07a72]">
+              It follows you wherever life takes you.
+            </span>
           </h2>
           <p className="text-[#6f7685] mb-4 leading-relaxed">Take Game On with you.</p>
           <p className="text-[#6f7685] mb-10 leading-relaxed">

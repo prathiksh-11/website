@@ -6,10 +6,10 @@ import { IMAGES } from './image_constant';
 const featuredBranches = [
   {
     id: 'btm-layout-1',
-    name: 'BTM Layout',
-    tagline: 'Built for Strength.',
+    name: 'BTM 1st stage',
+    tagline: 'Premium',
     description: 'Heavy lifting. Functional training. Performance-focused environment.',
-    city: 'BTM Layout, Bengaluru',
+    city: 'BTM Layout 1st Stage',
     tag: 'Premium',
     image: IMAGES.Branches.btm1,
     lat: 12.9135,
@@ -18,7 +18,7 @@ const featuredBranches = [
   {
     id: 'btm-layout-2',
     name: 'BTM 2nd Stage',
-    tagline: 'Built for Performance.',
+    tagline: 'Premium',
     description: 'Premium equipment. Progressive training. Expert coaching.',
     city: 'BTM Layout, Bengaluru',
     tag: 'Premium',
@@ -29,7 +29,7 @@ const featuredBranches = [
   {
     id: 'vijayanagar',
     name: 'Vijayanagar',
-    tagline: 'Built for Community.',
+    tagline: 'Premium',
     description: 'Friendly. Energetic. Welcoming. A place where every member belongs.',
     city: 'MC Layout, Bengaluru',
     tag: 'Premium',
@@ -40,7 +40,7 @@ const featuredBranches = [
   {
     id: 'sarjapur-road',
     name: 'Sarjapur Road',
-    tagline: 'Built for Athletes.',
+    tagline: 'Premium',
     description: 'Strength. Speed. Endurance. Performance training for people who demand more.',
     city: 'Bellandur Gate, Bengaluru',
     tag: 'Premium',
@@ -51,7 +51,7 @@ const featuredBranches = [
   {
     id: 'wilson-garden',
     name: 'Wilson Garden',
-    tagline: 'Built for Everyone.',
+    tagline: 'Standard',
     description: 'Whether you’re stepping in for the first time or chasing your next milestone.',
     city: 'Wilson Garden, Bengaluru',
     tag: 'Standard',
@@ -62,7 +62,7 @@ const featuredBranches = [
   {
     id: 'akshayanagar',
     name: 'Akshayanagar',
-    tagline: 'Built for Progress.',
+    tagline: 'Luxury',
     description: 'Strength training. Functional fitness. Cardio. Personal coaching.',
     city: 'DLF Newtown, Bengaluru',
     tag: 'Luxury',
@@ -76,7 +76,7 @@ const extraBranches = [
   {
     id: 'arekere',
     name: 'Arekere',
-    tagline: 'Built for Everyday Strength.',
+    tagline: 'Standard',
     description: 'Train with intention in a focused neighbourhood club.',
     city: 'Arekere, Bengaluru',
     tag: 'Standard',
@@ -87,7 +87,7 @@ const extraBranches = [
   {
     id: 'vijaya-bank-layout',
     name: 'Vijaya Bank Layout',
-    tagline: 'Built for Premium Training.',
+    tagline: 'Premium',
     description: 'A polished space for members who want more from every session.',
     city: 'Bannerghatta Road',
     tag: 'Premium',
@@ -98,7 +98,7 @@ const extraBranches = [
   {
     id: 'kasavanahalli',
     name: 'Kasavanahalli',
-    tagline: 'Built for Luxury Progress.',
+    tagline: 'Luxury',
     description: 'Elevated facilities designed to keep you moving forward.',
     city: 'Hosa Road, Bengaluru',
     tag: 'Luxury',
@@ -319,12 +319,20 @@ export default function Branches() {
         </div>
 
         <div className="mt-12 text-center">
-          <button
-            onClick={() => setShowAll((v) => !v)}
-            className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
-          >
-            {showAll ? 'Show Featured Branches' : 'Explore All Locations'}
-          </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={() => setShowAll((v) => !v)}
+              className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
+            >
+              {showAll ? 'Show Featured Branches' : 'Explore All Locations'}
+            </button>
+            <a
+              href="/locations"
+              className="btn-premium-primary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
+            >
+              Find Your Game On
+            </a>
+          </div>
           <p className="mt-8 text-[#6f7685] text-sm max-w-md mx-auto">
             You aren&apos;t choosing a gym. You&apos;re choosing where your transformation
             begins.

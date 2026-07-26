@@ -3,7 +3,7 @@ import { Instagram, Facebook, Youtube, ArrowUpRight } from 'lucide-react';
 
 const exploreLinks = [
   { label: 'Home', to: '/' },
-  { label: 'Find Your Game On', to: '/#branches' },
+  { label: 'Locations', to: '/locations' },
   { label: 'About', to: '/about' },
   { label: 'Careers', to: '/careers' },
   { label: 'Download App', to: '/download' },
@@ -72,16 +72,7 @@ export default function Footer() {
               {exploreLinks.map((link) => (
                 <li key={link.label}>
                   <Link
-                    to={link.to === '/#branches' ? '/' : link.to}
-                    onClick={() => {
-                      if (link.to === '/#branches') {
-                        setTimeout(() => {
-                          document.querySelector('#branches')?.scrollIntoView({
-                            behavior: 'smooth',
-                          });
-                        }, 80);
-                      }
-                    }}
+                    to={link.to}
                     className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
                   >
                     {link.label}

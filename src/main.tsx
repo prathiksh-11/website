@@ -6,6 +6,7 @@ import About from './components/About';
 import CareersPage from './components/CareersPage';
 import Contact from './components/Contact';
 import DownloadPage from './components/DownloadPage';
+import LocationsPage from './components/LocationsPage';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import AccountDeletionPolicy from './components/AccountDeletionPolicy';
 import './index.css';
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/about" element={<About />} />
+        <Route path="/locations" element={<LocationsPage />} />
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/download" element={<DownloadPage />} />

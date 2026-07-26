@@ -5,7 +5,7 @@ import { Menu, X, ArrowUpRight } from 'lucide-react';
 const navLinks = [
   { label: 'Home', href: '/', type: 'route' as const },
   { label: 'About', href: '/about', type: 'route' as const },
-  { label: 'Locations', href: '/#branches', type: 'hash' as const },
+  { label: 'Locations', href: '/locations', type: 'route' as const },
   { label: 'Careers', href: '/careers', type: 'route' as const },
   { label: 'App', href: '/download', type: 'route' as const },
   { label: 'Contact', href: '/contact', type: 'route' as const },
@@ -44,23 +44,11 @@ export default function Navbar() {
 
   const handleNav = (link: (typeof navLinks)[0]) => {
     setMenuOpen(false);
-    if (link.type === 'route') {
-      navigate(link.href);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' });
-      }, 120);
-      return;
-    }
-    document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' });
+    navigate(link.href);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const isActive = (link: (typeof navLinks)[0]) => {
-    if (link.type === 'hash') return location.pathname === '/' && location.hash === '#branches';
     if (link.href === '/') return location.pathname === '/';
     return location.pathname.startsWith(link.href);
   };

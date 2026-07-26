@@ -74,7 +74,7 @@ export default function CareersPage() {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
               Who We&apos;re Looking For
@@ -83,7 +83,7 @@ export default function CareersPage() {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-[#16181f] text-center mb-10">
             Not just experience. <span className="italic text-[#e07a72]">Character.</span>
           </h2>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-4 text-left">
             {[
               'People who lead with positivity',
               'Who inspire through action',
@@ -214,7 +214,11 @@ export default function CareersPage() {
                 </h3>
                 <p className="text-[#6f7685] leading-relaxed text-sm mb-6 flex-1">{role.text}</p>
                 <a
-                  href={`mailto:hello@gameonfitness.in?subject=Application%20-%20${encodeURIComponent(role.title)}`}
+                  href={`https://wa.me/919148974009?text=${encodeURIComponent(
+                    `Hi Game On Fitness, I'd like to apply for the ${role.title} role.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-semibold text-[#e07a72] hover:gap-3 transition-all"
                 >
                   Apply for this role
