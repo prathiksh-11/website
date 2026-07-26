@@ -129,7 +129,6 @@ export default function Hero() {
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-end overflow-hidden">
-      {/* Full-bleed banner */}
       <div className="absolute inset-0">
         <img
           src={IMAGES.bannerImage}
@@ -153,7 +152,6 @@ export default function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f7f8fb] to-transparent" />
       </div>
 
-      {/* Soft floating light sparks */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(8)].map((_, i) => (
           <span
@@ -187,7 +185,7 @@ export default function Hero() {
             style={{ textShadow: '0 8px 40px rgba(0,0,0,0.35)' }}
           >
             <span
-              className={`block text-[clamp(2.6rem,7.5vw,5.2rem)] overflow-hidden ${
+              className={`block text-[clamp(2.8rem,8vw,5.5rem)] overflow-hidden ${
                 loaded ? '' : 'opacity-0'
               }`}
             >
@@ -195,11 +193,11 @@ export default function Hero() {
                 className={`inline-block ${loaded ? 'hero-line-reveal' : ''}`}
                 style={{ animationDelay: '0.35s' }}
               >
-                Move beautifully.
+                BECOME.
               </span>
             </span>
             <span
-              className={`block text-[clamp(2.6rem,7.5vw,5.2rem)] italic text-[#f2b4ae] overflow-hidden ${
+              className={`block text-[clamp(1.4rem,3.4vw,2.2rem)] italic text-[#f2b4ae] overflow-hidden mt-2 ${
                 loaded ? '' : 'opacity-0'
               }`}
             >
@@ -207,7 +205,7 @@ export default function Hero() {
                 className={`inline-block ${loaded ? 'hero-line-reveal' : ''}`}
                 style={{ animationDelay: '0.55s' }}
               >
-                Train powerfully.
+                The person you promised yourself you&apos;d be.
               </span>
             </span>
           </h1>
@@ -229,8 +227,8 @@ export default function Hero() {
               animationDelay: '0.75s',
             }}
           >
-            Premium fitness clubs across Bengaluru — designed for people who take their
-            body, mind, and style seriously.
+            No one becomes stronger by waiting. Everything changes the moment you decide to
+            begin.
           </p>
 
           <div
@@ -245,7 +243,7 @@ export default function Hero() {
               }
               className="hero-cta-primary group inline-flex items-center gap-2 text-sm font-semibold px-8 py-4 rounded-full text-white"
             >
-              Explore Clubs
+              Find Your Game On
               <ArrowRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1"
@@ -253,20 +251,19 @@ export default function Hero() {
             </button>
             <button
               onClick={() =>
-                document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })
+                document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' })
               }
               className="hero-cta-secondary text-sm font-semibold px-8 py-4 rounded-full text-white"
             >
-              Our Story
+              Scroll to Begin
             </button>
           </div>
         </div>
       </div>
 
-      {/* Scroll hint */}
       <button
         onClick={() =>
-          document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })
+          document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' })
         }
         className={`absolute bottom-10 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-white/50 hover:text-white/80 transition-colors ${
           loaded ? 'hero-fade-up' : 'opacity-0'

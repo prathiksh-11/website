@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Branches', href: '#branches' },
-  { label: 'Transformations', href: '#transformations' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Home', href: '/', type: 'route' as const },
+  { label: 'About', href: '/about', type: 'route' as const },
+  { label: 'Locations', href: '/#branches', type: 'hash' as const },
+  { label: 'Careers', href: '/careers', type: 'route' as const },
+  { label: 'App', href: '/download', type: 'route' as const },
+  { label: 'Contact', href: '/contact', type: 'route' as const },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState('');
   const [hoveredLink, setHoveredLink] = useState('');
   const [mounted, setMounted] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 60);
@@ -21,23 +25,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 24);
-
-      const sections = navLinks.map((l) => l.href.replace('#', ''));
-      let current = '';
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= 140 && rect.bottom >= 140) {
-          current = `#${id}`;
-          break;
-        }
-      }
-      setActiveLink(current);
-    };
-
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -50,11 +38,31 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  const handleNav = (href: string) => {
-    setActiveLink(href);
+  useEffect(() => {
     setMenuOpen(false);
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }, [location.pathname]);
+
+  const handleNav = (link: (typeof navLinks)[0]) => {
+    setMenuOpen(false);
+    if (link.type === 'route') {
+      navigate(link.href);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' });
+      }, 120);
+      return;
+    }
+    document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const isActive = (link: (typeof navLinks)[0]) => {
+    if (link.type === 'hash') return location.pathname === '/' && location.hash === '#branches';
+    if (link.href === '/') return location.pathname === '/';
+    return location.pathname.startsWith(link.href);
   };
 
   return (
@@ -76,9 +84,11 @@ export default function Navbar() {
                 : 'bg-white/75 shadow-[0_10px_40px_rgba(22,24,31,0.06)] border border-white/90 backdrop-blur-lg'
             }`}
           >
-            {/* Logo */}
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() => {
+                navigate('/');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               className="flex items-center gap-2.5 group pl-1 flex-shrink-0"
             >
               <div className="relative">
@@ -97,63 +107,51 @@ export default function Navbar() {
               </span>
             </button>
 
-            {/* Desktop links */}
-            <div className="hidden md:flex items-center gap-1 bg-[#f7f8fb]/80 rounded-full p-1.5 border border-[rgba(22,24,31,0.04)]">
+            <div className="hidden lg:flex items-center gap-1 bg-[#f7f8fb]/80 rounded-full p-1.5 border border-[rgba(22,24,31,0.04)]">
               {navLinks.map((link, i) => {
-                const isActive = activeLink === link.href;
+                const active = isActive(link);
                 const isHovered = hoveredLink === link.href;
                 return (
                   <button
                     key={link.href}
-                    onClick={() => handleNav(link.href)}
+                    onClick={() => handleNav(link)}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink('')}
-                    className={`nav-link relative text-[13px] font-semibold px-4 py-2 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? 'text-[#c45f58]'
-                        : 'text-[#3a3f4b] hover:text-[#16181f]'
+                    className={`nav-link relative text-[13px] font-semibold px-3.5 py-2 rounded-full transition-all duration-300 ${
+                      active ? 'text-[#c45f58]' : 'text-[#3a3f4b] hover:text-[#16181f]'
                     }`}
-                    style={{
-                      transitionDelay: mounted ? `${i * 40}ms` : '0ms',
-                    }}
+                    style={{ transitionDelay: mounted ? `${i * 40}ms` : '0ms' }}
                   >
-                    {(isActive || isHovered) && (
+                    {(active || isHovered) && (
                       <span
                         className={`absolute inset-0 rounded-full transition-all duration-300 ${
-                          isActive
-                            ? 'bg-[#f6e4e1] shadow-sm'
-                            : 'bg-white shadow-sm'
+                          active ? 'bg-[#f6e4e1] shadow-sm' : 'bg-white shadow-sm'
                         }`}
                         style={{ animation: 'navPillIn 0.35s cubic-bezier(0.16,1,0.3,1)' }}
                       />
                     )}
                     <span className="relative z-10">{link.label}</span>
-                    {isActive && (
-                      <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#e07a72]" />
-                    )}
                   </button>
                 );
               })}
             </div>
 
-            {/* CTA */}
             <div className="hidden md:flex items-center flex-shrink-0">
-              <button
-                onClick={() => handleNav('#branches')}
+              <Link
+                to="/contact"
                 className="nav-cta group inline-flex items-center gap-1.5 text-sm font-semibold px-5 py-2.5 rounded-full text-white"
               >
-                Find a Club
+                Find Your Game On
                 <ArrowUpRight
                   size={15}
                   className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
-              </button>
+              </Link>
             </div>
 
-            {/* Mobile toggle */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden relative w-11 h-11 rounded-full bg-[#f7f8fb] border border-[rgba(22,24,31,0.08)] flex items-center justify-center text-[#16181f] hover:bg-[#f6e4e1] hover:text-[#e07a72] transition-all duration-300 active:scale-95"
+              className="lg:hidden relative w-11 h-11 rounded-full bg-[#f7f8fb] border border-[rgba(22,24,31,0.08)] flex items-center justify-center text-[#16181f] hover:bg-[#f6e4e1] hover:text-[#e07a72] transition-all duration-300 active:scale-95"
               aria-label="Toggle menu"
             >
               <span
@@ -175,9 +173,8 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-500 ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
@@ -199,9 +196,9 @@ export default function Navbar() {
             {navLinks.map((link, i) => (
               <button
                 key={link.href}
-                onClick={() => handleNav(link.href)}
+                onClick={() => handleNav(link)}
                 className={`mobile-nav-item flex w-full items-center justify-between text-left px-4 py-3.5 rounded-2xl text-lg font-display font-semibold transition-all duration-300 ${
-                  activeLink === link.href
+                  isActive(link)
                     ? 'bg-[#f6e4e1] text-[#c45f58]'
                     : 'text-[#16181f] hover:bg-[#f7f8fb]'
                 }`}
@@ -214,18 +211,19 @@ export default function Navbar() {
                 {link.label}
                 <ArrowUpRight
                   size={16}
-                  className={activeLink === link.href ? 'text-[#e07a72]' : 'text-[#c4c8d0]'}
+                  className={isActive(link) ? 'text-[#e07a72]' : 'text-[#c4c8d0]'}
                 />
               </button>
             ))}
           </div>
-          <button
-            onClick={() => handleNav('#branches')}
+          <Link
+            to="/contact"
+            onClick={() => setMenuOpen(false)}
             className="nav-cta w-full mt-5 font-semibold py-3.5 rounded-full text-sm text-white inline-flex items-center justify-center gap-2"
           >
-            Find a Club
+            Find Your Game On
             <ArrowUpRight size={15} />
-          </button>
+          </Link>
         </div>
       </div>
     </>

@@ -1,127 +1,114 @@
 import { useState, useEffect, useRef } from 'react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
-import { MapPin, Clock, ArrowUpRight, Navigation } from 'lucide-react';
+import { MapPin, ArrowUpRight, Navigation } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
-const branches = [
-  {
-    id: 'arekere',
-    name: 'Arekere',
-    fullName: 'Game On Fitness - Arekere',
-    city: 'Arekere, Bengaluru',
-    tag: 'Standard',
-    image: IMAGES.Branches.arekere,
-    area: '6,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Weights', 'Cardio', 'Group Classes'],
-    lat: 12.9077,
-    lng: 77.6176,
-  },
-  {
-    id: 'vijaya-bank-layout',
-    name: 'Vijaya Bank Layout',
-    fullName: 'Game On Fitness Premium Club - Vijaya Bank Layout',
-    city: 'Bannerghatta Road',
-    tag: 'Premium',
-    image: IMAGES.Branches.vijayaBankLayout,
-    area: '6,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['PT', 'Group Classes', 'Steam'],
-    lat: 12.9165,
-    lng: 77.6101,
-  },
+const featuredBranches = [
   {
     id: 'btm-layout-1',
-    name: 'BTM 1st Stage',
-    fullName: 'Game On Fitness Premium Club - BTM 1st Stage',
-    city: 'BTM Layout',
+    name: 'BTM Layout',
+    tagline: 'Built for Strength.',
+    description: 'Heavy lifting. Functional training. Performance-focused environment.',
+    city: 'BTM Layout, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.btm1,
-    area: '5,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Functional', 'Cardio', 'PT'],
     lat: 12.9135,
     lng: 77.6089,
   },
   {
     id: 'btm-layout-2',
     name: 'BTM 2nd Stage',
-    fullName: 'Game On Fitness Premium Club - BTM 2nd Stage',
-    city: 'BTM Layout',
+    tagline: 'Built for Performance.',
+    description: 'Premium equipment. Progressive training. Expert coaching.',
+    city: 'BTM Layout, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.btm2,
-    area: '8,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Boxing', 'Pilates', 'Sauna'],
     lat: 12.9142,
     lng: 77.6095,
   },
   {
-    id: 'wilson-garden',
-    name: 'Wilson Garden',
-    fullName: 'Game On Fitness - Wilson Garden',
-    city: 'Wilson Garden',
-    tag: 'Standard',
-    image: IMAGES.Branches.wilsonGarden,
-    area: '3,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Weights', 'PT', 'Steam'],
-    lat: 12.9519,
-    lng: 77.5944,
-  },
-  {
     id: 'vijayanagar',
     name: 'Vijayanagar',
-    fullName: 'Game On Fitness Premium Club - Vijayanagar',
-    city: 'MC Layout',
+    tagline: 'Built for Community.',
+    description: 'Friendly. Energetic. Welcoming. A place where every member belongs.',
+    city: 'MC Layout, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.jpNagar,
-    area: '8,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Cardio', 'Group Classes', 'Steam'],
     lat: 12.9716,
     lng: 77.5375,
   },
   {
-    id: 'akshayanagar',
-    name: 'Akshayanagar',
-    fullName: 'Game On Fitness Luxury Club - Akshayanagar',
-    city: 'DLF Newtown',
-    tag: 'Luxury',
-    image: IMAGES.Branches.akshayanagar,
-    area: '9,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['GX Studio', 'PT', 'Steam'],
-    lat: 12.9077,
-    lng: 77.6317,
-  },
-  {
     id: 'sarjapur-road',
     name: 'Sarjapur Road',
-    fullName: 'Game On Fitness Premium Club - Sarjapur Road',
-    city: 'Bellandur Gate',
+    tagline: 'Built for Athletes.',
+    description: 'Strength. Speed. Endurance. Performance training for people who demand more.',
+    city: 'Bellandur Gate, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.sarjapurRoad,
-    area: '5,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Functional', 'PT', 'Steam'],
     lat: 12.9299,
     lng: 77.6838,
   },
   {
+    id: 'wilson-garden',
+    name: 'Wilson Garden',
+    tagline: 'Built for Everyone.',
+    description: 'Whether you’re stepping in for the first time or chasing your next milestone.',
+    city: 'Wilson Garden, Bengaluru',
+    tag: 'Standard',
+    image: IMAGES.Branches.wilsonGarden,
+    lat: 12.9519,
+    lng: 77.5944,
+  },
+  {
+    id: 'akshayanagar',
+    name: 'Akshayanagar',
+    tagline: 'Built for Progress.',
+    description: 'Strength training. Functional fitness. Cardio. Personal coaching.',
+    city: 'DLF Newtown, Bengaluru',
+    tag: 'Luxury',
+    image: IMAGES.Branches.akshayanagar,
+    lat: 12.9077,
+    lng: 77.6317,
+  },
+];
+
+const extraBranches = [
+  {
+    id: 'arekere',
+    name: 'Arekere',
+    tagline: 'Built for Everyday Strength.',
+    description: 'Train with intention in a focused neighbourhood club.',
+    city: 'Arekere, Bengaluru',
+    tag: 'Standard',
+    image: IMAGES.Branches.arekere,
+    lat: 12.9077,
+    lng: 77.6176,
+  },
+  {
+    id: 'vijaya-bank-layout',
+    name: 'Vijaya Bank Layout',
+    tagline: 'Built for Premium Training.',
+    description: 'A polished space for members who want more from every session.',
+    city: 'Bannerghatta Road',
+    tag: 'Premium',
+    image: IMAGES.Branches.vijayaBankLayout,
+    lat: 12.9165,
+    lng: 77.6101,
+  },
+  {
     id: 'kasavanahalli',
     name: 'Kasavanahalli',
-    fullName: 'Game On Fitness Luxury Club - Kasavanahalli',
-    city: 'Hosa Road',
+    tagline: 'Built for Luxury Progress.',
+    description: 'Elevated facilities designed to keep you moving forward.',
+    city: 'Hosa Road, Bengaluru',
     tag: 'Luxury',
     image: IMAGES.Branches.kasavanahalli,
-    area: '9,000 sq ft',
-    hours: '5 AM – 11 PM',
-    facilities: ['Group Classes', 'PT', 'Steam'],
     lat: 12.9014,
     lng: 77.6725,
   },
 ];
+
+const branches = [...featuredBranches, ...extraBranches];
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371;
@@ -204,7 +191,7 @@ function BranchCard({
       >
         <img
           src={branch.image}
-          alt={branch.fullName}
+          alt={branch.name}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
 
@@ -216,7 +203,7 @@ function BranchCard({
           <span
             className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.16em] shadow-sm transition-transform duration-500 group-hover:scale-105 ${tagStyle}`}
           >
-            {branch.tag}
+            {branch.tagline.replace(/\.$/, '')}
           </span>
           {distance !== null && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-[10px] font-semibold animate-fade-in-up">
@@ -232,31 +219,17 @@ function BranchCard({
           <div className="flex items-center gap-1.5 text-white/70 text-xs mb-2">
             <MapPin size={12} className="text-[#f2b4ae]" />
             <span>{branch.city}</span>
-            <span className="text-white/30">·</span>
-            <span>{branch.area}</span>
           </div>
 
-          <h3 className="font-display text-2xl md:text-[1.75rem] font-bold text-white leading-tight mb-3 pr-4">
+          <h3 className="font-display text-2xl md:text-[1.75rem] font-bold text-white leading-tight mb-2 pr-4">
             {branch.name}
           </h3>
-
-          <div className="flex flex-wrap gap-1.5 mb-5 max-h-0 overflow-hidden opacity-0 transition-all duration-500 group-hover:max-h-20 group-hover:opacity-100">
-            {branch.facilities.map((f) => (
-              <span
-                key={f}
-                className="px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-white/10 border border-white/15 text-white/85 backdrop-blur-sm"
-              >
-                {f}
-              </span>
-            ))}
-          </div>
+          <p className="text-white/65 text-sm leading-relaxed mb-5 line-clamp-2">
+            {branch.description}
+          </p>
 
           <div className="flex items-center justify-between gap-3 pt-1 border-t border-white/10">
-            <div className="flex items-center gap-1.5 text-white/60 text-xs">
-              <Clock size={12} />
-              <span>{branch.hours}</span>
-            </div>
-
+            <span className="text-white/55 text-xs">Your journey has a place.</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -283,7 +256,7 @@ export default function Branches() {
     threshold: 0.05,
   });
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [filter, setFilter] = useState<'All' | 'Premium' | 'Luxury' | 'Standard'>('All');
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -299,8 +272,7 @@ export default function Branches() {
     );
   }, []);
 
-  const filtered =
-    filter === 'All' ? branches : branches.filter((b) => b.tag === filter);
+  const visibleBranches = showAll ? branches : featuredBranches;
 
   return (
     <section id="branches" className="relative py-24 md:py-36 overflow-hidden atmosphere">
@@ -316,44 +288,26 @@ export default function Branches() {
       <div className="max-w-7xl mx-auto px-6 relative">
         <div
           ref={headRef}
-          className="mb-10 md:mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-8"
+          className="mb-12 md:mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-8"
         >
-          <div className={`reveal ${headVisible ? 'visible' : ''} max-w-xl`}>
+          <div className={`reveal ${headVisible ? 'visible' : ''} max-w-2xl`}>
             <div className="section-ornament mb-5">
               <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
-                Locations
+                Chapter Three
               </span>
             </div>
             <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f]">
-              Find your <span className="italic text-[#e07a72]">club.</span>
+              Your journey <span className="italic text-[#e07a72]">has a place.</span>
             </h2>
             <p className="mt-4 text-[#6f7685] leading-relaxed text-lg">
-              Nine carefully designed spaces across Bengaluru — pick the one closest to you.
+              Choose the destination that feels like yours. Every branch has its own energy —
+              one commitment to help you become stronger every day.
             </p>
-          </div>
-
-          <div
-            className={`reveal ${headVisible ? 'visible' : ''} flex flex-wrap gap-2`}
-            style={{ transitionDelay: '0.15s' }}
-          >
-            {(['All', 'Luxury', 'Premium', 'Standard'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setFilter(tab)}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-                  filter === tab
-                    ? 'filter-active bg-[#16181f] text-white shadow-lg'
-                    : 'bg-white text-[#6f7685] border border-[rgba(22,24,31,0.08)] hover:text-[#16181f] hover:border-[#e07a72]/35 hover:-translate-y-0.5'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
           </div>
         </div>
 
         <div ref={gridRef} className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-7">
-          {filtered.map((branch, i) => (
+          {visibleBranches.map((branch, i) => (
             <BranchCard
               key={branch.id}
               branch={branch}
@@ -362,6 +316,19 @@ export default function Branches() {
               userLocation={userLocation}
             />
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <button
+            onClick={() => setShowAll((v) => !v)}
+            className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
+          >
+            {showAll ? 'Show Featured Branches' : 'Explore All Locations'}
+          </button>
+          <p className="mt-8 text-[#6f7685] text-sm max-w-md mx-auto">
+            You aren&apos;t choosing a gym. You&apos;re choosing where your transformation
+            begins.
+          </p>
         </div>
       </div>
     </section>

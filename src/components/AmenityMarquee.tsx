@@ -1,12 +1,13 @@
 const items = [
-  'State-of-the-Art Equipment',
-  '18/7 Access',
-  'Expert Trainers',
-  'Nutrition Plans',
-  'Personal Coaching',
-  'Steam & Recovery',
-  'Group Classes',
-  'Premium Interiors',
+  'Train',
+  'Improve',
+  'Belong',
+  'Repeat',
+  'Discipline',
+  'Confidence',
+  'Consistency',
+  'Courage',
+  'Strength',
 ];
 
 export default function AmenityMarquee() {

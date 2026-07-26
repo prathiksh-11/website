@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import AmenityMarquee from './components/AmenityMarquee';
-import StatsStrip from './components/StatsStrip';
-import WhyUs from './components/WhyUs';
-import About from './components/About';
+import JourneyWords from './components/JourneyWords';
+import Pathways from './components/Pathways';
 import Branches from './components/Branches';
 import BranchDetail from './components/BranchDetail';
+import NewBeginning from './components/NewBeginning';
 import Transformations from './components/Transformations';
-import FAQ from './components/FAQ';
+import Momentum from './components/Momentum';
 import JoinCTA from './components/JoinCTA';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
@@ -20,9 +20,7 @@ import PromotionalOffers from './components/PromotionalOffers';
 function App() {
   const isMaintenanceMode = false;
   const [currentBranch, setCurrentBranch] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState<
-    'home' | 'branch' | 'admin' | 'offers'
-  >('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'branch' | 'admin'>('home');
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -69,13 +67,13 @@ function App() {
       <Navbar />
       <Hero />
       <AmenityMarquee />
-      <StatsStrip />
-      <WhyUs />
+      <JourneyWords />
+      <Pathways />
       <PromotionalOffers />
-      <About />
       <Branches />
+      <NewBeginning />
       <Transformations />
-      <FAQ />
+      <Momentum />
       <JoinCTA />
       <Footer />
       <BackToTop />
