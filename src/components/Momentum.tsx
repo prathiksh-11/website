@@ -7,12 +7,12 @@ export default function Momentum() {
     <section className="relative py-28 md:py-36 overflow-hidden atmosphere">
       <div
         className="soft-blob w-[400px] h-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ background: 'rgba(224,122,114,0.12)' }}
+        style={{ background: 'rgba(255, 80, 0,0.12)' }}
       />
 
       <div ref={ref} className="relative max-w-3xl mx-auto px-6 text-center">
         <p
-          className={`text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72] mb-10 transition-all duration-700 ${
+          className={`text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000] mb-10 transition-all duration-700 ${
             isVisible ? 'opacity-100' : 'opacity-0'
           }`}
         >

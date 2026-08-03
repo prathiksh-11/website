@@ -39,7 +39,7 @@ export default function CareersPage() {
           <>
             Build people.
             <br />
-            <span className="italic text-[#e07a72]">Including yourself.</span>
+            <span className="italic text-[#ff5000]">Including yourself.</span>
           </>
         }
         description="The strongest teams build the strongest communities. At Game On Fitness, your impact goes far beyond the gym floor."
@@ -59,7 +59,7 @@ export default function CareersPage() {
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Why Game On?
             </span>
           </div>
@@ -76,12 +76,12 @@ export default function CareersPage() {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Who We&apos;re Looking For
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-[#16181f] text-center mb-10">
-            Not just experience. <span className="italic text-[#e07a72]">Character.</span>
+            Not just experience. <span className="italic text-[#ff5000]">Character.</span>
           </h2>
           <div className="grid sm:grid-cols-2 gap-4 text-left">
             {[
@@ -105,12 +105,12 @@ export default function CareersPage() {
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Life at Game On
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-            Every day is <span className="italic text-[#e07a72]">different.</span>
+            Every day is <span className="italic text-[#ff5000]">different.</span>
           </h2>
           <div className="space-y-3 mb-8 max-w-2xl mx-auto text-left sm:text-center">
             {[
@@ -133,13 +133,13 @@ export default function CareersPage() {
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Grow With Us
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
             We invest in people who invest in{' '}
-            <span className="italic text-[#e07a72]">themselves.</span>
+            <span className="italic text-[#ff5000]">themselves.</span>
           </h2>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             {['Learn', 'Lead', 'Take responsibility', 'Build your career'].map((word) => (
@@ -161,7 +161,7 @@ export default function CareersPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <div className="section-ornament justify-center mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 Our Values
               </span>
             </div>
@@ -175,7 +175,7 @@ export default function CareersPage() {
                 key={v.title}
                 className="rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-white p-7"
               >
-                <h3 className="font-display text-xl font-bold text-[#e07a72] mb-2">{v.title}</h3>
+                <h3 className="font-display text-xl font-bold text-[#ff5000] mb-2">{v.title}</h3>
                 <p className="text-[#6f7685] leading-relaxed">{v.text}</p>
               </div>
             ))}
@@ -187,12 +187,12 @@ export default function CareersPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <div className="section-ornament justify-center mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 Open Roles
               </span>
             </div>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-4">
-              Opportunities to <span className="italic text-[#e07a72]">grow with us.</span>
+              Opportunities to <span className="italic text-[#ff5000]">grow with us.</span>
             </h2>
             <p className="text-[#6f7685] text-lg max-w-2xl mx-auto leading-relaxed">
               Whether you&apos;re coaching on the gym floor or supporting members behind the
@@ -206,7 +206,7 @@ export default function CareersPage() {
                 key={role.title}
                 className="rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] p-7 flex flex-col"
               >
-                <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#e07a72] mb-3">
+                <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#ff5000] mb-3">
                   Now hiring
                 </p>
                 <h3 className="font-display text-2xl font-bold text-[#16181f] mb-3">
@@ -219,7 +219,7 @@ export default function CareersPage() {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#e07a72] hover:gap-3 transition-all"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#ff5000] hover:gap-3 transition-all"
                 >
                   Apply for this role
                   <ArrowRight size={15} />

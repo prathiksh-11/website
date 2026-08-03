@@ -44,7 +44,7 @@ export default function PageHero({
                 className="pointer-events-none absolute inset-0"
                 style={{
                   background:
-                    'radial-gradient(ellipse 60% 55% at 55% 45%, rgba(224,122,114,0.18), transparent 65%), radial-gradient(ellipse 50% 60% at 70% 70%, rgba(22,24,31,0.06), transparent 60%)',
+                    'radial-gradient(ellipse 60% 55% at 55% 45%, rgba(255, 80, 0,0.18), transparent 65%), radial-gradient(ellipse 50% 60% at 70% 70%, rgba(22,24,31,0.06), transparent 60%)',
                 }}
               />
               <div className="relative w-[min(220px,42vw)] sm:w-[240px] md:w-[260px] lg:w-[280px]">
@@ -71,7 +71,7 @@ export default function PageHero({
               />
               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#f7f8fb] to-transparent md:hidden" />
               <div className="absolute inset-y-0 left-0 w-16 lg:w-28 bg-gradient-to-r from-[#f7f8fb] to-transparent hidden md:block" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#e07a72]/10 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#ff5000]/10 via-transparent to-transparent pointer-events-none" />
             </>
           )}
         </div>
@@ -79,7 +79,7 @@ export default function PageHero({
         <div className="relative order-2 md:order-1 flex items-center px-5 sm:px-8 lg:px-12 xl:px-16 py-10 sm:py-12 md:py-28">
           <div className="w-full max-w-lg mx-auto md:mx-0 md:max-w-xl">
             <div className="section-ornament mb-4 sm:mb-5">
-              <span className="text-[11px] sm:text-xs font-semibold tracking-[0.3em] uppercase text-[#e07a72]">
+              <span className="text-[11px] sm:text-xs font-semibold tracking-[0.3em] uppercase text-[#ff5000]">
                 {eyebrow}
               </span>
             </div>
@@ -88,7 +88,7 @@ export default function PageHero({
               {title}
             </h1>
 
-            <div className="h-[2px] w-14 sm:w-20 mb-4 sm:mb-5 rounded-full bg-gradient-to-r from-[#e07a72] via-[#f2b4ae] to-transparent" />
+            <div className="h-[2px] w-14 sm:w-20 mb-4 sm:mb-5 rounded-full bg-gradient-to-r from-[#ff5000] via-[#ffb089] to-transparent" />
 
             <p className="text-[15px] sm:text-base md:text-lg text-[#6f7685] leading-relaxed mb-7 sm:mb-8 max-w-md">
               {description}

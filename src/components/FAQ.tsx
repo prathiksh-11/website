@@ -76,8 +76,8 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
       <div
         className={`rounded-2xl overflow-hidden transition-all duration-400 cursor-pointer group border ${
           isOpen
-            ? 'bg-white border-[#e07a72]/30 shadow-[0_16px_40px_rgba(224,122,114,0.1)] -translate-y-0.5'
-            : 'bg-white/70 border-[rgba(18,20,26,0.06)] hover:border-[#e07a72]/20 hover:shadow-[0_12px_30px_rgba(22,24,31,0.06)] hover:-translate-y-0.5'
+            ? 'bg-white border-[#ff5000]/30 shadow-[0_16px_40px_rgba(255, 80, 0,0.1)] -translate-y-0.5'
+            : 'bg-white/70 border-[rgba(18,20,26,0.06)] hover:border-[#ff5000]/20 hover:shadow-[0_12px_30px_rgba(22,24,31,0.06)] hover:-translate-y-0.5'
         }`}
         onClick={onToggle}
       >
@@ -85,8 +85,8 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
           <div
             className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-400 ${
               isOpen
-                ? 'bg-[#e07a72] text-white rotate-180'
-                : 'bg-[#f6e4e1] text-[#e07a72] group-hover:scale-110'
+                ? 'bg-[#ff5000] text-white rotate-180'
+                : 'bg-[#fff0e8] text-[#ff5000] group-hover:scale-110'
             }`}
           >
             {isOpen ? <Minus size={14} /> : <Plus size={14} />}
@@ -107,7 +107,7 @@ function FAQItem({ faq, index, isOpen, onToggle, isVisible }: FAQItemProps) {
 
         <div className={`accordion-content ${isOpen ? 'open' : ''}`}>
           <div className="px-6 pb-6 md:ml-12">
-            <div className="w-8 h-px bg-[#e07a72]/30 mb-4" />
+            <div className="w-8 h-px bg-[#ff5000]/30 mb-4" />
             <p className="text-[#6f7685] leading-relaxed text-sm whitespace-pre-line">{faq.a}</p>
           </div>
         </div>
@@ -127,18 +127,18 @@ export default function FAQ() {
     <section id="faq" className="relative py-24 md:py-36 atmosphere overflow-hidden">
       <div
         className="soft-blob w-[380px] h-[380px] top-10 left-1/2 -translate-x-1/2"
-        style={{ background: 'rgba(224,122,114,0.12)' }}
+        style={{ background: 'rgba(255, 80, 0,0.12)' }}
       />
       <div className="max-w-3xl mx-auto px-6 relative">
         <div ref={headRef} className="text-center mb-14">
           <div className={`reveal ${headVisible ? 'visible' : ''}`}>
             <div className="section-ornament justify-center mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 Got Questions?
               </span>
             </div>
             <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f] mb-5">
-              Clear <span className="italic text-[#e07a72]">answers.</span>
+              Clear <span className="italic text-[#ff5000]">answers.</span>
             </h2>
             <p className="text-[#6f7685] max-w-md mx-auto leading-relaxed text-lg">
               Everything you need to know about GAME ON FITNESS membership, facilities, and

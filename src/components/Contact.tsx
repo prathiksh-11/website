@@ -94,14 +94,14 @@ export default function Contact() {
       <section className="relative pt-36 pb-16 overflow-hidden atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Start Your Journey
             </span>
           </div>
           <h1 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f] mb-5">
             The hardest step
             <br />
-            <span className="italic text-[#e07a72]">is the first one.</span>
+            <span className="italic text-[#ff5000]">is the first one.</span>
           </h1>
           <p className="text-[#6f7685] text-lg max-w-xl mx-auto leading-relaxed">
             You&apos;re already here. That means you&apos;ve taken it. Now let&apos;s take the
@@ -112,7 +112,7 @@ export default function Contact() {
 
       <section className="pb-20">
         <div className="max-w-6xl mx-auto px-6">
-          <p className="text-center text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72] mb-10">
+          <p className="text-center text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000] mb-10">
             Choose how you&apos;d like to begin
           </p>
           <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
@@ -122,16 +122,16 @@ export default function Contact() {
                 <button
                   key={opt.title}
                   onClick={() => handleOption(opt.action)}
-                  className="group text-left rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-white p-7 hover:border-[#e07a72]/30 hover:shadow-[0_20px_50px_rgba(22,24,31,0.08)] transition-all duration-400 hover:-translate-y-1"
+                  className="group text-left rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-white p-7 hover:border-[#ff5000]/30 hover:shadow-[0_20px_50px_rgba(22,24,31,0.08)] transition-all duration-400 hover:-translate-y-1"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-[#f6e4e1] text-[#e07a72] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
+                  <div className="w-11 h-11 rounded-xl bg-[#fff0e8] text-[#ff5000] flex items-center justify-center mb-5 group-hover:scale-105 transition-transform">
                     <Icon size={20} />
                   </div>
                   <h3 className="font-display text-xl font-bold text-[#16181f] mb-2">
                     {opt.title}
                   </h3>
                   <p className="text-[#6f7685] text-sm leading-relaxed mb-5">{opt.text}</p>
-                  <span className="text-sm font-semibold text-[#e07a72]">{opt.cta} →</span>
+                  <span className="text-sm font-semibold text-[#ff5000]">{opt.cta} →</span>
                 </button>
               );
             })}
@@ -153,31 +153,31 @@ export default function Contact() {
 
               <div className="space-y-4">
                 <div className="flex items-start gap-4 rounded-2xl border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] p-4">
-                  <Phone size={18} className="text-[#e07a72] mt-0.5" />
+                  <Phone size={18} className="text-[#ff5000] mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-wider text-[#6f7685] mb-1">Phone</p>
                     <a
                       href="https://wa.me/919148974009"
-                      className="text-[#16181f] font-semibold hover:text-[#e07a72] transition-colors"
+                      className="text-[#16181f] font-semibold hover:text-[#ff5000] transition-colors"
                     >
                       +91 91489 74009
                     </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 rounded-2xl border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] p-4">
-                  <Mail size={18} className="text-[#e07a72] mt-0.5" />
+                  <Mail size={18} className="text-[#ff5000] mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-wider text-[#6f7685] mb-1">Email</p>
                     <a
                       href="mailto:hello@gameonfitness.in"
-                      className="text-[#16181f] font-semibold hover:text-[#e07a72] transition-colors"
+                      className="text-[#16181f] font-semibold hover:text-[#ff5000] transition-colors"
                     >
                       hello@gameonfitness.in
                     </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 rounded-2xl border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] p-4">
-                  <Clock size={18} className="text-[#e07a72] mt-0.5" />
+                  <Clock size={18} className="text-[#ff5000] mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-wider text-[#6f7685] mb-1">
                       Support Hours
@@ -193,8 +193,8 @@ export default function Contact() {
               <div className="rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] p-8 md:p-10">
                 {status === 'success' ? (
                   <div className="text-center py-16">
-                    <div className="w-16 h-16 rounded-full bg-[#f6e4e1] flex items-center justify-center mx-auto mb-6">
-                      <CheckCircle size={28} className="text-[#e07a72]" />
+                    <div className="w-16 h-16 rounded-full bg-[#fff0e8] flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle size={28} className="text-[#ff5000]" />
                     </div>
                     <h3 className="text-2xl font-bold text-[#16181f] mb-3">Message received!</h3>
                     <p className="text-[#6f7685] text-sm">Our team will get back to you soon.</p>
@@ -323,7 +323,7 @@ export default function Contact() {
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-4">
             Today is Day One.
           </h2>
-          <p className="font-display italic text-[#e07a72] text-xl md:text-2xl mb-10">
+          <p className="font-display italic text-[#ff5000] text-xl md:text-2xl mb-10">
             Everything else can wait.
           </p>
           <Link

@@ -18,7 +18,7 @@ export default function JoinCTA() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#16181f]/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#16181f]/80 via-[#16181f]/50 to-[#e07a72]/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#16181f]/80 via-[#16181f]/50 to-[#ff5000]/25" />
         </div>
 
         <div
@@ -31,7 +31,7 @@ export default function JoinCTA() {
           <h2 className="font-display text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.08] mb-5">
             The next version of you
             <br />
-            <span className="italic text-[#f2b4ae]">is waiting.</span>
+            <span className="italic text-[#ffb089]">is waiting.</span>
           </h2>
           <p className="text-white/70 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
             Don&apos;t wait for motivation. Create momentum.
@@ -41,7 +41,7 @@ export default function JoinCTA() {
               onClick={() =>
                 document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-[#e07a72] to-[#c45f58] shadow-[0_16px_40px_rgba(224,122,114,0.4)] hover:-translate-y-1 transition-all duration-300"
+              className="group inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-[#ff5000] to-[#e04800] shadow-[0_16px_40px_rgba(255, 80, 0,0.4)] hover:-translate-y-1 transition-all duration-300"
             >
               Find Your Game On
               <ArrowRight
@@ -62,12 +62,12 @@ export default function JoinCTA() {
       <div className="relative py-16 md:py-20 bg-white border-t border-[rgba(22,24,31,0.05)]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Download the App
             </span>
           </div>
           <h3 className="font-display text-3xl md:text-4xl font-bold text-[#16181f] tracking-tight mb-4">
-            Your journey <span className="italic text-[#e07a72]">continues.</span>
+            Your journey <span className="italic text-[#ff5000]">continues.</span>
           </h3>
           <p className="text-[#6f7685] max-w-md mx-auto mb-8 leading-relaxed">
             Morning reminder. Workout completed. Community challenge. Goal achieved. See you

@@ -29,14 +29,14 @@ export default function JourneyWords() {
     >
       <div
         className="soft-blob w-[420px] h-[420px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-bloom"
-        style={{ background: 'rgba(224,122,114,0.16)' }}
+        style={{ background: 'rgba(255, 80, 0,0.16)' }}
       />
 
       <div ref={ref} className="relative z-10 max-w-4xl mx-auto px-6 text-center py-24">
         <div
           className={`section-ornament justify-center mb-5 reveal ${isVisible ? 'visible' : ''}`}
         >
-          <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+          <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
             The Journey
           </span>
         </div>

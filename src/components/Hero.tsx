@@ -148,7 +148,7 @@ export default function Hero() {
             loaded ? 'opacity-100' : 'opacity-0'
           }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#e07a72]/12" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#ff5000]/12" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f7f8fb] to-transparent" />
       </div>
 
@@ -197,7 +197,7 @@ export default function Hero() {
               </span>
             </span>
             <span
-              className={`block text-[clamp(1.4rem,3.4vw,2.2rem)] italic text-[#f2b4ae] overflow-hidden mt-2 ${
+              className={`block text-[clamp(1.4rem,3.4vw,2.2rem)] italic text-[#ffb089] overflow-hidden mt-2 ${
                 loaded ? '' : 'opacity-0'
               }`}
             >
@@ -215,7 +215,7 @@ export default function Hero() {
               loaded ? 'hero-accent-line' : 'opacity-0 w-0'
             }`}
           >
-            <div className="h-full w-full bg-gradient-to-r from-[#e07a72] via-[#f2b4ae] to-transparent hero-accent-shimmer" />
+            <div className="h-full w-full bg-gradient-to-r from-[#ff5000] via-[#ffb089] to-transparent hero-accent-shimmer" />
           </div>
 
           <p
@@ -287,8 +287,8 @@ export default function Hero() {
               <X size={12} />
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#f6e4e1] flex items-center justify-center flex-shrink-0">
-                <MapPin size={18} className="text-[#e07a72]" />
+              <div className="w-10 h-10 rounded-xl bg-[#fff0e8] flex items-center justify-center flex-shrink-0">
+                <MapPin size={18} className="text-[#ff5000]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] text-[#6f7685] uppercase tracking-wider mb-0.5">
@@ -299,7 +299,7 @@ export default function Hero() {
                 </h4>
                 <button
                   onClick={requestLocation}
-                  className="w-full py-2 rounded-xl bg-[#16181f] text-white text-xs font-semibold hover:bg-[#e07a72] transition-all"
+                  className="w-full py-2 rounded-xl bg-[#16181f] text-white text-xs font-semibold hover:bg-[#ff5000] transition-all"
                 >
                   Enable Location
                 </button>
@@ -319,8 +319,8 @@ export default function Hero() {
               <X size={12} />
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#f6e4e1] flex items-center justify-center flex-shrink-0">
-                <Navigation size={18} className="text-[#e07a72]" />
+              <div className="w-10 h-10 rounded-xl bg-[#fff0e8] flex items-center justify-center flex-shrink-0">
+                <Navigation size={18} className="text-[#ff5000]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] text-[#6f7685] uppercase tracking-wider mb-0.5">
@@ -330,7 +330,7 @@ export default function Hero() {
                   {nearestBranch.name}
                 </h4>
                 <p className="text-xs text-[#6f7685] flex items-center gap-1 mt-0.5">
-                  <MapPin size={11} className="text-[#e07a72] flex-shrink-0" />
+                  <MapPin size={11} className="text-[#ff5000] flex-shrink-0" />
                   {nearestBranch.distance < 1
                     ? `${Math.round(nearestBranch.distance * 1000)}m`
                     : `${nearestBranch.distance.toFixed(1)} km`}
@@ -342,7 +342,7 @@ export default function Hero() {
                 window.location.hash = `#branch/${nearestBranch.id}`;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="w-full mt-3 py-2 rounded-xl bg-[#16181f] text-white text-xs font-semibold hover:bg-[#e07a72] transition-all"
+              className="w-full mt-3 py-2 rounded-xl bg-[#16181f] text-white text-xs font-semibold hover:bg-[#ff5000] transition-all"
             >
               View Details →
             </button>

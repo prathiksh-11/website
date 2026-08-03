@@ -87,7 +87,7 @@ export default function LocationsPage() {
           <>
             Choose your
             <br />
-            <span className="italic text-[#e07a72]">destination.</span>
+            <span className="italic text-[#ff5000]">destination.</span>
           </>
         }
         description="Not every journey begins in the same place. But every great journey begins with the right one."
@@ -107,7 +107,7 @@ export default function LocationsPage() {
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Your City
             </span>
           </div>
@@ -156,7 +156,7 @@ export default function LocationsPage() {
                     {branch.name}
                   </h3>
                   <div className="flex items-start gap-3 mb-8 text-[#6f7685]">
-                    <MapPin size={20} className="mt-1 shrink-0 text-[#e07a72]" />
+                    <MapPin size={20} className="mt-1 shrink-0 text-[#ff5000]" />
                     <p className="text-base md:text-lg leading-relaxed">{branch.address}</p>
                   </div>
                   <button
@@ -177,12 +177,12 @@ export default function LocationsPage() {
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               More Than A Location
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-            The same Game On <span className="italic text-[#e07a72]">experience.</span>
+            The same Game On <span className="italic text-[#ff5000]">experience.</span>
           </h2>
           <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-4">
             Every branch offers something different. Different coaches. Different facilities.
@@ -197,12 +197,12 @@ export default function LocationsPage() {
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Find Your Fit
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-            Which Game On feels like <span className="italic text-[#e07a72]">yours?</span>
+            Which Game On feels like <span className="italic text-[#ff5000]">yours?</span>
           </h2>
           <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-4">
             There&apos;s no perfect branch. Only the perfect branch for you.
@@ -217,7 +217,7 @@ export default function LocationsPage() {
       <section className="py-24 atmosphere">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Still Not Sure?
             </span>
           </div>
@@ -242,7 +242,7 @@ export default function LocationsPage() {
           <h2 className="font-display text-3xl md:text-5xl font-bold leading-tight mb-5">
             You aren&apos;t choosing a gym.
           </h2>
-          <p className="font-display text-2xl md:text-4xl italic text-[#f2b4ae] leading-tight">
+          <p className="font-display text-2xl md:text-4xl italic text-[#ffb089] leading-tight">
             You&apos;re choosing where your transformation begins.
           </p>
         </div>

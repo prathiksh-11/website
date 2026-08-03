@@ -27,7 +27,7 @@ export default function Transformations() {
         <div
           className="absolute top-1/4 left-0 w-[600px] h-[600px] rounded-full opacity-60"
           style={{
-            background: 'radial-gradient(circle, rgba(224,122,114,0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(255, 80, 0,0.12) 0%, transparent 70%)',
             filter: 'blur(80px)',
           }}
         />
@@ -36,7 +36,7 @@ export default function Transformations() {
       <div className="max-w-6xl mx-auto px-6 relative">
         <div ref={headRef} className={`text-center mb-16 reveal ${headVisible ? 'visible' : ''}`}>
             <div className="section-ornament justify-center mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 Real Journeys
               </span>
             </div>
@@ -56,7 +56,7 @@ export default function Transformations() {
               <p className="font-display text-lg md:text-xl italic text-[#6f7685] leading-relaxed mb-6">
                 “{story.before}”
               </p>
-              <div className="h-px w-12 bg-[#e07a72]/40 mb-6" />
+              <div className="h-px w-12 bg-[#ff5000]/40 mb-6" />
               <p className="font-display text-xl md:text-2xl font-bold text-[#16181f] leading-snug">
                 “{story.after}”
               </p>
@@ -70,7 +70,7 @@ export default function Transformations() {
         >
           <p className="font-display text-2xl md:text-4xl font-bold tracking-tight text-[#16181f]">
             Every transformation starts with a{' '}
-            <span className="italic text-[#e07a72]">decision.</span>
+            <span className="italic text-[#ff5000]">decision.</span>
           </p>
           <button
             onClick={() =>

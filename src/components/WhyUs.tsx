@@ -6,7 +6,7 @@ const pillars = [
     icon: Dumbbell,
     title: 'Train with intention',
     text: 'World-class equipment and programming built for real strength, not just sweat.',
-    accent: 'from-[#e07a72]/20 to-[#f6e4e1]',
+    accent: 'from-[#ff5000]/20 to-[#fff0e8]',
   },
   {
     icon: HeartPulse,
@@ -18,7 +18,7 @@ const pillars = [
     icon: Users,
     title: 'Belong somewhere',
     text: 'A community that pushes you forward — trainers and members who take fitness seriously.',
-    accent: 'from-[#f6e4e1] to-[#e4ecf6]',
+    accent: 'from-[#fff0e8] to-[#e4ecf6]',
   },
 ];
 
@@ -32,18 +32,18 @@ export default function WhyUs() {
     <section className="relative py-20 md:py-28 overflow-hidden bg-white">
       <div
         className="soft-blob w-[360px] h-[360px] top-10 -right-20 opacity-70"
-        style={{ background: 'rgba(224,122,114,0.1)' }}
+        style={{ background: 'rgba(255, 80, 0,0.1)' }}
       />
 
       <div className="max-w-7xl mx-auto px-6 relative">
         <div ref={headRef} className={`text-center max-w-2xl mx-auto mb-14 reveal ${headVisible ? 'visible' : ''}`}>
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               The Experience
             </span>
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-[#16181f] leading-[1.1]">
-            Designed to feel <span className="italic text-[#e07a72]">different.</span>
+            Designed to feel <span className="italic text-[#ff5000]">different.</span>
           </h2>
           <div className="section-float-line mt-6" />
         </div>
@@ -57,12 +57,12 @@ export default function WhyUs() {
                 className={`why-card reveal ${gridVisible ? 'visible' : ''} group relative rounded-[1.75rem] p-8 border border-[rgba(22,24,31,0.06)] bg-gradient-to-br ${p.accent} hover:-translate-y-2 transition-all duration-500 hover:shadow-[0_28px_60px_rgba(22,24,31,0.1)]`}
                 style={{ transitionDelay: `${i * 120}ms` }}
               >
-                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#e07a72] mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[-4deg]">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#ff5000] mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[-4deg]">
                   <Icon size={24} />
                 </div>
                 <h3 className="font-display text-2xl font-bold text-[#16181f] mb-3">{p.title}</h3>
                 <p className="text-[#6f7685] leading-relaxed text-[15px]">{p.text}</p>
-                <div className="mt-6 h-px w-12 bg-[#e07a72]/40 transition-all duration-500 group-hover:w-20" />
+                <div className="mt-6 h-px w-12 bg-[#ff5000]/40 transition-all duration-500 group-hover:w-20" />
               </div>
             );
           })}

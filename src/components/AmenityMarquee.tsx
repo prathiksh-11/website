@@ -24,7 +24,7 @@ export default function AmenityMarquee() {
             <span className="text-xs md:text-sm font-semibold tracking-[0.18em] uppercase text-[#3a3f4b] whitespace-nowrap">
               {item}
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#e07a72]/70 shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ff5000]/70 shrink-0" />
           </div>
         ))}
       </div>

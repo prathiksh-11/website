@@ -170,7 +170,7 @@ function BranchCard({
 
   const tagStyle =
     branch.tag === 'Luxury'
-      ? 'bg-gradient-to-r from-[#e07a72] to-[#c45f58] text-white'
+      ? 'bg-gradient-to-r from-[#ff5000] to-[#e04800] text-white'
       : branch.tag === 'Premium'
         ? 'bg-white/95 text-[#16181f]'
         : 'bg-[#16181f]/70 text-white backdrop-blur-md';
@@ -197,7 +197,7 @@ function BranchCard({
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-[#16181f] via-[#16181f]/50 to-[#16181f]/10 opacity-95" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#e07a72]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#ff5000]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="branch-shine pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
@@ -208,7 +208,7 @@ function BranchCard({
           </span>
           {distance !== null && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-[10px] font-semibold animate-fade-in-up">
-              <Navigation size={11} className="text-[#f2b4ae]" />
+              <Navigation size={11} className="text-[#ffb089]" />
               {distance < 1
                 ? `${Math.round(distance * 1000)}m`
                 : `${distance.toFixed(1)} km`}
@@ -218,7 +218,7 @@ function BranchCard({
 
         <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 transition-transform duration-500 group-hover:translate-y-[-4px]">
           <div className="flex items-center gap-1.5 text-white/70 text-xs mb-2">
-            <MapPin size={12} className="text-[#f2b4ae]" />
+            <MapPin size={12} className="text-[#ffb089]" />
             <span>{branch.city}</span>
           </div>
 
@@ -292,12 +292,12 @@ export default function Branches() {
         >
           <div className={`reveal ${headVisible ? 'visible' : ''} max-w-2xl`}>
             <div className="section-ornament mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 Locations
               </span>
             </div>
             <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f]">
-              Your journey <span className="italic text-[#e07a72]">has a place.</span>
+              Your journey <span className="italic text-[#ff5000]">has a place.</span>
             </h2>
             <p className="mt-4 text-[#6f7685] leading-relaxed text-lg">
               Choose the destination that feels like yours. Every branch has its own energy —

@@ -219,7 +219,7 @@ function TagList({ items }: { items: string[] }) {
       {items.map((item) => (
         <span
           key={item}
-          className="inline-flex items-center px-3 py-1.5 rounded-full text-[13px] text-[#16181f]/80 bg-[#f6e4e1]/70 border border-[rgba(224,122,114,0.18)]"
+          className="inline-flex items-center px-3 py-1.5 rounded-full text-[13px] text-[#16181f]/80 bg-[#fff0e8]/70 border border-[rgba(255, 80, 0,0.18)]"
         >
           {item}
         </span>
@@ -233,7 +233,7 @@ function BulletList({ items }: { items: string[] }) {
     <ul className="mt-4 space-y-2.5">
       {items.map((item) => (
         <li key={item} className="flex gap-3 text-[#6f7685] text-[15px] leading-relaxed">
-          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#e07a72] shrink-0" />
+          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#ff5000] shrink-0" />
           <span>{item}</span>
         </li>
       ))}
@@ -286,7 +286,7 @@ export default function PrivacyPolicy() {
       <div
         className="pointer-events-none absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full opacity-70"
         style={{
-          background: 'radial-gradient(circle, rgba(224,122,114,0.16) 0%, transparent 68%)',
+          background: 'radial-gradient(circle, rgba(255, 80, 0,0.16) 0%, transparent 68%)',
         }}
       />
       <div
@@ -305,7 +305,7 @@ export default function PrivacyPolicy() {
               className="w-9 h-9 rounded-xl transition-transform duration-300 group-hover:scale-105"
             />
             <span className="font-display text-lg font-semibold tracking-tight text-[#16181f]">
-              Game On <span className="italic text-[#e07a72]">Fitness</span>
+              Game On <span className="italic text-[#ff5000]">Fitness</span>
             </span>
           </Link>
           <Link
@@ -323,15 +323,15 @@ export default function PrivacyPolicy() {
           visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f6e4e1]/80 border border-[rgba(224,122,114,0.2)] mb-6">
-          <Shield size={14} className="text-[#e07a72]" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c45f58]">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#fff0e8]/80 border border-[rgba(255, 80, 0,0.2)] mb-6">
+          <Shield size={14} className="text-[#ff5000]" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#e04800]">
             Privacy
           </span>
         </div>
 
         <h1 className="font-display text-4xl md:text-6xl font-bold tracking-tight text-[#16181f] leading-[1.05] max-w-2xl">
-          Privacy <span className="italic text-[#e07a72]">Policy</span>
+          Privacy <span className="italic text-[#ff5000]">Policy</span>
         </h1>
         <p className="mt-5 text-[#6f7685] text-base md:text-lg leading-relaxed max-w-2xl">
           How Game On Fitness collects, uses, and protects your personal information across our
@@ -362,7 +362,7 @@ export default function PrivacyPolicy() {
                       >
                         <span
                           className={`mt-0.5 text-[11px] font-semibold tabular-nums ${
-                            active ? 'text-[#e07a72]' : 'text-[#c5c9d1]'
+                            active ? 'text-[#ff5000]' : 'text-[#c5c9d1]'
                           }`}
                         >
                           {String(index + 1).padStart(2, '0')}
@@ -408,7 +408,7 @@ export default function PrivacyPolicy() {
                   className="scroll-mt-10 rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-white/80 backdrop-blur-sm p-7 md:p-9 shadow-[0_18px_50px_rgba(22,24,31,0.04)]"
                 >
                   <div className="flex items-start gap-4 mb-5">
-                    <span className="font-display text-2xl md:text-3xl font-bold text-[#e07a72]/35 leading-none tabular-nums">
+                    <span className="font-display text-2xl md:text-3xl font-bold text-[#ff5000]/35 leading-none tabular-nums">
                       {String(index + 1).padStart(2, '0')}
                     </span>
                     <h2 className="font-display text-2xl md:text-[1.75rem] font-bold text-[#16181f] tracking-tight leading-tight pt-0.5">
@@ -459,10 +459,10 @@ export default function PrivacyPolicy() {
               <div
                 className="absolute -top-16 right-0 w-64 h-64 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(224,122,114,0.35) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(255, 80, 0,0.35) 0%, transparent 70%)',
                 }}
               />
-              <p className="relative font-display italic text-[#f2b4ae] text-lg mb-3">Acknowledgement</p>
+              <p className="relative font-display italic text-[#ffb089] text-lg mb-3">Acknowledgement</p>
               <p className="relative text-white/70 text-[15px] md:text-base leading-relaxed max-w-2xl">
                 By using our website or mobile application, you acknowledge that you have read,
                 understood, and agreed to this Privacy Policy.
@@ -471,7 +471,7 @@ export default function PrivacyPolicy() {
                 href="https://wa.me/919148974009"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#e07a72] to-[#c45f58] text-sm font-semibold text-white hover:-translate-y-0.5 transition-all duration-300"
+                className="relative mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#ff5000] to-[#e04800] text-sm font-semibold text-white hover:-translate-y-0.5 transition-all duration-300"
               >
                 Contact support
                 <ArrowUpRight size={15} />

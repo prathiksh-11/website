@@ -80,7 +80,7 @@ export default function Navbar() {
               className="flex items-center gap-2.5 group pl-1 flex-shrink-0"
             >
               <div className="relative">
-                <div className="absolute -inset-1 rounded-2xl bg-[#e07a72]/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                <div className="absolute -inset-1 rounded-2xl bg-[#ff5000]/20 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 <img
                   src="/logo.png"
                   alt="Game On Fitness"
@@ -89,7 +89,7 @@ export default function Navbar() {
               </div>
               <span className="font-display text-[15px] md:text-lg font-semibold tracking-tight text-[#16181f] whitespace-nowrap">
                 Game On{' '}
-                <span className="italic text-[#e07a72] transition-colors duration-300 group-hover:text-[#c45f58]">
+                <span className="italic text-[#ff5000] transition-colors duration-300 group-hover:text-[#e04800]">
                   Fitness
                 </span>
               </span>
@@ -106,14 +106,14 @@ export default function Navbar() {
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink('')}
                     className={`nav-link relative text-[13px] font-semibold px-3.5 py-2 rounded-full transition-all duration-300 ${
-                      active ? 'text-[#c45f58]' : 'text-[#3a3f4b] hover:text-[#16181f]'
+                      active ? 'text-[#e04800]' : 'text-[#3a3f4b] hover:text-[#16181f]'
                     }`}
                     style={{ transitionDelay: mounted ? `${i * 40}ms` : '0ms' }}
                   >
                     {(active || isHovered) && (
                       <span
                         className={`absolute inset-0 rounded-full transition-all duration-300 ${
-                          active ? 'bg-[#f6e4e1] shadow-sm' : 'bg-white shadow-sm'
+                          active ? 'bg-[#fff0e8] shadow-sm' : 'bg-white shadow-sm'
                         }`}
                         style={{ animation: 'navPillIn 0.35s cubic-bezier(0.16,1,0.3,1)' }}
                       />
@@ -139,7 +139,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden relative w-11 h-11 rounded-full bg-[#f7f8fb] border border-[rgba(22,24,31,0.08)] flex items-center justify-center text-[#16181f] hover:bg-[#f6e4e1] hover:text-[#e07a72] transition-all duration-300 active:scale-95"
+              className="lg:hidden relative w-11 h-11 rounded-full bg-[#f7f8fb] border border-[rgba(22,24,31,0.08)] flex items-center justify-center text-[#16181f] hover:bg-[#fff0e8] hover:text-[#ff5000] transition-all duration-300 active:scale-95"
               aria-label="Toggle menu"
             >
               <span
@@ -179,7 +179,7 @@ export default function Navbar() {
               : 'opacity-0 -translate-y-4 scale-95'
           }`}
         >
-          <p className="font-display italic text-[#e07a72] text-sm mb-4">Navigate</p>
+          <p className="font-display italic text-[#ff5000] text-sm mb-4">Navigate</p>
           <div className="space-y-1.5">
             {navLinks.map((link, i) => (
               <button
@@ -187,7 +187,7 @@ export default function Navbar() {
                 onClick={() => handleNav(link)}
                 className={`mobile-nav-item flex w-full items-center justify-between text-left px-4 py-3.5 rounded-2xl text-lg font-display font-semibold transition-all duration-300 ${
                   isActive(link)
-                    ? 'bg-[#f6e4e1] text-[#c45f58]'
+                    ? 'bg-[#fff0e8] text-[#e04800]'
                     : 'text-[#16181f] hover:bg-[#f7f8fb]'
                 }`}
                 style={{
@@ -199,7 +199,7 @@ export default function Navbar() {
                 {link.label}
                 <ArrowUpRight
                   size={16}
-                  className={isActive(link) ? 'text-[#e07a72]' : 'text-[#c4c8d0]'}
+                  className={isActive(link) ? 'text-[#ff5000]' : 'text-[#c4c8d0]'}
                 />
               </button>
             ))}

@@ -113,7 +113,7 @@ function BulletList({ items }: { items: string[] }) {
     <ul className="space-y-2.5 pt-1">
       {items.map((item) => (
         <li key={item} className="flex gap-3 text-[#6f7685] text-[15px] md:text-base leading-relaxed">
-          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#e07a72] shrink-0" />
+          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#ff5000] shrink-0" />
           <span>{item}</span>
         </li>
       ))}
@@ -163,7 +163,7 @@ export default function AccountDeletionPolicy() {
       <div
         className="pointer-events-none absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full opacity-70"
         style={{
-          background: 'radial-gradient(circle, rgba(224,122,114,0.16) 0%, transparent 68%)',
+          background: 'radial-gradient(circle, rgba(255, 80, 0,0.16) 0%, transparent 68%)',
         }}
       />
       <div
@@ -182,7 +182,7 @@ export default function AccountDeletionPolicy() {
               className="w-9 h-9 rounded-xl transition-transform duration-300 group-hover:scale-105"
             />
             <span className="font-display text-lg font-semibold tracking-tight text-[#16181f]">
-              Game On <span className="italic text-[#e07a72]">Fitness</span>
+              Game On <span className="italic text-[#ff5000]">Fitness</span>
             </span>
           </Link>
           <Link
@@ -200,15 +200,15 @@ export default function AccountDeletionPolicy() {
           visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f6e4e1]/80 border border-[rgba(224,122,114,0.2)] mb-6">
-          <Trash2 size={14} className="text-[#e07a72]" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c45f58]">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#fff0e8]/80 border border-[rgba(255, 80, 0,0.2)] mb-6">
+          <Trash2 size={14} className="text-[#ff5000]" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#e04800]">
             Account Deletion
           </span>
         </div>
 
         <h1 className="font-display text-4xl md:text-6xl font-bold tracking-tight text-[#16181f] leading-[1.05] max-w-3xl">
-          Account <span className="italic text-[#e07a72]">Deletion Policy</span>
+          Account <span className="italic text-[#ff5000]">Deletion Policy</span>
         </h1>
         <p className="mt-5 text-[#6f7685] text-base md:text-lg leading-relaxed max-w-2xl">
           How to request deletion of your Game On Fitness app account and what happens to your
@@ -240,7 +240,7 @@ export default function AccountDeletionPolicy() {
                       >
                         <span
                           className={`mt-0.5 text-[11px] font-semibold tabular-nums ${
-                            active ? 'text-[#e07a72]' : 'text-[#c5c9d1]'
+                            active ? 'text-[#ff5000]' : 'text-[#c5c9d1]'
                           }`}
                         >
                           {String(index + 1).padStart(2, '0')}
@@ -286,7 +286,7 @@ export default function AccountDeletionPolicy() {
                   className="scroll-mt-10 rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-white/80 backdrop-blur-sm p-7 md:p-9 shadow-[0_18px_50px_rgba(22,24,31,0.04)]"
                 >
                   <div className="flex items-start gap-4 mb-5">
-                    <span className="font-display text-2xl md:text-3xl font-bold text-[#e07a72]/35 leading-none tabular-nums">
+                    <span className="font-display text-2xl md:text-3xl font-bold text-[#ff5000]/35 leading-none tabular-nums">
                       {String(index + 1).padStart(2, '0')}
                     </span>
                     <h2 className="font-display text-2xl md:text-[1.75rem] font-bold text-[#16181f] tracking-tight leading-tight pt-0.5">
@@ -317,10 +317,10 @@ export default function AccountDeletionPolicy() {
               <div
                 className="absolute -top-16 right-0 w-64 h-64 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(224,122,114,0.35) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(255, 80, 0,0.35) 0%, transparent 70%)',
                 }}
               />
-              <p className="relative font-display italic text-[#f2b4ae] text-lg mb-3">
+              <p className="relative font-display italic text-[#ffb089] text-lg mb-3">
                 Request deletion
               </p>
               <p className="relative text-white/70 text-[15px] md:text-base leading-relaxed max-w-2xl">
@@ -330,7 +330,7 @@ export default function AccountDeletionPolicy() {
               <div className="relative mt-6 flex flex-wrap gap-3">
                 <a
                   href="mailto:hello@gameonfitness.in?subject=Account%20Deletion%20Request"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#e07a72] to-[#c45f58] text-sm font-semibold text-white hover:-translate-y-0.5 transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#ff5000] to-[#e04800] text-sm font-semibold text-white hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Email deletion request
                   <ArrowUpRight size={15} />
@@ -348,7 +348,7 @@ export default function AccountDeletionPolicy() {
 
             <p className="mt-8 text-sm text-[#9aa0ab]">
               Related:{' '}
-              <Link to="/privacy" className="text-[#e07a72] font-medium hover:underline">
+              <Link to="/privacy" className="text-[#ff5000] font-medium hover:underline">
                 Privacy Policy
               </Link>
             </p>

@@ -31,7 +31,7 @@ export default function Footer() {
       <div
         className="absolute -top-24 left-1/2 -translate-x-1/2 w-[520px] h-[220px] pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse, rgba(224,122,114,0.22) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse, rgba(255, 80, 0,0.22) 0%, transparent 70%)',
           filter: 'blur(20px)',
         }}
       />
@@ -46,7 +46,7 @@ export default function Footer() {
                 className="w-10 h-10 rounded-xl transition-transform duration-300 group-hover:scale-105"
               />
               <span className="font-display text-xl font-semibold tracking-tight">
-                Game On <span className="italic text-[#e07a72]">Fitness</span>
+                Game On <span className="italic text-[#ff5000]">Fitness</span>
               </span>
             </Link>
             <p className="text-white/50 text-sm md:text-base leading-relaxed">
@@ -56,7 +56,7 @@ export default function Footer() {
 
           <Link
             to="/contact"
-            className="inline-flex items-center gap-2 self-start lg:self-auto px-6 py-3.5 rounded-full bg-gradient-to-r from-[#e07a72] to-[#c45f58] text-sm font-semibold text-white shadow-[0_12px_30px_rgba(224,122,114,0.3)] hover:-translate-y-0.5 transition-all duration-300"
+            className="inline-flex items-center gap-2 self-start lg:self-auto px-6 py-3.5 rounded-full bg-gradient-to-r from-[#ff5000] to-[#e04800] text-sm font-semibold text-white shadow-[0_12px_30px_rgba(255, 80, 0,0.3)] hover:-translate-y-0.5 transition-all duration-300"
           >
             Find Your Game On
             <ArrowUpRight size={16} />
@@ -73,7 +73,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
+                    className="text-sm text-white/50 hover:text-[#ffb089] transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -82,7 +82,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/privacy"
-                  className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
+                  className="text-sm text-white/50 hover:text-[#ffb089] transition-colors duration-300"
                 >
                   Privacy Policy
                 </Link>
@@ -90,7 +90,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/account-deletion"
-                  className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
+                  className="text-sm text-white/50 hover:text-[#ffb089] transition-colors duration-300"
                 >
                   Account Deletion
                 </Link>
@@ -108,7 +108,7 @@ export default function Footer() {
                   <a
                     href={`/#branch/${branch.id}`}
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="text-sm text-white/50 hover:text-[#f2b4ae] transition-colors duration-300"
+                    className="text-sm text-white/50 hover:text-[#ffb089] transition-colors duration-300"
                   >
                     {branch.name}
                   </a>
@@ -126,7 +126,7 @@ export default function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#e07a72] hover:text-white hover:border-transparent transition-all duration-300"
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#ff5000] hover:text-white hover:border-transparent transition-all duration-300"
                 aria-label="Instagram"
               >
                 <Instagram size={18} />
@@ -135,7 +135,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#e07a72] hover:text-white hover:border-transparent transition-all duration-300"
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#ff5000] hover:text-white hover:border-transparent transition-all duration-300"
                 aria-label="Facebook"
               >
                 <Facebook size={18} />
@@ -144,7 +144,7 @@ export default function Footer() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#e07a72] hover:text-white hover:border-transparent transition-all duration-300"
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#ff5000] hover:text-white hover:border-transparent transition-all duration-300"
                 aria-label="YouTube"
               >
                 <Youtube size={18} />
@@ -165,7 +165,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Download on the App Store"
-                className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:border-[#e07a72]/40 hover:bg-white/10 transition-all duration-300"
+                className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:border-[#ff5000]/40 hover:bg-white/10 transition-all duration-300"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -185,7 +185,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Get it on Google Play"
-                className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:border-[#e07a72]/40 hover:bg-white/10 transition-all duration-300"
+                className="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 hover:border-[#ff5000]/40 hover:bg-white/10 transition-all duration-300"
               >
                 <img
                   src="/play-store.png"
@@ -210,13 +210,13 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <Link
               to="/privacy"
-              className="text-white/35 text-xs hover:text-[#f2b4ae] transition-colors duration-300"
+              className="text-white/35 text-xs hover:text-[#ffb089] transition-colors duration-300"
             >
               Privacy
             </Link>
             <Link
               to="/account-deletion"
-              className="text-white/35 text-xs hover:text-[#f2b4ae] transition-colors duration-300"
+              className="text-white/35 text-xs hover:text-[#ffb089] transition-colors duration-300"
             >
               Delete Account
             </Link>

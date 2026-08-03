@@ -33,7 +33,7 @@ const stories = [
       <>
         Fitness isn&apos;t
         <br />
-        <span className="italic text-[#e07a72]">a one-hour habit.</span>
+        <span className="italic text-[#ff5000]">a one-hour habit.</span>
       </>
     ),
     body: "It's the choices you make every day. The Game On App is designed to keep you moving, motivated, and focused—whether you're inside the gym or anywhere else.",
@@ -44,7 +44,7 @@ const stories = [
       <>
         Every workout
         <br />
-        <span className="italic text-[#e07a72]">moves you forward.</span>
+        <span className="italic text-[#ff5000]">moves you forward.</span>
       </>
     ),
     body: "Every check-in. Every completed session. Every milestone. Every personal best. Becomes part of your journey. Progress isn't remembered. It's recorded.",
@@ -55,7 +55,7 @@ const stories = [
       <>
         Stay connected.
         <br />
-        <span className="italic text-[#e07a72]">Even when you&apos;re away.</span>
+        <span className="italic text-[#ff5000]">Even when you&apos;re away.</span>
       </>
     ),
     body: "Receive reminders that keep you consistent. Get updates from your branch. Discover new challenges. Celebrate achievements with your community. Because motivation grows when you're connected.",
@@ -66,7 +66,7 @@ const stories = [
       <>
         Your community.
         <br />
-        <span className="italic text-[#e07a72]">Always with you.</span>
+        <span className="italic text-[#ff5000]">Always with you.</span>
       </>
     ),
     body: "You're never training alone. Celebrate victories. Cheer others on. Take part in community events. Stay inspired by people walking the same path. Great journeys are built together.",
@@ -77,7 +77,7 @@ const stories = [
       <>
         Simple. Fast.
         <br />
-        <span className="italic text-[#e07a72]">Always ready.</span>
+        <span className="italic text-[#ff5000]">Always ready.</span>
       </>
     ),
     body: 'Designed for speed. Built for simplicity. Focused on what matters most. No clutter. No distractions. Just everything you need to keep moving forward.',
@@ -118,7 +118,7 @@ export default function DownloadPage() {
           </h1>
           <p className="text-[#6f7685] mb-6">Redirecting you to the app store...</p>
           <div className="flex justify-center">
-            <div className="w-10 h-10 border-4 border-[#e07a72] border-t-transparent rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-[#ff5000] border-t-transparent rounded-full animate-spin" />
           </div>
         </div>
       </div>
@@ -135,7 +135,7 @@ export default function DownloadPage() {
           <>
             Your journey doesn&apos;t end
             <br />
-            <span className="italic text-[#e07a72]">when you leave the gym.</span>
+            <span className="italic text-[#ff5000]">when you leave the gym.</span>
           </>
         }
         description="The workout ends. The journey doesn't. Stay connected to your goals, progress, and community—every single day."
@@ -168,12 +168,12 @@ export default function DownloadPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12 md:mb-16">
             <div className="section-ornament justify-center mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 App Preview
               </span>
             </div>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-4">
-              See the app in <span className="italic text-[#e07a72]">action.</span>
+              See the app in <span className="italic text-[#ff5000]">action.</span>
             </h2>
             <p className="text-[#6f7685] text-lg max-w-xl mx-auto">
               Book sessions, track progress, and stay connected with your branch — all in one place.
@@ -207,7 +207,7 @@ export default function DownloadPage() {
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               {stories[0].label}
             </span>
           </div>
@@ -223,14 +223,14 @@ export default function DownloadPage() {
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center mb-14">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Features
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-5">
             Everything you need.
             <br />
-            <span className="italic text-[#e07a72]">All in one place.</span>
+            <span className="italic text-[#ff5000]">All in one place.</span>
           </h2>
           <p className="text-[#6f7685] text-lg max-w-xl mx-auto">
             No switching between apps. No searching for updates. Just one seamless experience.
@@ -242,7 +242,7 @@ export default function DownloadPage() {
               key={f}
               className="flex items-center gap-3 rounded-2xl border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] px-4 py-3.5"
             >
-              <Check size={16} className="text-[#e07a72] shrink-0" />
+              <Check size={16} className="text-[#ff5000] shrink-0" />
               <span className="text-[#3a3f4b] text-sm">{f}</span>
             </div>
           ))}
@@ -256,7 +256,7 @@ export default function DownloadPage() {
         >
           <div className="max-w-4xl mx-auto px-6 text-center">
             <div className="section-ornament justify-center mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 {story.label}
               </span>
             </div>
@@ -273,14 +273,14 @@ export default function DownloadPage() {
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
-            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
               Get Started
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] mb-5">
             The journey doesn&apos;t stop at the gym.
             <br />
-            <span className="italic text-[#e07a72]">
+            <span className="italic text-[#ff5000]">
               It follows you wherever life takes you.
             </span>
           </h2>
@@ -307,7 +307,7 @@ export default function DownloadPage() {
               App Store
             </a>
           </div>
-          <Link to="/contact" className="text-[#e07a72] text-sm font-semibold hover:underline">
+          <Link to="/contact" className="text-[#ff5000] text-sm font-semibold hover:underline">
             Ready to begin? Start your journey →
           </Link>
           <p className="mt-12 text-[#9aa0ab] text-xs font-medium tracking-[0.2em] uppercase">

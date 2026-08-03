@@ -128,17 +128,17 @@ export default function PromotionalOffers() {
         <div className="flex items-center justify-between mb-8 animate-fade-in-up">
           <div>
             <div className="section-ornament mb-3">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#e07a72]">
+              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
                 Limited Time
               </span>
             </div>
             <h2 className="font-display text-2xl md:text-4xl font-bold text-[#16181f] tracking-tight">
-              Exclusive <span className="italic text-[#e07a72]">offers</span>
+              Exclusive <span className="italic text-[#ff5000]">offers</span>
             </h2>
           </div>
 
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#f7f8fb] border border-[rgba(18,20,26,0.06)]">
-            <Sparkles size={14} className="text-[#e07a72]" />
+            <Sparkles size={14} className="text-[#ff5000]" />
             <span className="text-xs font-semibold text-[#6f7685] uppercase tracking-wider">
               {promoCards.length + carouselBanners.length} Active{' '}
               {promoCards.length + carouselBanners.length === 1 ? 'Offer' : 'Offers'}
@@ -176,7 +176,7 @@ export default function PromotionalOffers() {
                         <div className="absolute top-4 right-4 pointer-events-none">
                           <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(18,20,26,0.06)]">
                             <div className="flex items-center gap-1.5">
-                              <Gift size={12} className="text-[#e07a72]" />
+                              <Gift size={12} className="text-[#ff5000]" />
                               <span className="text-[10px] font-bold text-[#16181f] uppercase tracking-wider">
                                 Exclusive
                               </span>
@@ -187,7 +187,7 @@ export default function PromotionalOffers() {
                         <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end pointer-events-none">
                           <div className="max-w-2xl pointer-events-auto">
                             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md mb-4">
-                              <Tag size={12} className="text-[#e07a72]" />
+                              <Tag size={12} className="text-[#ff5000]" />
                               <span className="text-[10px] font-bold text-[#16181f] uppercase tracking-wider">
                                 Limited Offer
                               </span>
@@ -197,7 +197,7 @@ export default function PromotionalOffers() {
                               {offer.title}
                             </h3>
 
-                            <button className="group/btn inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#16181f] font-semibold text-sm hover:bg-[#e07a72] hover:text-white transition-all duration-300">
+                            <button className="group/btn inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#16181f] font-semibold text-sm hover:bg-[#ff5000] hover:text-white transition-all duration-300">
                               Claim Offer
                               <ArrowRight
                                 size={16}
@@ -237,7 +237,7 @@ export default function PromotionalOffers() {
                       onClick={() => setCurrentPromoSlide(index)}
                       className={`h-1.5 rounded-full transition-all duration-500 ${
                         index === currentPromoSlide
-                          ? 'bg-[#e07a72] w-10'
+                          ? 'bg-[#ff5000] w-10'
                           : 'bg-[#d4d7de] w-2 hover:bg-[#9aa0ab]'
                       }`}
                     />
@@ -251,7 +251,7 @@ export default function PromotionalOffers() {
         {carouselBanners.length > 0 && (
           <div className="relative animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-1.5 h-6 bg-[#e07a72] rounded-full" />
+              <div className="w-1.5 h-6 bg-[#ff5000] rounded-full" />
               <h3 className="font-display text-xl md:text-2xl font-bold text-[#16181f] tracking-tight">
                 Featured banners
               </h3>
@@ -318,7 +318,7 @@ export default function PromotionalOffers() {
                       onClick={() => setCurrentCarouselSlide(index)}
                       className={`h-1.5 rounded-full transition-all duration-500 ${
                         index === currentCarouselSlide
-                          ? 'bg-[#e07a72] w-10'
+                          ? 'bg-[#ff5000] w-10'
                           : 'bg-[#d4d7de] w-2 hover:bg-[#9aa0ab]'
                       }`}
                     />

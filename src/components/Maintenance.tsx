@@ -10,7 +10,7 @@ function Maintenance() {
     <div className="min-h-screen atmosphere overflow-hidden px-6 py-10 sm:px-10 relative">
       <div className="relative mx-auto flex max-w-4xl flex-col gap-10 items-center text-center pt-16">
         <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(18,20,26,0.08)] bg-white px-4 py-2 text-xs uppercase tracking-[0.3em] text-[#6f7685] shadow-sm">
-          <AlertTriangle size={16} className="text-[#e07a72]" />
+          <AlertTriangle size={16} className="text-[#ff5000]" />
           Site Under Maintenance
         </span>
 
@@ -26,7 +26,7 @@ function Maintenance() {
 
         <div className="w-full rounded-[1.75rem] border border-[rgba(18,20,26,0.06)] bg-white p-8 shadow-[0_28px_60px_rgba(18,20,26,0.08)] text-left">
           <div className="inline-flex items-center gap-3 rounded-full bg-[#f7f8fb] px-4 py-2.5 text-sm text-[#3a3f4b]">
-            <Sparkles size={16} className="text-[#e07a72]" />
+            <Sparkles size={16} className="text-[#ff5000]" />
             Fresh updates in progress — thanks for your patience.
           </div>
           <p className="mt-6 text-xs uppercase tracking-[0.3em] text-[#9aa0ab]">Expected return</p>
