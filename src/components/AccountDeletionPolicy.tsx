@@ -33,7 +33,7 @@ const sections: Section[] = [
     ],
     bullets: [
       'In the App: Open Game On Fitness → Profile / Settings → Delete Account (or Account Deletion) and follow the on-screen steps.',
-      'By Email: Send a deletion request to hello@gameonfitness.in from the email address linked to your account. Use the subject line “Account Deletion Request”.',
+      'By Email: Send a deletion request to gameonfitness88@gmail.com from the email address linked to your account. Use the subject line “Account Deletion Request”.',
       'By Phone / WhatsApp: Contact us at +91 91489 74009 and clearly request account deletion.',
       'Through this Website: Visit the Contact page and submit a message selecting Careers/Something else and stating that you want your account deleted.',
     ],
@@ -100,9 +100,9 @@ const sections: Section[] = [
       'For account deletion requests or questions about this policy, contact Game On Fitness:',
     ],
     bullets: [
-      'Email: hello@gameonfitness.in',
+      'Email: gameonfitness88@gmail.com',
       'Phone / WhatsApp: +91 91489 74009',
-      'Support Hours: Monday–Saturday 6:00 AM – 10:00 PM; Sunday 7:00 AM – 8:00 PM',
+      'Business Hours: Monday–Saturday 5:00 AM – 11:00 PM; Sunday 6:00 AM – 10:00 PM',
     ],
     closing: 'We will confirm when your deletion request has been received and completed.',
   },
@@ -329,7 +329,7 @@ export default function AccountDeletionPolicy() {
               </p>
               <div className="relative mt-6 flex flex-wrap gap-3">
                 <a
-                  href="mailto:hello@gameonfitness.in?subject=Account%20Deletion%20Request"
+                  href="mailto:gameonfitness88@gmail.com?subject=Account%20Deletion%20Request"
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#ff5000] to-[#e04800] text-sm font-semibold text-white hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Email deletion request

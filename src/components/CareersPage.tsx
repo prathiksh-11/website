@@ -244,7 +244,7 @@ export default function CareersPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="mailto:hello@gameonfitness.in?subject=Resume%20-%20Game%20On%20Fitness"
+              href="mailto:gameonfitness88@gmail.com?subject=Resume%20-%20Game%20On%20Fitness"
               className="btn-premium-primary inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold"
             >
               Send Your Resume

@@ -169,10 +169,10 @@ export default function Contact() {
                   <div>
                     <p className="text-xs uppercase tracking-wider text-[#6f7685] mb-1">Email</p>
                     <a
-                      href="mailto:hello@gameonfitness.in"
+                      href="mailto:gameonfitness88@gmail.com"
                       className="text-[#16181f] font-semibold hover:text-[#ff5000] transition-colors"
                     >
-                      hello@gameonfitness.in
+                      gameonfitness88@gmail.com
                     </a>
                   </div>
                 </div>
@@ -180,10 +180,10 @@ export default function Contact() {
                   <Clock size={18} className="text-[#ff5000] mt-0.5" />
                   <div>
                     <p className="text-xs uppercase tracking-wider text-[#6f7685] mb-1">
-                      Support Hours
+                      Business Hours
                     </p>
-                    <p className="text-[#16181f] text-sm">Mon – Sat · 6:00 AM – 10:00 PM</p>
-                    <p className="text-[#16181f] text-sm">Sunday · 7:00 AM – 8:00 PM</p>
+                    <p className="text-[#16181f] text-sm">Mon – Sat · 5:00 AM – 11:00 PM</p>
+                    <p className="text-[#16181f] text-sm">Sunday · 6:00 AM – 10:00 PM</p>
                   </div>
                 </div>
               </div>
