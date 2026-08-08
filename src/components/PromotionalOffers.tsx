@@ -120,7 +120,7 @@ export default function PromotionalOffers() {
 
   return (
     <section
-      className="relative py-16 md:py-20 bg-white overflow-hidden"
+      className="relative py-16 md:py-20 section-soft overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

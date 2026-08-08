@@ -78,7 +78,7 @@ function openBranch(id: string) {
 
 export default function LocationsPage() {
   return (
-    <div className="min-h-screen bg-[#f7f8fb]">
+    <div className="min-h-screen gym-surface">
       <Navbar />
 
       <PageHero
@@ -194,7 +194,7 @@ export default function LocationsPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-24 gym-surface">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">

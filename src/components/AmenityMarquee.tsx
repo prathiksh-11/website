@@ -14,7 +14,7 @@ export default function AmenityMarquee() {
   const row = [...items, ...items];
 
   return (
-    <section className="relative py-5 overflow-hidden border-y border-[rgba(22,24,31,0.05)] bg-white/70 backdrop-blur-sm">
+    <section className="relative py-5 overflow-hidden border-y border-[rgba(22,24,31,0.05)] bg-white">
       <div className="absolute left-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 

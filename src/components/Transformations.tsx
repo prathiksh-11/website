@@ -22,7 +22,7 @@ export default function Transformations() {
   });
 
   return (
-    <section id="transformations" className="relative py-24 md:py-32 overflow-hidden bg-[#f7f8fb]">
+    <section id="transformations" className="relative py-24 md:py-32 overflow-hidden section-mist">
       <div className="absolute inset-0 pointer-events-none">
         <div
           className="absolute top-1/4 left-0 w-[600px] h-[600px] rounded-full opacity-60"

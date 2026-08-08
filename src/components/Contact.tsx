@@ -88,7 +88,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f8fb]">
+    <div className="min-h-screen gym-surface">
       <Navbar />
 
       <section className="relative pt-36 pb-16 overflow-hidden atmosphere">
@@ -139,7 +139,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section id="contact" className="py-20 md:py-28 bg-white">
+      <section id="contact" className="py-20 md:py-28 gym-surface">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-5 gap-12 items-start">
             <div className="lg:col-span-2">

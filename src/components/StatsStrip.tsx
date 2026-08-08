@@ -48,7 +48,7 @@ export default function StatsStrip() {
 
   return (
     <section className="relative py-16 md:py-20 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#f7f8fb] via-white to-white" />
+      <div className="absolute inset-0 gym-surface" />
       <div
         className="soft-blob w-[300px] h-[300px] top-0 left-1/4 opacity-60 animate-bloom"
         style={{ background: 'rgba(255, 80, 0,0.12)' }}

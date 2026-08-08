@@ -57,7 +57,7 @@ export const branchData: Record<string, {
 
     comfort: 'Normal',
 
-    tagline: 'IT\'S ALL ABOUT WHAT YOU CAN ACHIVE EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
+    tagline: 'IT\'S ALL ABOUT WHAT YOU CAN ACHIEVE EMPOWER YOURSELF TO MAKE THE CHANGE YOU NEED TO MAKE',
 
     hours: [
 
@@ -99,7 +99,7 @@ export const branchData: Record<string, {
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettel Bell', 'Battel Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -107,7 +107,7 @@ export const branchData: Record<string, {
 
         category: 'Group Classes',
 
-        items: ['Zumba', 'Pilates', 'Latin Bolly', 'HIIT', 'Dance Fit', 'Yoga', 'Power Yoga', 'Bolly-Beats', 'Tae Bo', 'Tabata', 'Bootcamp', 'Crossfit', 'Circuit Training', 'ABT', 'Dance Fitness'],
+        items: ['Zumba', 'Pilates', 'Latin Bolly', 'HIIT', 'Dance Fit', 'Yoga', 'Power Yoga', 'Bolly-Beats', 'Tae Bo', 'Tabata', 'Bootcamp', 'CrossFit', 'Circuit Training', 'ABT', 'Dance Fitness'],
 
       },
 
@@ -340,7 +340,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettel Bell', 'Battel Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -454,7 +454,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettel Bell', 'Battel Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -566,7 +566,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -676,7 +676,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Viper Training', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -788,7 +788,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettle Bell', 'Battle Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength Training', 'Viper Training', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -796,7 +796,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Group Classes',
 
-        items: ['Zumba', 'Pilates', 'Latin Bolly', 'HIIT', 'Dance Fit', 'Yoga', 'Power Yoga', 'Bolly-Beats', 'Tae Bo', 'Tabata', 'Bootcamp', 'Crossfit', 'Circuit Training', 'ABT', 'Dance Fitness'],
+        items: ['Zumba', 'Pilates', 'Latin Bolly', 'HIIT', 'Dance Fit', 'Yoga', 'Power Yoga', 'Bolly-Beats', 'Tae Bo', 'Tabata', 'Bootcamp', 'CrossFit', 'Circuit Training', 'ABT', 'Dance Fitness'],
 
       },
 
@@ -912,7 +912,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettel Bell', 'Battel Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -1034,7 +1034,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
         category: 'Fitness Gym',
 
-        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettel Bell', 'Battel Rope'],
+        items: ['Weight Loss Program', 'Weight Gain Program', 'Body Toning', 'Cardio', 'Weight & Strength', 'Kettlebell', 'Battle Rope'],
 
       },
 
@@ -1129,7 +1129,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
   if (!branch) {
     return (
-      <div className="min-h-screen bg-[#f7f8fb] flex items-center justify-center">
+      <div className="min-h-screen gym-surface flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-[#16181f] mb-4">Branch Not Found</h2>
           <button onClick={onBack} className="bg-[#16181f] text-white font-bold px-6 py-3 rounded-full">
@@ -1141,7 +1141,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f8fb] text-[#3a3f4b] font-sans selection:bg-[#ff5000]/25 selection:text-[#16181f]">
+    <div className="min-h-screen gym-surface text-[#3a3f4b] font-sans selection:bg-[#ff5000]/25 selection:text-[#16181f]">
   
       {/* Hero Header Section */}
       <div className={`relative h-[75vh] min-h-[520px] w-full overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>

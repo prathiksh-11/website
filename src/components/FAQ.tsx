@@ -4,7 +4,7 @@ import { Plus, Minus } from 'lucide-react';
 
 const faqs = [
   {
-    q: 'How often should I workout to see results?',
+    q: 'How often should I work out to see results?',
     a: "The frequency of workouts required to see results can vary based on several factors, including age, fitness level, and goals. However, as a general guideline, it is recommended that adults engage in at least 150 minutes of moderate-intensity exercise or 75 minutes of vigorous-intensity exercise per week. This can be spread out over several sessions, such as 30 minutes of exercise on five days of the week. If your goal is to build muscle, you may need to increase the frequency and intensity of your workouts, focusing on resistance training with weights or bodyweight exercises. It's always best to consult with a certified personal trainer or a physician before starting a workout routine.",
   },
   {

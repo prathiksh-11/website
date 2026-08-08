@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
-import { MapPin, ArrowUpRight, Navigation } from 'lucide-react';
+import { MapPin, ArrowUpRight, Navigation, LocateFixed } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
 const featuredBranches = [
@@ -73,43 +73,7 @@ const featuredBranches = [
   },
 ];
 
-const extraBranches = [
-  {
-    id: 'arekere',
-    name: 'Arekere',
-    tagline: 'Standard',
-    description: 'Train with intention in a focused neighbourhood club.',
-    city: 'Arekere, Bengaluru',
-    tag: 'Standard',
-    image: IMAGES.Branches.arekere,
-    lat: 12.9077,
-    lng: 77.6176,
-  },
-  {
-    id: 'vijaya-bank-layout',
-    name: 'Vijaya Bank Layout',
-    tagline: 'Premium',
-    description: 'A polished space for members who want more from every session.',
-    city: 'Bannerghatta Road',
-    tag: 'Premium',
-    image: IMAGES.Branches.vijayaBankLayout,
-    lat: 12.9165,
-    lng: 77.6101,
-  },
-  {
-    id: 'kasavanahalli',
-    name: 'Kasavanahalli',
-    tagline: 'Luxury',
-    description: 'Elevated facilities designed to keep you moving forward.',
-    city: 'Hosa Road, Bengaluru',
-    tag: 'Luxury',
-    image: IMAGES.Branches.kasavanahalli,
-    lat: 12.9014,
-    lng: 77.6725,
-  },
-];
-
-const branches = [...featuredBranches, ...extraBranches];
+const filters = ['All', 'Luxury', 'Premium', 'Standard'] as const;
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371;
@@ -125,125 +89,99 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   return R * c;
 }
 
+function formatDistance(km: number) {
+  return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)} km`;
+}
+
 function BranchCard({
   branch,
   index,
   isVisible,
-  userLocation,
+  distance,
+  isNearest,
 }: {
-  branch: (typeof branches)[0];
+  branch: (typeof featuredBranches)[0];
   index: number;
   isVisible: boolean;
-  userLocation: { lat: number; lng: number } | null;
+  distance: number | null;
+  isNearest: boolean;
 }) {
-  const [distance, setDistance] = useState<number | null>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const cardInnerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!userLocation) return;
-    setDistance(
-      calculateDistance(userLocation.lat, userLocation.lng, branch.lat, branch.lng)
-    );
-  }, [userLocation, branch.lat, branch.lng]);
-
   const openBranch = () => {
     window.location.hash = `#branch/${branch.id}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardInnerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-    setTilt({
-      x: (py - 0.5) * -8,
-      y: (px - 0.5) * 10,
-    });
-    el.style.setProperty('--mx', `${px * 100}%`);
-    el.style.setProperty('--my', `${py * 100}%`);
-  };
-
-  const onLeave = () => setTilt({ x: 0, y: 0 });
-
   const tagStyle =
     branch.tag === 'Luxury'
-      ? 'bg-gradient-to-r from-[#ff5000] to-[#e04800] text-white'
+      ? 'bg-[#ff5000] text-white'
       : branch.tag === 'Premium'
-        ? 'bg-white/95 text-[#16181f]'
-        : 'bg-[#16181f]/70 text-white backdrop-blur-md';
+        ? 'bg-[#16181f] text-white'
+        : 'bg-[#fff0e8] text-[#e04800]';
 
   return (
     <article
-      className={`branch-card reveal-scale ${isVisible ? 'visible' : ''} group cursor-pointer`}
-      style={{ transitionDelay: `${index * 0.08}s` }}
+      className={`reveal ${isVisible ? 'visible' : ''} group cursor-pointer`}
+      style={{ transitionDelay: `${index * 80}ms` }}
       onClick={openBranch}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
     >
       <div
-        ref={cardInnerRef}
-        className="branch-card-inner relative h-[420px] md:h-[460px] rounded-[1.75rem] overflow-hidden shadow-[0_18px_50px_rgba(22,24,31,0.1)] transition-all duration-500 ease-out group-hover:shadow-[0_36px_80px_rgba(22,24,31,0.2)]"
-        style={{
-          transform: `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(${tilt.x || tilt.y ? -6 : 0}px)`,
-        }}
+        className={`relative h-full flex flex-col rounded-[1.75rem] overflow-hidden bg-white border transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_rgba(22,24,31,0.12)] ${
+          isNearest
+            ? 'border-[#ff5000]/40 shadow-[0_20px_50px_rgba(255,80,0,0.12)]'
+            : 'border-[rgba(22,24,31,0.06)] shadow-[0_14px_40px_rgba(22,24,31,0.06)]'
+        }`}
       >
-        <img
-          src={branch.image}
-          alt={branch.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-        />
+        {/* Image panel — framed, no text on dark wash */}
+        <div className="relative h-52 sm:h-56 overflow-hidden bg-[#eef1f6]">
+          <img
+            src={branch.image}
+            alt={branch.name}
+            className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/35 via-transparent to-transparent" />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#16181f] via-[#16181f]/50 to-[#16181f]/10 opacity-95" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#ff5000]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="branch-shine pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute top-3.5 left-3.5 right-3.5 flex items-start justify-between gap-2">
+            <span
+              className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] shadow-sm ${tagStyle}`}
+            >
+              {branch.tag}
+            </span>
+            {distance !== null && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white/95 backdrop-blur text-[#16181f] text-[10px] font-semibold shadow-sm">
+                <Navigation size={11} className="text-[#ff5000]" />
+                {formatDistance(distance)}
+              </span>
+            )}
+          </div>
 
-        <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
-          <span
-            className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.16em] shadow-sm transition-transform duration-500 group-hover:scale-105 ${tagStyle}`}
-          >
-            {branch.tagline.replace(/\.$/, '')}
-          </span>
-          {distance !== null && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-[10px] font-semibold animate-fade-in-up">
-              <Navigation size={11} className="text-[#ffb089]" />
-              {distance < 1
-                ? `${Math.round(distance * 1000)}m`
-                : `${distance.toFixed(1)} km`}
+          {isNearest && (
+            <span className="absolute bottom-3 left-3.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ff5000] text-white text-[10px] font-bold uppercase tracking-wider shadow-[0_10px_24px_rgba(255,80,0,0.35)]">
+              <LocateFixed size={12} />
+              Nearest
             </span>
           )}
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 transition-transform duration-500 group-hover:translate-y-[-4px]">
-          <div className="flex items-center gap-1.5 text-white/70 text-xs mb-2">
-            <MapPin size={12} className="text-[#ffb089]" />
-            <span>{branch.city}</span>
+        {/* White content — always readable */}
+        <div className="flex flex-col flex-1 p-5 md:p-6">
+          <div className="flex items-center gap-1.5 text-[#6f7685] text-xs mb-2">
+            <MapPin size={13} className="text-[#ff5000] shrink-0" />
+            <span className="truncate">{branch.city}</span>
           </div>
 
-          <h3 className="font-display text-2xl md:text-[1.75rem] font-bold text-white leading-tight mb-2 pr-4">
+          <h3 className="font-display text-2xl font-bold text-[#16181f] leading-tight mb-2 group-hover:text-[#ff5000] transition-colors duration-300">
             {branch.name}
           </h3>
-          <p className="text-white/65 text-sm leading-relaxed mb-5 line-clamp-2">
+          <p className="text-[#6f7685] text-sm leading-relaxed mb-5 line-clamp-2 flex-1">
             {branch.description}
           </p>
 
-          <div className="flex items-center justify-between gap-3 pt-1 border-t border-white/10">
-            <span className="text-white/55 text-xs">Your journey has a place.</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                openBranch();
-              }}
-              className="branch-explore inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider text-white"
-            >
+          <div className="flex items-center justify-between gap-3 pt-4 border-t border-[rgba(22,24,31,0.06)]">
+            <span className="text-[#9aa0ab] text-xs">Your journey has a place.</span>
+            <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-[#ff5000] text-white text-xs font-bold uppercase tracking-wider shadow-[0_10px_24px_rgba(255,80,0,0.25)] group-hover:gap-2.5 transition-all duration-300">
               Explore
-              <ArrowUpRight
-                size={14}
-                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </button>
+              <ArrowUpRight size={14} />
+            </span>
           </div>
         </div>
       </div>
@@ -257,6 +195,7 @@ export default function Branches() {
     threshold: 0.05,
   });
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [filter, setFilter] = useState<(typeof filters)[number]>('All');
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -272,48 +211,127 @@ export default function Branches() {
     );
   }, []);
 
-  const visibleBranches = featuredBranches;
+  const branchesWithDistance = useMemo(() => {
+    return featuredBranches.map((branch) => {
+      const distance = userLocation
+        ? calculateDistance(userLocation.lat, userLocation.lng, branch.lat, branch.lng)
+        : null;
+      return { branch, distance };
+    });
+  }, [userLocation]);
+
+  const nearestId = useMemo(() => {
+    const withDist = branchesWithDistance.filter((b) => b.distance !== null);
+    if (!withDist.length) return null;
+    return withDist.reduce((best, cur) =>
+      (cur.distance as number) < (best.distance as number) ? cur : best
+    ).branch.id;
+  }, [branchesWithDistance]);
+
+  const visible = branchesWithDistance.filter(
+    ({ branch }) => filter === 'All' || branch.tag === filter
+  );
+
+  const nearest = branchesWithDistance.find((b) => b.branch.id === nearestId);
 
   return (
-    <section id="branches" className="relative py-24 md:py-36 overflow-hidden atmosphere">
-      <div
-        className="soft-blob w-[420px] h-[420px] -top-24 right-0 opacity-70"
-        style={{ background: 'rgba(255,241,224,0.75)' }}
-      />
-      <div
-        className="soft-blob w-[340px] h-[340px] bottom-10 -left-20 opacity-60"
-        style={{ background: 'rgba(228,236,246,0.85)' }}
-      />
+    <section id="branches" className="relative py-20 md:py-28 overflow-hidden bg-[#f7f8fb]">
+      {/* Soft circle accents */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -right-24 top-20 w-[420px] h-[420px] rounded-full border border-[#ff5000]/10" />
+        <div className="absolute -right-10 top-36 w-[280px] h-[280px] rounded-full border border-dashed border-[#ff5000]/15" />
+        <div
+          className="absolute -left-20 bottom-10 w-[360px] h-[360px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(255,80,0,0.08) 0%, transparent 70%)' }}
+        />
+      </div>
 
       <div className="max-w-7xl mx-auto px-6 relative">
         <div
           ref={headRef}
-          className="mb-12 md:mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-8"
+          className={`mb-10 md:mb-12 reveal ${headVisible ? 'visible' : ''}`}
         >
-          <div className={`reveal ${headVisible ? 'visible' : ''} max-w-2xl`}>
-            <div className="section-ornament mb-5">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
-                Locations
-              </span>
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-8">
+            <div className="max-w-2xl">
+              <div className="section-ornament mb-5">
+                <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
+                  Locations
+                </span>
+              </div>
+              <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f]">
+                Your journey <span className="italic text-[#ff5000]">has a place.</span>
+              </h2>
+              <p className="mt-4 text-[#6f7685] leading-relaxed text-lg">
+                Choose the destination that feels like yours. Every branch has its own energy —
+                one commitment to help you become stronger every day.
+              </p>
             </div>
-            <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f]">
-              Your journey <span className="italic text-[#ff5000]">has a place.</span>
-            </h2>
-            <p className="mt-4 text-[#6f7685] leading-relaxed text-lg">
-              Choose the destination that feels like yours. Every branch has its own energy —
-              one commitment to help you become stronger every day.
-            </p>
+
+            {/* Filter pills */}
+            <div className="flex flex-wrap gap-2">
+              {filters.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFilter(f)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                    filter === f
+                      ? 'bg-[#ff5000] text-white shadow-[0_10px_24px_rgba(255,80,0,0.3)]'
+                      : 'bg-white text-[#6f7685] border border-[rgba(22,24,31,0.06)] hover:border-[#ff5000]/30 hover:text-[#16181f]'
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Nearest club banner — clean, not overlapping cards */}
+          {nearest && nearest.distance !== null && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] bg-white border border-[#ff5000]/20 px-5 py-4 shadow-[0_14px_40px_rgba(255,80,0,0.08)]">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-2xl bg-[#fff0e8] text-[#ff5000] flex items-center justify-center shrink-0">
+                  <LocateFixed size={20} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#ff5000] mb-0.5">
+                    Nearest Club
+                  </p>
+                  <p className="font-display text-lg font-bold text-[#16181f] truncate">
+                    {nearest.branch.name}
+                  </p>
+                  <p className="text-xs text-[#6f7685]">
+                    {formatDistance(nearest.distance)} away · {nearest.branch.city}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.hash = `#branch/${nearest.branch.id}`;
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#16181f] text-white text-sm font-semibold hover:bg-[#ff5000] transition-colors duration-300 shrink-0"
+              >
+                View Details
+                <ArrowUpRight size={15} />
+              </button>
+            </div>
+          )}
         </div>
 
-        <div ref={gridRef} className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-7">
-          {visibleBranches.map((branch, i) => (
+        <div
+          ref={gridRef}
+          className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6"
+        >
+          {visible.map(({ branch, distance }, i) => (
             <BranchCard
               key={branch.id}
               branch={branch}
               index={i}
               isVisible={gridVisible}
-              userLocation={userLocation}
+              distance={distance}
+              isNearest={branch.id === nearestId}
             />
           ))}
         </div>

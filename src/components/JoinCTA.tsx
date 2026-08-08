@@ -59,7 +59,7 @@ export default function JoinCTA() {
         </div>
       </div>
 
-      <div className="relative py-16 md:py-20 bg-white border-t border-[rgba(22,24,31,0.05)]">
+      <div className="relative py-16 md:py-20 section-mist border-t border-[rgba(22,24,31,0.05)]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">

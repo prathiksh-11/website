@@ -159,7 +159,7 @@ export default function AccountDeletionPolicy() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#f7f8fb]">
+    <div className="min-h-screen relative overflow-hidden gym-surface">
       <div
         className="pointer-events-none absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full opacity-70"
         style={{

@@ -29,7 +29,7 @@ export default function WhyUs() {
   });
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-white">
+    <section className="relative py-20 md:py-28 overflow-hidden section-soft">
       <div
         className="soft-blob w-[360px] h-[360px] top-10 -right-20 opacity-70"
         style={{ background: 'rgba(255, 80, 0,0.1)' }}
