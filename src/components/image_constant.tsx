@@ -24,7 +24,6 @@ import ArekereTrainerShakirAhmed from '../assets/AREKERE/arekere_trainer_shakir_
 import ArekereTrainerAbhishek from '../assets/AREKERE/arekere_trainer_abhishek.png';
 
 // BTM 2
-import Btm2BgImg from '../assets/BTM_2/btm2_bg_img.jpeg';
 import Btm2img3 from '../assets/BTM_2/btm2_img3.jpeg';
 import Btm2img4 from '../assets/BTM_2/btm2_img4.jpeg';
 import Btm2img6 from '../assets/BTM_2/btm2_img6.jpeg';
@@ -38,7 +37,6 @@ import Btm2TrainerNidhin from '../assets/BTM_2/btm2_trainer_nidhin.png';
 import Btm2TrainerDeelip from '../assets/BTM_2/btm2_trainer_deelip.png';
 
 // SARJAPUR ROAD
-import SarjapurBgImg from '../assets/SARJAPUR_ROAD/sarjapur-bg-img.jpeg';
 import Sarjapurimg1 from '../assets/SARJAPUR_ROAD/sarjapur-img1.jpg';
 import Sarjapurimg4 from '../assets/SARJAPUR_ROAD/sarjapur-img4.jpg';
 import Sarjapurimg5 from '../assets/SARJAPUR_ROAD/sarjapur-img5.jpg';
@@ -60,13 +58,6 @@ import SarjapurBranch from '../assets/branches/sarjapur-branch.jpeg';
 import VijayaBankLayoutBranch from '../assets/branches/vijaya-bank-layout-branch.jpeg';
 import WilsonGardenBranch from '../assets/branches/wilson-garden-branch.jpeg';
 
-// BEFORE/AFTER TRANSFORMATIONS
-import Before1 from '../assets/before/trans1.jpeg';
-import Before2 from '../assets/before/trans2.jpeg';
-import Before3 from '../assets/before/trans3.jpeg';
-import Before4 from '../assets/before/trans4.jpeg';
-
-
 // VIJAYA BANK LAYOUT
 import VijayaBankLayoutimg5 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img5.jpeg';
 import VijayaBankLayoutimg6 from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img6.jpeg';
@@ -79,7 +70,6 @@ import VijayaBankLayoutTrainerKabir from '../assets/VIJAYA_BANK_LAYOUT/vijaya_ba
 import VijayaBankLayoutImgMirror from '../assets/VIJAYA_BANK_LAYOUT/vijaya_bank_layout_img_mirror.png';
 
 // BTM 1
-import Btm1BgImg from '../assets/btm1/btm1_bg_img.jpeg';
 import Btm1img1 from '../assets/btm1/btm1_img1.jpeg';
 import Btm1img3 from '../assets/btm1/btm1_img3.jpeg';
 import Btm1img4 from '../assets/btm1/btm1_img4.jpeg';
@@ -91,14 +81,10 @@ import Btm1Trainer3 from '../assets/btm1/WhatsApp Image 2026-06-07 at 10.32.46 A
 import Btm1Trainer4 from '../assets/btm1/WhatsApp Image 2026-06-07 at 10.32.46 AM (1).jpeg';
 
 // JP NAGAR
-import JpnagarBgImg from '../assets/jpnagar/jpnagar_bg_img.jpeg';
 import Jpnagarimg3 from '../assets/jpnagar/jpnagar_img3.jpeg';
 import Jpnagarimg4 from '../assets/jpnagar/jpnagar_img4.jpeg';
 import Jpnagarimg5 from '../assets/jpnagar/jpnagar_img5.jpeg';
 import Jpnagarimg6 from '../assets/jpnagar/jpnagar_img6.jpeg';
-import JpnagarTrainer1 from '../assets/jpnagar/jpnagar_trainer_1.jpeg';
-import JpnagarTrainer2 from '../assets/jpnagar/jpnagar_trainer_2.jpeg';
-import JpnagarTrainer3 from '../assets/jpnagar/jpnagar_trainer_3.jpeg';
 
 // VIJAYANAGAR
 import VijayanagarTrainer1 from '../assets/VIJAYANAGAR/vijayanagar_trainer_1.png';
@@ -177,7 +163,6 @@ export const IMAGES = {
   },
   // BTM 2
   BTM2: {
-    bgImg: Btm2BgImg,
     img3: Btm2img3,
     img4: Btm2img4,
     img6: Btm2img6,
@@ -192,7 +177,6 @@ export const IMAGES = {
   },
   // SARJAPUR ROAD
   SarjapurRoad: {
-    bgImg: SarjapurBgImg,
     img1: Sarjapurimg1,
     img4: Sarjapurimg4,
     img5: Sarjapurimg5,
@@ -218,7 +202,6 @@ export const IMAGES = {
   },
   // BTM 1
   BTM1: {
-    bgImg: Btm1BgImg,
     img1: Btm1img1,
     img3: Btm1img3,
     img4: Btm1img4,
@@ -231,14 +214,10 @@ export const IMAGES = {
   },
   // JP NAGAR
   JPNagar: {
-    bgImg: JpnagarBgImg,
     img3: Jpnagarimg3,
     img4: Jpnagarimg4,
     img5: Jpnagarimg5,
     img6: Jpnagarimg6,
-    trainer1: JpnagarTrainer1,
-    trainer2: JpnagarTrainer2,
-    trainer3: JpnagarTrainer3,
   },
   // VIJAYANAGAR
   Vijayanagar: {
@@ -274,13 +253,6 @@ export const IMAGES = {
     trainer4: KasavanahalliTrainerAvinash,
     trainer5: KasavanahalliTrainerSamrat,
     trainer6: KasavanahalliTrainerGirish,
-  },
-  Before: {
-    img1: Before1,
-    img2: Before2,
-    img3: Before3,
-    img4: Before4,
-  
   },
   bannerImage: bannerimage,
 };

@@ -1,333 +1,204 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
-import { MapPin, Clock, Dumbbell, ChevronRight, Navigation } from 'lucide-react';
+import { MapPin, ArrowUpRight, Navigation, LocateFixed } from 'lucide-react';
 import { IMAGES } from './image_constant';
 
-const branches = [
-  {
-    id: 'arekere',
-    name: 'Game On Fitness - Arekere',
-    city: 'Arekere, Bengaluru',
-    address: 'No.97,1st & 2nd floor, Saibaba Temple road, 2nd Main, Royal Residency Layout BTM 4th Stage, 80, Feet Rd, near Arekere, Bengaluru, Karnataka 560076',
-    phone: '+91 8861737392',
-    tag: 'Normal',
-    image: IMAGES.Branches.arekere,
-    area: '6,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training', 'Cardio Zone', 'Group Classes', 'Steam Room'],
-    accentColor: '#38bdf8',
-    gradient: 'from-[#38bdf8]/25 to-transparent',
-    lat: 12.9077,
-    lng: 77.6176,
-  },
-  {
-    id: 'vijaya-bank-layout',
-    name: 'Game On Fitness Premium Club - Vijaya Bank Layout',
-    city: 'Vijaya Bank Layout, Bengaluru',
-    address: '3rd floor, 8883 886, Bannerghatta Rd, Vijaya Bank Layout, Bilekahalli, Bengaluru, Karnataka 560076',
-    phone: '+91 9035279516',
-    tag: 'Premium',
-    image: IMAGES.Branches.vijayaBankLayout,
-    area: '6,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Group Classes', 'Personal Training', 'Steam & Shower'],
-    accentColor: '#ff6b35',
-    gradient: 'from-[#ff6b35]/30 to-transparent',
-    lat: 12.9165,
-    lng: 77.6101,
-  },
+const featuredBranches = [
   {
     id: 'btm-layout-1',
-    name: 'Game On Fitness Premium Club - BTM 1st Stage',
-    city: 'BTM 1st Stage, Bengaluru',
-    address: 'Gangotri Bar And Restaurant, Ground, 8th Cross Rd, Old Madiwala, Maruti Nagar, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka 560068',
-    phone: '+91 9036054799',
+    name: 'BTM 1st stage',
+    tagline: 'Premium',
+    description: 'Heavy lifting. Functional training. Performance-focused environment.',
+    city: 'BTM Layout 1st Stage',
     tag: 'Premium',
     image: IMAGES.Branches.btm1,
-    area: '5,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Functional Training', 'Group Classes', 'Personal Training'],
-    accentColor: '#ff6b35',
-    gradient: 'from-[#ff6b35]/20 to-transparent',
     lat: 12.9135,
     lng: 77.6089,
   },
   {
     id: 'btm-layout-2',
-    name: 'Game On Fitness Premium Club - BTM 2nd Stage',
-    city: 'BTM 2nd Stage, Bengaluru',
-    address: '689-670 2nd floor , 7th main, 7th Cross Rd, BTM Layout 2nd Stage, Bengaluru, Karnataka 560076',
-    phone: '+91 8951028839',
+    name: 'BTM 2nd Stage',
+    tagline: 'Premium',
+    description: 'Premium equipment. Progressive training. Expert coaching.',
+    city: 'BTM Layout, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.btm2,
-    area: '8,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Boxing Ring', 'Pilates Studio', 'Sauna', 'Smoothie Bar'],
-    accentColor: '#ff6b35',
-    gradient: 'from-[#ff6b35]/25 to-transparent',
     lat: 12.9142,
     lng: 77.6095,
   },
   {
-    id: 'wilson-garden',
-    name: 'Game On Fitness - Wilson Garden',
-    city: 'Wilson Garden, Bengaluru',
-    address: 'No.376, 21, 6th Cross Rd, opp. to traffic police station, Vinayaka Nagar, NGO Colony, Wilson Garden, Bengaluru, Karnataka 560027',
-    phone: '+91 9663995409',
-    tag: 'Normal',
-    image: IMAGES.Branches.wilsonGarden,
-    area: '3,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Personal Training', 'Functional Training', 'Steam & Shower'],
-    accentColor: '#38bdf8',
-    gradient: 'from-[#38bdf8]/25 to-transparent',
-    lat: 12.9519,
-    lng: 77.5944,
-  },
-  {
     id: 'vijayanagar',
-    name: 'Game On Fitness Premium Club - Vijayanagar',
-    city: 'Vijayanagar, Bengaluru',
-    address: '119, 1st Floor 6th Main, 8th Cross Rd, next to BGS Stadium, MC Layout, Vijayanagar, Bengaluru, Karnataka 560040',
-    phone: '+91 9008589955',
+    name: 'Vijayanagar',
+    tagline: 'Premium',
+    description: 'Friendly. Energetic. Welcoming. A place where every member belongs.',
+    city: 'MC Layout, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.jpNagar,
-    area: '8,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Group Classes', 'Personal Training', 'Steam & Shower'],
-    accentColor: '#ff6b35',
-    gradient: 'from-[#ff6b35]/25 to-transparent',
     lat: 12.9716,
     lng: 77.5375,
   },
   {
-    id: 'akshayanagar',
-    name: 'Game On Fitness Luxury Club - Akshayanagar',
-    city: 'Akshayanagar, Bengaluru',
-    address: '2nd Floor, near, above Reliance Smart, Bhagyalakshmi Avenue, DLF Newtown, Akshayanagar, Bengaluru, Karnataka 560114',
-    phone: '+91 8431198114',
-    tag: 'Luxury',
-    image: IMAGES.Branches.akshayanagar,
-    area: '9,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Personal Training', 'GX Studio', 'Steam & Shower'],
-    accentColor: '#a78bfa',
-    gradient: 'from-[#a78bfa]/25 to-transparent',
-    lat: 12.9077,
-    lng: 77.6317,
-  },
-  {
     id: 'sarjapur-road',
-    name: 'Game On Fitness Premium Club - Sarjapur Road (Bellandur gate)',
-    city: 'Sarjapur Road, Bengaluru',
-    address: 'No 648 E 3rd floor, next to more mega store, Marathahalli - Sarjapur Main rd, gate, Bellandur, Bengaluru, Karnataka 560035',
-    phone: '+91 8618086458',
+    name: 'Sarjapur Road',
+    tagline: 'Premium',
+    description: 'Strength. Speed. Endurance. Performance training for people who demand more.',
+    city: 'Bellandur Gate, Bengaluru',
     tag: 'Premium',
     image: IMAGES.Branches.sarjapurRoad,
-    area: '5,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Personal Training', 'Functional Training', 'Steam & Shower'],
-    accentColor: '#ff6b35',
-    gradient: 'from-[#ff6b35]/30 to-transparent',
     lat: 12.9299,
     lng: 77.6838,
   },
   {
-    id: 'kasavanahalli',
-    name: 'Game On Fitness Luxury Club - Kasavanahalli',
-    city: 'Kasavanahalli, Bengaluru',
-    address: '3rd Floor, Hosa Rd, next to Vishal Mega Mart, Kasavanahalli, Bengaluru, Karnataka 560035',
-    phone: '+91 7259348811',
+    id: 'wilson-garden',
+    name: 'Wilson Garden',
+    tagline: 'Standard',
+    description: 'Whether you’re stepping in for the first time or chasing your next milestone.',
+    city: 'Wilson Garden, Bengaluru',
+    tag: 'Standard',
+    image: IMAGES.Branches.wilsonGarden,
+    lat: 12.9519,
+    lng: 77.5944,
+  },
+  {
+    id: 'akshayanagar',
+    name: 'Akshayanagar',
+    tagline: 'Luxury',
+    description: 'Strength training. Functional fitness. Cardio. Personal coaching.',
+    city: 'DLF Newtown, Bengaluru',
     tag: 'Luxury',
-    image: IMAGES.Branches.kasavanahalli,
-    area: '9,000 sq ft',
-    hours: 'Mon–Sat: 5 AM – 11 PM · Sun: 6 AM – 10 PM',
-    facilities: ['Weight Training & Cardio', 'Personal Training', 'Group Classes', 'Steam & Shower'],
-    accentColor: '#a78bfa',
-    gradient: 'from-[#a78bfa]/25 to-transparent',
-    lat: 12.9014,
-    lng: 77.6725,
+    image: IMAGES.Branches.akshayanagar,
+    lat: 12.9077,
+    lng: 77.6317,
   },
 ];
 
-interface BranchCardProps {
-  branch: typeof branches[0];
-  index: number;
-  isVisible: boolean;
-  userLocation: { lat: number; lng: number } | null;
-}
+const filters = ['All', 'Luxury', 'Premium', 'Standard'] as const;
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
-function BranchCard({ branch, index, isVisible, userLocation }: BranchCardProps) {
-  const [hovered, setHovered] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [distance, setDistance] = useState<number | null>(null);
+function formatDistance(km: number) {
+  return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)} km`;
+}
 
-  useEffect(() => {
-    if (userLocation) {
-      const dist = calculateDistance(userLocation.lat, userLocation.lng, branch.lat, branch.lng);
-      setDistance(dist);
-    }
-  }, [userLocation, branch.lat, branch.lng]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg) translateY(-8px)`;
+function BranchCard({
+  branch,
+  index,
+  isVisible,
+  distance,
+  isNearest,
+}: {
+  branch: (typeof featuredBranches)[0];
+  index: number;
+  isVisible: boolean;
+  distance: number | null;
+  isNearest: boolean;
+}) {
+  const openBranch = () => {
+    window.location.hash = `#branch/${branch.id}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleMouseLeave = () => {
-    if (!cardRef.current) return;
-    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-    setHovered(false);
-  };
+  const tagStyle =
+    branch.tag === 'Luxury'
+      ? 'bg-[#ff5000] text-white'
+      : branch.tag === 'Premium'
+        ? 'bg-[#16181f] text-white'
+        : 'bg-[#fff0e8] text-[#e04800]';
 
   return (
-    <div
-      ref={cardRef}
-      className={`reveal-scale ${isVisible ? 'visible' : ''} relative group cursor-pointer h-full`}
-      style={{
-        transitionDelay: `${index * 0.1}s`,
-        transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onMouseEnter={() => setHovered(true)}
-      onClick={() => {
-        window.location.hash = `#branch/${branch.id}`;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }}
+    <article
+      className={`reveal ${isVisible ? 'visible' : ''} group cursor-pointer`}
+      style={{ transitionDelay: `${index * 80}ms` }}
+      onClick={openBranch}
     >
       <div
-        className="relative rounded-2xl overflow-hidden branch-card-glow h-full flex flex-col"
-        style={{
-          background: '#0d0d0d',
-          border: `1px solid ${hovered ? branch.accentColor + '40' : 'rgba(255,255,255,0.07)'}`,
-          boxShadow: hovered ? `0 0 50px ${branch.accentColor}20, 0 30px 80px rgba(0,0,0,0.6)` : 'none',
-          transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-        }}
+        className={`relative h-full flex flex-col rounded-[1.75rem] overflow-hidden bg-white border transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_rgba(22,24,31,0.12)] ${
+          isNearest
+            ? 'border-[#ff5000]/40 shadow-[0_20px_50px_rgba(255,80,0,0.12)]'
+            : 'border-[rgba(22,24,31,0.06)] shadow-[0_14px_40px_rgba(22,24,31,0.06)]'
+        }`}
       >
-        {/* Image */}
-        <div className="relative overflow-hidden h-48 flex-shrink-0">
+        {/* Image panel — framed, no text on dark wash */}
+        <div className="relative h-52 sm:h-56 overflow-hidden bg-[#eef1f6]">
           <img
             src={branch.image}
             alt={branch.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70"
+            className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
           />
-          <div className={`absolute inset-0 bg-gradient-to-b ${branch.gradient} via-transparent`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/35 via-transparent to-transparent" />
 
-          {/* Tag */}
-          <div
-            className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold tracking-wider"
-            style={{
-              background: `${branch.accentColor}20`,
-              border: `1px solid ${branch.accentColor}40`,
-              color: branch.accentColor,
-            }}
-          >
-            {branch.tag}
-          </div>
-
-        </div>
-
-        {/* Content */}
-        <div className="p-6 flex flex-col flex-1">
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="text-base font-bold text-white">{branch.name}</h3>
-            <ChevronRight
-              size={16}
-              className="text-white/20 transition-all duration-300 group-hover:text-white/60 group-hover:translate-x-1 flex-shrink-0"
-            />
-          </div>
-
-          <div className="flex items-center gap-1.5 mb-4">
-            <MapPin size={12} style={{ color: branch.accentColor }} />
-            <span className="text-xs text-white/50">{branch.city}</span>
-          </div>
-
-          {/* Distance badge */}
-          {distance !== null && (
-            <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
-              <Navigation size={12} className="text-[#ffb800]" />
-              <span className="text-xs font-semibold text-white">
-                {distance < 1 
-                  ? `${Math.round(distance * 1000)}m away`
-                  : `${distance.toFixed(1)} km away`
-                }
+          <div className="absolute top-3.5 left-3.5 right-3.5 flex items-start justify-between gap-2">
+            <span
+              className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] shadow-sm ${tagStyle}`}
+            >
+              {branch.tag}
+            </span>
+            {distance !== null && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white/95 backdrop-blur text-[#16181f] text-[10px] font-semibold shadow-sm">
+                <Navigation size={11} className="text-[#ff5000]" />
+                {formatDistance(distance)}
               </span>
-              {index === 0 && distance === Math.min(...branches.map(b => {
-                if (!userLocation) return Infinity;
-                return calculateDistance(userLocation.lat, userLocation.lng, b.lat, b.lng);
-              })) && (
-                <span className="text-xs text-[#ffb800] font-bold">• Nearest</span>
-              )}
-            </div>
-          )}
-
-          {/* Stats row */}
-          <div className="flex items-center gap-4 mb-5 pb-5 border-b border-white/5">
-            <div className="flex items-center gap-1.5">
-              <Dumbbell size={12} className="text-white/30" />
-              <span className="text-xs text-white/50">{branch.area}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Clock size={12} className="text-white/30" />
-              <span className="text-xs text-white/50">{branch.hours}</span>
-            </div>
+            )}
           </div>
 
-          {/* CTA */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              window.location.hash = `#branch/${branch.id}`;
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="mt-auto w-full py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase transition-all duration-300"
-            style={{
-              background: hovered ? `${branch.accentColor}20` : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${hovered ? branch.accentColor + '50' : 'rgba(255,255,255,0.08)'}`,
-              color: hovered ? branch.accentColor : 'rgba(255,255,255,0.5)',
-            }}
-          >
-            Explore Branch
-          </button>
+          {isNearest && (
+            <span className="absolute bottom-3 left-3.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ff5000] text-white text-[10px] font-bold uppercase tracking-wider shadow-[0_10px_24px_rgba(255,80,0,0.35)]">
+              <LocateFixed size={12} />
+              Nearest
+            </span>
+          )}
         </div>
 
-        {/* Bottom glow line */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-300"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${branch.accentColor}60, transparent)`,
-            opacity: hovered ? 1 : 0,
-          }}
-        />
+        {/* White content — always readable */}
+        <div className="flex flex-col flex-1 p-5 md:p-6">
+          <div className="flex items-center gap-1.5 text-[#6f7685] text-xs mb-2">
+            <MapPin size={13} className="text-[#ff5000] shrink-0" />
+            <span className="truncate">{branch.city}</span>
+          </div>
+
+          <h3 className="font-display text-2xl font-bold text-[#16181f] leading-tight mb-2 group-hover:text-[#ff5000] transition-colors duration-300">
+            {branch.name}
+          </h3>
+          <p className="text-[#6f7685] text-sm leading-relaxed mb-5 line-clamp-2 flex-1">
+            {branch.description}
+          </p>
+
+          <div className="flex items-center justify-between gap-3 pt-4 border-t border-[rgba(22,24,31,0.06)]">
+            <span className="text-[#9aa0ab] text-xs">Your journey has a place.</span>
+            <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-[#ff5000] text-white text-xs font-bold uppercase tracking-wider shadow-[0_10px_24px_rgba(255,80,0,0.25)] group-hover:gap-2.5 transition-all duration-300">
+              Explore
+              <ArrowUpRight size={14} />
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
+    </article>
   );
 }
 
 export default function Branches() {
   const { ref: headRef, isVisible: headVisible } = useIntersectionObserver<HTMLDivElement>();
-  const { ref: gridRef, isVisible: gridVisible } = useIntersectionObserver<HTMLDivElement>({ threshold: 0.05 });
+  const { ref: gridRef, isVisible: gridVisible } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.05,
+  });
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [filter, setFilter] = useState<(typeof filters)[number]>('All');
 
   useEffect(() => {
     if (!navigator.geolocation) return;
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setUserLocation({
@@ -340,43 +211,144 @@ export default function Branches() {
     );
   }, []);
 
+  const branchesWithDistance = useMemo(() => {
+    return featuredBranches.map((branch) => {
+      const distance = userLocation
+        ? calculateDistance(userLocation.lat, userLocation.lng, branch.lat, branch.lng)
+        : null;
+      return { branch, distance };
+    });
+  }, [userLocation]);
+
+  const nearestId = useMemo(() => {
+    const withDist = branchesWithDistance.filter((b) => b.distance !== null);
+    if (!withDist.length) return null;
+    return withDist.reduce((best, cur) =>
+      (cur.distance as number) < (best.distance as number) ? cur : best
+    ).branch.id;
+  }, [branchesWithDistance]);
+
+  const visible = branchesWithDistance.filter(
+    ({ branch }) => filter === 'All' || branch.tag === filter
+  );
+
+  const nearest = branchesWithDistance.find((b) => b.branch.id === nearestId);
+
   return (
-    <section id="branches" className="relative py-20 bg-[#050505] overflow-hidden">
-      {/* Background */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none">
+    <section id="branches" className="relative py-20 md:py-28 overflow-hidden bg-[#f7f8fb]">
+      {/* Soft circle accents */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -right-24 top-20 w-[420px] h-[420px] rounded-full border border-[#ff5000]/10" />
+        <div className="absolute -right-10 top-36 w-[280px] h-[280px] rounded-full border border-dashed border-[#ff5000]/15" />
         <div
-          className="w-full h-full rounded-full opacity-8"
-          style={{
-            background: 'radial-gradient(circle, rgba(245,200,66,0.15) 0%, transparent 70%)',
-            filter: 'blur(100px)',
-          }}
+          className="absolute -left-20 bottom-10 w-[360px] h-[360px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(255,80,0,0.08) 0%, transparent 70%)' }}
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <div ref={headRef} className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className={`reveal ${headVisible ? 'visible' : ''}`}>
-            <span className="text-xs font-semibold tracking-[0.4em] uppercase text-[#ffb800] mb-4 block">Locations</span>
-            <h2 className="text-4xl md:text-7xl font-black tracking-tight leading-none">
-              <span className="text-white">FIND YOUR</span>
-              <br />
-              <span className="gradient-text-gold">ARENA.</span>
-            </h2>
+      <div className="max-w-7xl mx-auto px-6 relative">
+        <div
+          ref={headRef}
+          className={`mb-10 md:mb-12 reveal ${headVisible ? 'visible' : ''}`}
+        >
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-8">
+            <div className="max-w-2xl">
+              <div className="section-ornament mb-5">
+                <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
+                  Locations
+                </span>
+              </div>
+              <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f]">
+                Your journey <span className="italic text-[#ff5000]">has a place.</span>
+              </h2>
+              <p className="mt-4 text-[#6f7685] leading-relaxed text-lg">
+                Choose the destination that feels like yours. Every branch has its own energy —
+                one commitment to help you become stronger every day.
+              </p>
+            </div>
+
+            {/* Filter pills */}
+            <div className="flex flex-wrap gap-2">
+              {filters.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFilter(f)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                    filter === f
+                      ? 'bg-[#ff5000] text-white shadow-[0_10px_24px_rgba(255,80,0,0.3)]'
+                      : 'bg-white text-[#6f7685] border border-[rgba(22,24,31,0.06)] hover:border-[#ff5000]/30 hover:text-[#16181f]'
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
           </div>
 
+          {/* Nearest club banner — clean, not overlapping cards */}
+          {nearest && nearest.distance !== null && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] bg-white border border-[#ff5000]/20 px-5 py-4 shadow-[0_14px_40px_rgba(255,80,0,0.08)]">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-2xl bg-[#fff0e8] text-[#ff5000] flex items-center justify-center shrink-0">
+                  <LocateFixed size={20} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#ff5000] mb-0.5">
+                    Nearest Club
+                  </p>
+                  <p className="font-display text-lg font-bold text-[#16181f] truncate">
+                    {nearest.branch.name}
+                  </p>
+                  <p className="text-xs text-[#6f7685]">
+                    {formatDistance(nearest.distance)} away · {nearest.branch.city}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.hash = `#branch/${nearest.branch.id}`;
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#16181f] text-white text-sm font-semibold hover:bg-[#ff5000] transition-colors duration-300 shrink-0"
+              >
+                View Details
+                <ArrowUpRight size={15} />
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Branches Grid */}
         <div
           ref={gridRef}
-          className="grid md:grid-cols-2 xl:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6"
         >
-          {branches.map((branch, i) => (
-            <BranchCard key={branch.id} branch={branch} index={i} isVisible={gridVisible} userLocation={userLocation} />
+          {visible.map(({ branch, distance }, i) => (
+            <BranchCard
+              key={branch.id}
+              branch={branch}
+              index={i}
+              isVisible={gridVisible}
+              distance={distance}
+              isNearest={branch.id === nearestId}
+            />
           ))}
         </div>
 
+        <div className="mt-12 text-center">
+          <Link
+            to="/locations"
+            className="btn-premium-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold"
+          >
+            Explore All Locations
+            <ArrowUpRight size={16} />
+          </Link>
+          <p className="mt-8 text-[#6f7685] text-sm max-w-md mx-auto">
+            You aren&apos;t choosing a gym. You&apos;re choosing where your transformation
+            begins.
+          </p>
+        </div>
       </div>
     </section>
   );

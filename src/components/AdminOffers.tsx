@@ -50,14 +50,14 @@ const BANNER_TEMPLATES = {
     ratio: '16:9',
     recommended: '1600x900',
     aspectRatio: 16 / 9,
-    color: '#ff6b35',
+    color: '#c45c6a',
   },
   promo_card: {
     label: 'Promotional Card',
     ratio: '2:1',
     recommended: '1200x600',
     aspectRatio: 2 / 1,
-    color: '#ffb800',
+    color: '#12141a',
   },
 };
 
@@ -418,7 +418,7 @@ const AdminOffers = () => {
       key: 'display_order',
       width: 80,
       render: (order) => (
-        <Badge count={order} style={{ backgroundColor: '#ff6b35' }} />
+        <Badge count={order} style={{ backgroundColor: '#c45c6a' }} />
       ),
     },
     {
@@ -453,7 +453,7 @@ const AdminOffers = () => {
             type="link"
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
-            style={{ color: '#ff6b35' }}
+            style={{ color: '#c45c6a' }}
           >
             Edit
           </Button>
@@ -495,7 +495,7 @@ const AdminOffers = () => {
               margin: 0,
               fontSize: 48,
               fontWeight: 700,
-              background: 'linear-gradient(135deg, #ff6b35 0%, #ffb800 100%)',
+              background: 'linear-gradient(135deg, #c45c6a 0%, #12141a 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -578,7 +578,7 @@ const AdminOffers = () => {
                   <Title
                     level={4}
                     style={{
-                      color: '#ff6b35',
+                      color: '#c45c6a',
                       marginBottom: 24,
                       display: 'flex',
                       alignItems: 'center',
@@ -723,7 +723,7 @@ const AdminOffers = () => {
                       icon={<SaveOutlined />}
                       loading={loading}
                       style={{
-                        background: 'linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%)',
+                        background: 'linear-gradient(135deg, #c45c6a 0%, #a84856 100%)',
                         border: 'none',
                         borderRadius: 8,
                         padding: '0 48px',
@@ -745,7 +745,7 @@ const AdminOffers = () => {
                   <Title
                     level={4}
                     style={{
-                      color: '#ff6b35',
+                      color: '#c45c6a',
                       marginBottom: 24,
                       display: 'flex',
                       alignItems: 'center',
