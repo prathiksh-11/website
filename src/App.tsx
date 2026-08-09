@@ -12,7 +12,6 @@ import Momentum from './components/Momentum';
 import JoinCTA from './components/JoinCTA';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
-import AdminOffers from './components/AdminOffers';
 import Maintenance from './components/Maintenance';
 import { MessageCircle } from 'lucide-react';
 import PromotionalOffers from './components/PromotionalOffers';
@@ -20,7 +19,7 @@ import PromotionalOffers from './components/PromotionalOffers';
 function App() {
   const isMaintenanceMode = false;
   const [currentBranch, setCurrentBranch] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState<'home' | 'branch' | 'admin'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'branch'>('home');
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -31,8 +30,8 @@ function App() {
         setCurrentBranch(branchId);
         setCurrentPage('branch');
       } else if (hash === '#admin') {
-        setCurrentPage('admin');
-        setCurrentBranch(null);
+        window.location.replace('/dashboard');
+        return;
       } else {
         setCurrentPage('home');
         setCurrentBranch(null);
@@ -56,10 +55,6 @@ function App() {
 
   if (currentBranch && currentPage === 'branch') {
     return <BranchDetail branchId={currentBranch} onBack={handleBack} />;
-  }
-
-  if (currentPage === 'admin') {
-    return <AdminOffers />;
   }
 
   return (
