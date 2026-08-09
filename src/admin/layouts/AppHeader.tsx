@@ -8,7 +8,7 @@ import {
   SunOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Badge, Button, Dropdown, Empty, Spin } from 'antd';
+import { Avatar, Badge, Button, Dropdown, Empty, Skeleton } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { MouseEvent } from 'react';
@@ -81,7 +81,7 @@ const NotificationPanel = () => {
       <div className="admin-notify__list">
         {isLoading ? (
           <div className="admin-notify__empty">
-            <Spin size="small" />
+            <Skeleton active paragraph={{ rows: 4 }} title={false} />
           </div>
         ) : data.length ? (
           data.slice(0, 30).map((item) => (

@@ -10,13 +10,14 @@ import {
   Form,
   Input,
   Select,
-  Spin,
+  Skeleton,
   Tag,
 } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Bell, Inbox, Megaphone } from 'lucide-react';
 import { useMemo, useState, type MouseEvent } from 'react';
+import { PageSkeleton } from '@/components/common';
 import { useBranches } from '@/hooks/useBranches';
 import { useCustomersAll } from '@/hooks/useCustomers';
 import {
@@ -128,6 +129,10 @@ export const NotificationsPage = () => {
     event.stopPropagation();
     void remove.mutateAsync({ ids: [item.id] });
   };
+
+  if (isLoading && !items.length) {
+    return <PageSkeleton variant="inbox" />;
+  }
 
   return (
     <div className="notif-page">
@@ -315,7 +320,7 @@ export const NotificationsPage = () => {
           <div className="notif-page__list">
             {isLoading ? (
               <div className="notif-page__empty">
-                <Spin />
+                <Skeleton active paragraph={{ rows: 4 }} />
               </div>
             ) : filtered.length ? (
               filtered.map((item) => (

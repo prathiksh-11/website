@@ -4,10 +4,10 @@ import {
   SearchOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Drawer, Empty, Input, Select, Skeleton, Table } from 'antd';
+import { Button, Drawer, Empty, Input, Select, Table } from 'antd';
 import { useMemo, useState } from 'react';
 import { MapPin, Users } from 'lucide-react';
-import { StatusBadge } from '@/components/common';
+import { PageSkeleton, StatusBadge } from '@/components/common';
 import { PAGE_SIZE_OPTIONS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useCustomers, useCustomersAll } from '@/hooks/useCustomers';
@@ -59,6 +59,10 @@ export const CustomerList = () => {
     user?.role === 'Super Admin'
       ? 'Showing every member across all branches'
       : 'Showing members for your assigned branches';
+
+  if (loadingAll && !allCustomers?.length) {
+    return <PageSkeleton variant="list" />;
+  }
 
   return (
     <div className="cust">
@@ -137,10 +141,7 @@ export const CustomerList = () => {
           />
         </div>
 
-        {isLoading && !data?.data?.length ? (
-          <Skeleton active paragraph={{ rows: 8 }} />
-        ) : (
-          <Table<Customer>
+        <Table<Customer>
             rowKey="id"
             loading={isLoading}
             dataSource={data?.data}
@@ -233,7 +234,6 @@ export const CustomerList = () => {
               },
             ]}
           />
-        )}
       </section>
 
       <Drawer

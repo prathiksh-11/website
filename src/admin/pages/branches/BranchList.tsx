@@ -17,7 +17,7 @@ import {
 } from 'antd';
 import { Building2, MapPin, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { StatusBadge } from '@/components/common';
+import { StatusBadge, PageSkeleton } from '@/components/common';
 import {
   useBranchDetails,
   useBranches,
@@ -93,6 +93,10 @@ export const BranchList = () => {
 
   const openBranch = (branch: Branch) => setSelectedId(branch.id);
 
+  if (loadingAll && !allBranches?.length) {
+    return <PageSkeleton variant="cards" />;
+  }
+
   return (
     <div className="brch">
       <header className="brch__hero">
@@ -151,11 +155,7 @@ export const BranchList = () => {
         </div>
 
         {isLoading ? (
-          <div className="brch__grid">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton.Node key={i} active style={{ width: '100%', height: 280 }} />
-            ))}
-          </div>
+          <PageSkeleton variant="cards" />
         ) : !data?.data?.length ? (
           <Empty description="No branches found" />
         ) : (

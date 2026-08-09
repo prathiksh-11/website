@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { AppLoader } from '@/components/common';
+import { PageSkeleton } from '@/components/common';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useAuthHydration } from '@/hooks/useAuthHydration';
 import { useAuthStore } from '@/store/auth.store';
@@ -15,7 +15,7 @@ export const ProtectedRoute = ({ permission }: ProtectedRouteProps) => {
   const { canAccess } = usePermissions();
 
   if (!hydrated) {
-    return <AppLoader tip="Loading..." />;
+    return <PageSkeleton variant="dashboard" />;
   }
 
   if (!isAuthenticated) {

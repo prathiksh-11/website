@@ -25,7 +25,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { AppLoader } from '@/components/common';
+import { PageSkeleton } from '@/components/common';
 import { THEME_TOKENS } from '@/constants';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useAuthStore } from '@/store/auth.store';
@@ -85,7 +85,7 @@ export const Dashboard = () => {
   const { data, isLoading, isError } = useDashboard();
   const user = useAuthStore((s) => s.user);
 
-  if (isLoading) return <AppLoader tip="Loading dashboard..." />;
+  if (isLoading) return <PageSkeleton variant="dashboard" />;
   if (isError || !data?.summary) {
     return (
       <div className="bento">

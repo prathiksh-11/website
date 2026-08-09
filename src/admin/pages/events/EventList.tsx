@@ -15,14 +15,13 @@ import {
   Input,
   InputNumber,
   Select,
-  Skeleton,
   TimePicker,
   Upload,
 } from 'antd';
 import dayjs from 'dayjs';
 import { CalendarDays, Ticket, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { StatusBadge, confirmDelete } from '@/components/common';
+import { StatusBadge, PageSkeleton, confirmDelete } from '@/components/common';
 import { useBranches } from '@/hooks/useBranches';
 import {
   useEventMutations,
@@ -159,6 +158,10 @@ export const EventList = () => {
     setOpen(false);
   };
 
+  if (loadingAll && !allEvents?.length) {
+    return <PageSkeleton variant="cards" />;
+  }
+
   return (
     <div className="evt">
       <header className="evt__hero">
@@ -237,15 +240,7 @@ export const EventList = () => {
         </div>
 
         {isLoading && !data?.data?.length ? (
-          <div className="evt__grid">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton.Node
-                key={i}
-                active
-                style={{ width: '100%', height: 300 }}
-              />
-            ))}
-          </div>
+          <PageSkeleton variant="cards" />
         ) : !data?.data?.length ? (
           <Empty description="No events found" />
         ) : (

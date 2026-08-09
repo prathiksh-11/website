@@ -3,7 +3,7 @@ import {
   FilePdfOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, DatePicker, Empty, Progress, Select, Skeleton } from 'antd';
+import { Button, DatePicker, Empty, Progress, Select } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import {
   Activity,
@@ -33,6 +33,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { PageSkeleton } from '@/components/common';
 import { THEME_TOKENS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useGymReport, useReportExport } from '@/hooks/useReports';
@@ -1115,7 +1116,7 @@ export const ReportsHome = () => {
       {!enabled ? (
         <Empty description="Pick a custom date range to load reports" />
       ) : isLoading || !totals ? (
-        <Skeleton active paragraph={{ rows: 12 }} />
+        <PageSkeleton variant="report" />
       ) : (
         <>
           <OverviewCards totals={totals} />

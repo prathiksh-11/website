@@ -4,6 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import dayjs, { type Dayjs } from 'dayjs';
 import { CreditCard, IndianRupee, Receipt } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { PageSkeleton } from '@/components/common';
 import { PAGE_SIZE_OPTIONS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useTableParams } from '@/hooks/useTableParams';
@@ -124,6 +125,10 @@ export const TransactionList = () => {
   ];
 
   const summary = data?.summary;
+
+  if (isLoading && !data?.items?.length) {
+    return <PageSkeleton variant="list" />;
+  }
 
   return (
     <div className="txn">

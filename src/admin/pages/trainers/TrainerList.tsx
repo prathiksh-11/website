@@ -18,7 +18,7 @@ import {
 } from 'antd';
 import { Dumbbell, MapPin, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { StatusBadge, confirmDelete } from '@/components/common';
+import { StatusBadge, PageSkeleton, confirmDelete } from '@/components/common';
 import { PAGE_SIZE_OPTIONS, TRAINER_TYPE_OPTIONS, trainerTypeLabel } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import {
@@ -139,6 +139,10 @@ export const TrainerList = () => {
     setFormOpen(false);
   };
 
+  if (loadingAll && !allTrainers?.length) {
+    return <PageSkeleton variant="list" />;
+  }
+
   return (
     <div className="emp">
       <header className="emp__hero">
@@ -204,7 +208,7 @@ export const TrainerList = () => {
         </div>
 
         {isLoading && !data?.data?.length ? (
-          <Skeleton active paragraph={{ rows: 8 }} />
+          <PageSkeleton variant="list" />
         ) : (
           <Table<Trainer>
             rowKey="id"

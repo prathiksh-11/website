@@ -13,10 +13,9 @@ import {
   Input,
   InputNumber,
   Select,
-  Skeleton,
 } from 'antd';
 import { useMemo, useState } from 'react';
-import { confirmDelete } from '@/components/common';
+import { PageSkeleton, confirmDelete } from '@/components/common';
 import { useBranches } from '@/hooks/useBranches';
 import {
   useSubscriptionMutations,
@@ -140,6 +139,10 @@ export const SubscriptionList = () => {
     setOpen(false);
   };
 
+  if (loadingAll && !allPlans?.length) {
+    return <PageSkeleton variant="cards" />;
+  }
+
   return (
     <div className="plan">
       <header className="plan__hero">
@@ -196,15 +199,7 @@ export const SubscriptionList = () => {
       </div>
 
       {isLoading && !data?.data?.length ? (
-        <div className="plan__grid">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton.Node
-              key={i}
-              active
-              style={{ width: '100%', height: 460 }}
-            />
-          ))}
-        </div>
+        <PageSkeleton variant="cards" />
       ) : !data?.data?.length ? (
         <Empty
           description={

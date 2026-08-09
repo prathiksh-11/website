@@ -1,6 +1,6 @@
 import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
-import { AppLoader } from '@/components/common';
+import { PageSkeleton } from '@/components/common';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
 import { PublicRoute } from '@/routes/PublicRoute';
@@ -61,7 +61,7 @@ const Unauthorized = lazy(() =>
 );
 
 const withSuspense = (element: ReactNode) => (
-  <Suspense fallback={<AppLoader />}>{element}</Suspense>
+  <Suspense fallback={<PageSkeleton variant="list" />}>{element}</Suspense>
 );
 
 export const AppRouter = () =>

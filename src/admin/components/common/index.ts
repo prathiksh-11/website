@@ -6,5 +6,6 @@ export { PageHeader } from './PageHeader';
 export { StatisticCard } from './StatisticCard';
 export { StatusBadge } from './StatusBadge';
 export { AppLoader } from './AppLoader';
+export { PageSkeleton } from './PageSkeleton';
 export { confirmDelete } from './ConfirmDialog';
 export { ErrorBoundary } from './ErrorBoundary';
