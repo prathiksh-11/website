@@ -318,6 +318,15 @@ export interface PaymentTransaction {
   qty?: number;
   failureReason?: string;
   paidAt?: string;
+  approvedBy?: string;
+  approvedByName?: string;
+  approvedAt?: string;
+  isPartial?: boolean;
+  packageAmount?: number;
+  purchaseId?: string;
+  couponCode?: string;
+  couponDiscount?: number;
+  originalAmount?: number;
   createdAt: string;
 }
 
@@ -337,6 +346,46 @@ export interface TransactionListResult {
     failedCount: number;
     pendingCount: number;
   };
+}
+
+export type CouponStatus = 'active' | 'used' | 'inactive' | string;
+
+export interface Coupon {
+  id: string;
+  couponName: string;
+  couponCode: string;
+  price: number;
+  branchId: string;
+  branchName: string;
+  createdBy: string;
+  createdByName: string;
+  usedBy?: string;
+  usedByName?: string;
+  status: CouponStatus;
+  createdAt: string;
+}
+
+export interface CouponListParams extends PaginatedRequest {
+  status?: string;
+}
+
+export interface CouponListResult {
+  items: Coupon[];
+  total: number;
+  page: number;
+  pageSize: number;
+  summary: {
+    total: number;
+    active: number;
+    used: number;
+    totalValue: number;
+  };
+}
+
+export interface CreateCouponPayload {
+  couponName: string;
+  price: number;
+  branchId: string;
 }
 
 export interface ReportRow {

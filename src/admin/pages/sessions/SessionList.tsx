@@ -34,6 +34,24 @@ const shortBranch = (name: string) =>
     .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
     .trim() || name;
 
+const GST_TYPE_OPTIONS = [
+  { value: 'exclusive', label: 'GST Exclusive' },
+  { value: 'inclusive', label: 'GST Inclusive' },
+];
+
+const GST_PERCENTAGE_OPTIONS = [
+  { value: 0, label: '0%' },
+  { value: 5, label: '5%' },
+  { value: 12, label: '12%' },
+  { value: 18, label: '18%' },
+];
+
+const gstLabel = (type?: string, percentage?: number) => {
+  const pct = Number.isFinite(percentage) ? Number(percentage) : 0;
+  if (type === 'inclusive') return `${pct}% GST included`;
+  return `${pct}% GST extra`;
+};
+
 const featureChips = (features: string) =>
   features
     .split(/[,|•]/)
@@ -75,6 +93,8 @@ export const SessionList = () => {
       status: 'active',
       qty: 1,
       price: 0,
+      gstType: 'exclusive',
+      gstPercentage: 5,
       partiallyAllow: false,
       installmentAmount: undefined,
     });
@@ -89,6 +109,8 @@ export const SessionList = () => {
       sessionFeature: record.sessionFeature,
       qty: record.qty,
       price: record.price,
+      gstType: record.gstType ?? 'exclusive',
+      gstPercentage: record.gstPercentage ?? 5,
       partiallyAllow: record.partiallyAllow,
       installmentAmount: record.installmentAmount ?? undefined,
       status: record.status,
@@ -106,6 +128,8 @@ export const SessionList = () => {
       sessionFeature: values.sessionFeature ?? '',
       qty: Number(values.qty),
       price: Number(values.price),
+      gstType: values.gstType,
+      gstPercentage: Number(values.gstPercentage),
       partiallyAllow: Boolean(values.partiallyAllow),
       installmentAmount: values.partiallyAllow
         ? Number(values.installmentAmount)
@@ -246,6 +270,10 @@ export const SessionList = () => {
                     ) : (
                       <p className="sess-card__desc">No features listed</p>
                     )}
+
+                    <p className="sess-card__gst">
+                      {gstLabel(session.gstType, session.gstPercentage)}
+                    </p>
 
                     <div className="sess-card__metrics">
                       <div>
@@ -407,6 +435,25 @@ export const SessionList = () => {
               style={{ flex: 1, marginBottom: 0 }}
             >
               <InputNumber min={0} precision={2} style={{ width: '100%' }} />
+            </Form.Item>
+          </div>
+
+          <div className="sess-form-row" style={{ marginTop: 24 }}>
+            <Form.Item
+              name="gstType"
+              label="GST type"
+              rules={[{ required: true, message: 'Select GST type' }]}
+              style={{ flex: 1, marginBottom: 0 }}
+            >
+              <Select options={GST_TYPE_OPTIONS} />
+            </Form.Item>
+            <Form.Item
+              name="gstPercentage"
+              label="GST percentage"
+              rules={[{ required: true, message: 'Select GST percentage' }]}
+              style={{ flex: 1, marginBottom: 0 }}
+            >
+              <Select options={GST_PERCENTAGE_OPTIONS} />
             </Form.Item>
           </div>
 

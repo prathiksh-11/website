@@ -23,6 +23,7 @@ const ADMIN_PREFIXES = [
   '/events',
   '/reports',
   '/transactions',
+  '/coupons',
   '/notifications',
   '/settings',
   '/profile',

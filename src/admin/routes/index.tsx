@@ -44,6 +44,9 @@ const TransactionList = lazy(() =>
     default: m.TransactionList,
   })),
 );
+const CouponList = lazy(() =>
+  import('@/pages/coupons/CouponList').then((m) => ({ default: m.CouponList })),
+);
 const BookingReport = lazy(() =>
   import('@/pages/reports/BookingReport').then((m) => ({ default: m.BookingReport })),
 );
@@ -116,6 +119,15 @@ export const AppRouter = () =>
                 {
                   path: '/transactions',
                   element: withSuspense(<TransactionList />),
+                },
+              ],
+            },
+            {
+              element: <ProtectedRoute permission="coupons" />,
+              children: [
+                {
+                  path: '/coupons',
+                  element: withSuspense(<CouponList />),
                 },
               ],
             },

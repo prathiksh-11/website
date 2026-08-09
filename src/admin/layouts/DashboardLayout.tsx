@@ -6,6 +6,7 @@ import {
   useNotificationRealtime,
 } from '@/hooks/useNotifications';
 import { unlockNotificationAudio } from '@/utils/notification-sound';
+import { CashPaymentApprovalHost } from '@/components/cash/CashPaymentApprovalHost';
 import { AppHeader } from './AppHeader';
 import { AppSidebar } from './AppSidebar';
 import { useThemeStore } from '@/store/theme.store';
@@ -48,6 +49,7 @@ export const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
+      <CashPaymentApprovalHost />
     </div>
   );
 };

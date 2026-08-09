@@ -27,6 +27,15 @@ interface BackendTransactionRow {
   qty?: number | null;
   failure_reason?: string | null;
   paid_at?: string | null;
+  approved_by?: number | string | null;
+  approved_by_name?: string | null;
+  approved_at?: string | null;
+  is_partial?: boolean | null;
+  package_amount?: number | string | null;
+  purchase_id?: number | string | null;
+  coupon_code?: string | null;
+  coupon_discount?: number | string | null;
+  original_amount?: number | string | null;
   created_at?: string | null;
 }
 
@@ -69,6 +78,20 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
   qty: raw.qty != null ? Number(raw.qty) : undefined,
   failureReason: raw.failure_reason ? String(raw.failure_reason) : undefined,
   paidAt: raw.paid_at ? String(raw.paid_at) : undefined,
+  approvedBy: raw.approved_by != null ? String(raw.approved_by) : undefined,
+  approvedByName: raw.approved_by_name
+    ? String(raw.approved_by_name)
+    : undefined,
+  approvedAt: raw.approved_at ? String(raw.approved_at) : undefined,
+  isPartial: Boolean(raw.is_partial),
+  packageAmount:
+    raw.package_amount != null ? Number(raw.package_amount) : undefined,
+  purchaseId: raw.purchase_id != null ? String(raw.purchase_id) : undefined,
+  couponCode: raw.coupon_code ? String(raw.coupon_code) : undefined,
+  couponDiscount:
+    raw.coupon_discount != null ? Number(raw.coupon_discount) : undefined,
+  originalAmount:
+    raw.original_amount != null ? Number(raw.original_amount) : undefined,
   createdAt: String(raw.created_at ?? new Date().toISOString()),
 });
 

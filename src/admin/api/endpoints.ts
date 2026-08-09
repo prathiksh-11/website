@@ -16,6 +16,15 @@ export const ENDPOINTS = {
   TRANSACTIONS: {
     ROOT: '/transactions',
   },
+  CASH_PAYMENTS: {
+    PENDING: '/payment/cash-orders/pending',
+    APPROVE: (id: string) => `/payment/cash-order/${id}/approve`,
+    REJECT: (id: string) => `/payment/cash-order/${id}/reject`,
+  },
+  COUPONS: {
+    ROOT: '/getcoupons',
+    CREATE: '/addcoupon',
+  },
   DASHBOARD: {
     ROOT: '/dashboard',
   },

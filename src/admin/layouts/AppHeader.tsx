@@ -21,8 +21,20 @@ import {
 import { useAuthStore } from '@/store/auth.store';
 import { useThemeStore } from '@/store/theme.store';
 import type { AdminNotification } from '@/types';
+import { CASH_PAYMENT_REOPEN_EVENT } from '@/components/cash/CashPaymentApprovalHost';
 
 dayjs.extend(relativeTime);
+
+const isCashPaymentNotification = (item: AdminNotification) => {
+  const type = String(item.type || '').toLowerCase();
+  const title = String(item.title || '').toLowerCase();
+  const message = String(item.message || '').toLowerCase();
+  return (
+    type.includes('cash') ||
+    title.includes('cash payment') ||
+    message.includes('cash payment')
+  );
+};
 
 const greetingForHour = (hour: number) => {
   if (hour < 12) return 'Good morning';
@@ -38,6 +50,9 @@ const NotificationPanel = () => {
   const onOpenItem = (item: AdminNotification) => {
     if (!item.isRead) {
       void markRead.mutateAsync({ ids: [item.id] });
+    }
+    if (isCashPaymentNotification(item)) {
+      window.dispatchEvent(new Event(CASH_PAYMENT_REOPEN_EVENT));
     }
   };
 

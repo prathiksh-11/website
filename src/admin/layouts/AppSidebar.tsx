@@ -9,6 +9,7 @@ import {
   Settings,
   Sparkles,
   Bell,
+  Ticket,
   Users,
   Zap,
 } from 'lucide-react';
@@ -81,6 +82,12 @@ const MENU_ITEMS: NavItem[] = [
     label: 'Transactions',
     permission: 'transactions',
     icon: <CreditCard {...iconProps} />,
+  },
+  {
+    key: '/coupons',
+    label: 'Coupons',
+    permission: 'coupons',
+    icon: <Ticket {...iconProps} />,
   },
   {
     key: '/notifications',

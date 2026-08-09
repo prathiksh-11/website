@@ -26,6 +26,7 @@ import {
   useUnreadNotificationCount,
 } from '@/hooks/useNotifications';
 import { useTrainersAll } from '@/hooks/useTrainers';
+import { CASH_PAYMENT_REOPEN_EVENT } from '@/components/cash/CashPaymentApprovalHost';
 import type { AdminNotification, NotificationSendTarget } from '@/types';
 
 dayjs.extend(relativeTime);
@@ -39,6 +40,17 @@ interface SendFormValues {
   branchId?: string;
   userIds?: string[];
 }
+
+const isCashPaymentNotification = (item: AdminNotification) => {
+  const type = String(item.type || '').toLowerCase();
+  const title = String(item.title || '').toLowerCase();
+  const body = String(item.message || '').toLowerCase();
+  return (
+    type.includes('cash') ||
+    title.includes('cash payment') ||
+    body.includes('cash payment')
+  );
+};
 
 export const NotificationsPage = () => {
   const { message } = App.useApp();
@@ -119,6 +131,9 @@ export const NotificationsPage = () => {
   const onOpenItem = (item: AdminNotification) => {
     if (!item.isRead) {
       void markRead.mutateAsync({ ids: [item.id] });
+    }
+    if (isCashPaymentNotification(item)) {
+      window.dispatchEvent(new Event(CASH_PAYMENT_REOPEN_EVENT));
     }
   };
 

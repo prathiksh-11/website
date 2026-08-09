@@ -100,16 +100,60 @@ export const TransactionList = () => {
       dataIndex: 'amount',
       key: 'amount',
       align: 'right',
-      render: (value: number) => (
-        <strong className="txn__amount">{formatCurrency(value)}</strong>
-      ),
+      width: 168,
+      render: (value: number, row) => {
+        const pending =
+          row.isPartial && row.packageAmount != null
+            ? Math.max(0, Number(row.packageAmount) - Number(value || 0))
+            : 0;
+        return (
+          <div className="txn__money">
+            <strong className="txn__amount">{formatCurrency(value)}</strong>
+            {row.isPartial ? (
+              <div className="txn__partial">
+                <span className="txn__chip txn__chip--partial">Partial</span>
+                {row.packageAmount != null ? (
+                  <span className="txn__partial-meta">
+                    Full {formatCurrency(row.packageAmount)}
+                    {pending > 0
+                      ? ` · Due ${formatCurrency(pending)}`
+                      : ''}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
+            {row.couponCode ? (
+              <span className="txn__partial-meta">
+                Coupon {row.couponCode}
+                {row.couponDiscount != null
+                  ? ` · −${formatCurrency(row.couponDiscount)}`
+                  : ''}
+              </span>
+            ) : null}
+          </div>
+        );
+      },
     },
     {
       title: 'Status',
       dataIndex: 'paymentStatus',
       key: 'status',
-      render: (value: string) => (
-        <Tag color={statusColor(value)}>{value}</Tag>
+      width: 120,
+      render: (value: string, row) => (
+        <div className="txn__status">
+          <Tag
+            bordered={false}
+            color={statusColor(value)}
+            className="txn__tag"
+          >
+            {value}
+          </Tag>
+          {row.isPartial ? (
+            <Tag bordered={false} color="orange" className="txn__tag">
+              partial
+            </Tag>
+          ) : null}
+        </div>
       ),
     },
     {
@@ -118,7 +162,11 @@ export const TransactionList = () => {
       render: (_, row) => (
         <div className="txn__person">
           <strong>{row.paymentMethod || '—'}</strong>
-          <span>{row.receipt || row.razorpayPaymentId || '—'}</span>
+          <span>
+            {row.approvedByName
+              ? `Approved by ${row.approvedByName}`
+              : row.receipt || row.razorpayPaymentId || '—'}
+          </span>
         </div>
       ),
     },
