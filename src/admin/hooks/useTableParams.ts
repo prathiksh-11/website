@@ -1,0 +1,33 @@
+import { useMemo, useState } from 'react';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
+import type { PaginatedRequest } from '@/types';
+
+export const useTableParams = (initial?: Partial<PaginatedRequest>) => {
+  const [params, setParams] = useState<PaginatedRequest>({
+    page: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+    search: '',
+    ...initial,
+  });
+
+  const handlers = useMemo(
+    () => ({
+      setSearch: (search: string) =>
+        setParams((prev) => ({ ...prev, search, page: 1 })),
+      setStatus: (status?: string) =>
+        setParams((prev) => ({ ...prev, status, page: 1 })),
+      setBranchId: (branchId?: string) =>
+        setParams((prev) => ({ ...prev, branchId, page: 1 })),
+      setPage: (page: number, pageSize?: number) =>
+        setParams((prev) => ({
+          ...prev,
+          page,
+          pageSize: pageSize ?? prev.pageSize,
+        })),
+      setParams,
+    }),
+    [],
+  );
+
+  return { params, ...handlers };
+};
