@@ -10,19 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout code
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # 2. Setup SSH
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
 
-          echo "${{ secrets.SSH_PRIVATE_KEY_BASE64 }}" | base64 -d > ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY_BASE64 }}" | base64 --decode > ~/.ssh/id_ed25519
 
           chmod 600 ~/.ssh/id_ed25519
 
-          echo "SSH key ready"
+          # Validate SSH private key
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /tmp/public_key
 
+          echo "✅ SSH key is valid"
+
+      # 3. Deploy to VPS
       - name: Deploy to VPS
         run: |
           ssh -T \
@@ -31,27 +37,48 @@ jobs:
 
             set -e
 
-            echo "Connected to VPS"
+            echo "🚀 Connected to VPS"
 
+            # Go to GameOn React project
             cd /var/www/gameon-web
 
-            echo "Pulling latest code..."
+            echo "📥 Pulling latest code..."
+
             git fetch origin
             git checkout main
             git reset --hard origin/main
 
-            echo "Installing dependencies..."
+            echo "📦 Installing dependencies..."
+
             npm ci
 
-            echo "Building React..."
+            echo "🏗️ Building React application..."
+
             npm run build
 
-            echo "Testing Nginx..."
+            echo "🔍 Checking build..."
+
+            if [ ! -f "dist/index.html" ]; then
+              echo "❌ Build failed: dist/index.html not found"
+              exit 1
+            fi
+
+            echo "✅ React build successful"
+
+            echo "🔧 Testing Nginx..."
+
             sudo nginx -t
 
-            echo "Reloading Nginx..."
+            echo "🔄 Reloading Nginx..."
+
             sudo systemctl reload nginx
 
-            echo "Deployment completed"
+            echo "🌐 Checking website..."
+
+            curl -I https://gameonfitness.in || true
+
+            echo "================================"
+            echo "✅ GAMEON DEPLOYMENT SUCCESSFUL"
+            echo "================================"
 
           EOF
