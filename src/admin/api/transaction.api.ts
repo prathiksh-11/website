@@ -25,6 +25,10 @@ interface BackendTransactionRow {
   razorpay_payment_id?: string | null;
   item_name?: string | null;
   qty?: number | null;
+  subscription_id?: number | string | null;
+  session_id?: number | string | null;
+  event_id?: number | string | null;
+  trainer_id?: number | string | null;
   failure_reason?: string | null;
   paid_at?: string | null;
   approved_by?: number | string | null;
@@ -33,10 +37,12 @@ interface BackendTransactionRow {
   is_partial?: boolean | null;
   package_amount?: number | string | null;
   purchase_id?: number | string | null;
+  coupon_id?: number | string | null;
   coupon_code?: string | null;
   coupon_discount?: number | string | null;
   original_amount?: number | string | null;
   created_at?: string | null;
+  updated_at?: string | null;
 }
 
 interface BackendListResponse {
@@ -55,11 +61,14 @@ interface BackendListResponse {
   };
 }
 
+const optionalId = (value: number | string | null | undefined) =>
+  value != null && value !== '' ? String(value) : undefined;
+
 const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
   id: String(raw.id),
-  branchId: raw.branch_id != null ? String(raw.branch_id) : undefined,
+  branchId: optionalId(raw.branch_id),
   branchName: raw.branch_name ? String(raw.branch_name) : undefined,
-  userId: raw.user_id != null ? String(raw.user_id) : undefined,
+  userId: optionalId(raw.user_id),
   userName: raw.user_name ? String(raw.user_name) : undefined,
   userMobile: raw.user_mobile ? String(raw.user_mobile) : undefined,
   type: String(raw.type ?? ''),
@@ -76,9 +85,13 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
     : undefined,
   itemName: raw.item_name ? String(raw.item_name) : undefined,
   qty: raw.qty != null ? Number(raw.qty) : undefined,
+  subscriptionId: optionalId(raw.subscription_id),
+  sessionId: optionalId(raw.session_id),
+  eventId: optionalId(raw.event_id),
+  trainerId: optionalId(raw.trainer_id),
   failureReason: raw.failure_reason ? String(raw.failure_reason) : undefined,
   paidAt: raw.paid_at ? String(raw.paid_at) : undefined,
-  approvedBy: raw.approved_by != null ? String(raw.approved_by) : undefined,
+  approvedBy: optionalId(raw.approved_by),
   approvedByName: raw.approved_by_name
     ? String(raw.approved_by_name)
     : undefined,
@@ -86,13 +99,15 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
   isPartial: Boolean(raw.is_partial),
   packageAmount:
     raw.package_amount != null ? Number(raw.package_amount) : undefined,
-  purchaseId: raw.purchase_id != null ? String(raw.purchase_id) : undefined,
+  purchaseId: optionalId(raw.purchase_id),
+  couponId: optionalId(raw.coupon_id),
   couponCode: raw.coupon_code ? String(raw.coupon_code) : undefined,
   couponDiscount:
     raw.coupon_discount != null ? Number(raw.coupon_discount) : undefined,
   originalAmount:
     raw.original_amount != null ? Number(raw.original_amount) : undefined,
   createdAt: String(raw.created_at ?? new Date().toISOString()),
+  updatedAt: raw.updated_at ? String(raw.updated_at) : undefined,
 });
 
 export const transactionApi = {

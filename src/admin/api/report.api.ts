@@ -6,6 +6,14 @@ import { emptyGymReport, mapBackendGymReport } from '@/utils/report-map';
 import { apiClient } from './axios';
 import { ENDPOINTS } from './endpoints';
 
+const excelFilename = (reportType?: ReportQuery['reportType']) => {
+  const stamp = Date.now();
+  if (reportType === 'attendance') return `Trainer_Attendance_${stamp}.xlsx`;
+  if (reportType === 'revenue') return `Revenue_Report_${stamp}.xlsx`;
+  if (reportType === 'branch') return `Branch_Report_${stamp}.xlsx`;
+  return `Gym_Report_${stamp}.xlsx`;
+};
+
 const toBody = (query: ReportQuery) => {
   const body: Record<string, unknown> = {
     filter: query.filter || 'monthly',
@@ -26,6 +34,10 @@ const toBody = (query: ReportQuery) => {
     body.trainer_id = Array.isArray(query.trainerId)
       ? query.trainerId.map(Number)
       : Number(query.trainerId);
+  }
+
+  if (query.reportType) {
+    body.report_type = query.reportType;
   }
 
   return body;
@@ -77,6 +89,18 @@ const buildMockReport = (query: ReportQuery): GymReport => {
         eventClients: 6 + index,
         eventRevenue,
         totalRevenue: subscriberRevenue + ptRevenue + eventRevenue,
+        paidAmount: subscriberRevenue + ptRevenue + eventRevenue,
+        pendingAmount: 15000 - index * 2000,
+        pendingCount: 1 + index,
+        failedAmount: 0,
+        failedCount: 0,
+        partialPaidAmount: 22000 - index * 3000,
+        partialPaidCount: 2 + index,
+        partialPackageAmount: 45000 - index * 4000,
+        amountDue: 18000 - index * 2500,
+        partialOpenCount: 1 + index,
+        packageAmount: 120000 - index * 10000,
+        amountPaidPurchases: subscriberRevenue + ptRevenue,
       },
       highlights: {
         activeTrainers: trainers.length || b.trainerCount,
@@ -106,6 +130,18 @@ const buildMockReport = (query: ReportQuery): GymReport => {
         event_clients: b.summary.eventClients,
         event_revenue: b.summary.eventRevenue,
         total_revenue: b.summary.totalRevenue,
+        paid_amount: b.summary.paidAmount,
+        pending_amount: b.summary.pendingAmount,
+        pending_count: b.summary.pendingCount,
+        failed_amount: b.summary.failedAmount,
+        failed_count: b.summary.failedCount,
+        partial_paid_amount: b.summary.partialPaidAmount,
+        partial_paid_count: b.summary.partialPaidCount,
+        partial_package_amount: b.summary.partialPackageAmount,
+        amount_due: b.summary.amountDue,
+        partial_open_count: b.summary.partialOpenCount,
+        package_amount: b.summary.packageAmount,
+        amount_paid_purchases: b.summary.amountPaidPurchases,
       },
       highlights: {
         active_trainers: b.highlights.activeTrainers,
@@ -164,7 +200,7 @@ export const reportApi = {
   downloadExcel: async (query: ReportQuery): Promise<void> => {
     if (USE_MOCK) {
       await delay(300);
-      downloadBlob('mock-report', `Gym_Report_${Date.now()}.txt`, 'text/plain');
+      downloadBlob('mock-report', excelFilename(query.reportType).replace('.xlsx', '.txt'), 'text/plain');
       return;
     }
 
@@ -175,7 +211,7 @@ export const reportApi = {
     );
     downloadBlob(
       data,
-      `Gym_Report_${Date.now()}.xlsx`,
+      excelFilename(query.reportType),
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
   },
@@ -189,7 +225,7 @@ export const reportApi = {
 
     const { data } = await apiClient.post<Blob>(
       ENDPOINTS.REPORTS.DOWNLOAD_PDF,
-      toBody(query),
+      toBody({ ...query, reportType: query.reportType || 'all' }),
       { responseType: 'blob', timeout: 120_000 },
     );
     downloadBlob(data, `Gym_Report_${Date.now()}.pdf`, 'application/pdf');

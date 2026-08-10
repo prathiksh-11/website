@@ -316,6 +316,10 @@ export interface PaymentTransaction {
   razorpayPaymentId?: string;
   itemName?: string;
   qty?: number;
+  subscriptionId?: string;
+  sessionId?: string;
+  eventId?: string;
+  trainerId?: string;
   failureReason?: string;
   paidAt?: string;
   approvedBy?: string;
@@ -324,10 +328,12 @@ export interface PaymentTransaction {
   isPartial?: boolean;
   packageAmount?: number;
   purchaseId?: string;
+  couponId?: string;
   couponCode?: string;
   couponDiscount?: number;
   originalAmount?: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface TransactionListParams extends PaginatedRequest {
@@ -348,7 +354,7 @@ export interface TransactionListResult {
   };
 }
 
-export type CouponStatus = 'active' | 'used' | 'inactive' | string;
+export type CouponStatus = 'active' | 'used' | 'expired' | 'inactive' | string;
 
 export interface Coupon {
   id: string;
@@ -361,8 +367,12 @@ export interface Coupon {
   createdByName: string;
   usedBy?: string;
   usedByName?: string;
+  usedAt?: string;
+  transactionId?: string;
   status: CouponStatus;
   createdAt: string;
+  /** ISO timestamp — unused coupons expire 1 hour after create */
+  expiresAt?: string;
 }
 
 export interface CouponListParams extends PaginatedRequest {
@@ -378,6 +388,7 @@ export interface CouponListResult {
     total: number;
     active: number;
     used: number;
+    expired: number;
     totalValue: number;
   };
 }
@@ -409,12 +420,16 @@ export type ReportDateFilter =
   | 'yearly'
   | 'custom';
 
+export type ReportExportType = 'branch' | 'attendance' | 'revenue' | 'all';
+
 export interface ReportQuery {
   filter: ReportDateFilter;
   startDate?: string;
   endDate?: string;
   branchId?: string | string[];
   trainerId?: string | string[];
+  /** Which Excel/PDF section to download (separate files, not one combined report) */
+  reportType?: ReportExportType;
 }
 
 export interface ReportBranchSummary {
@@ -426,6 +441,24 @@ export interface ReportBranchSummary {
   eventClients: number;
   eventRevenue: number;
   totalRevenue: number;
+  /** Collected paid amount (same as totalRevenue) */
+  paidAmount: number;
+  /** Cash/online payments awaiting approval */
+  pendingAmount: number;
+  pendingCount: number;
+  failedAmount: number;
+  failedCount: number;
+  /** Amount collected via partial installments */
+  partialPaidAmount: number;
+  partialPaidCount: number;
+  /** Full package value for those partial payments */
+  partialPackageAmount: number;
+  /** Outstanding installment balance still owed */
+  amountDue: number;
+  partialOpenCount: number;
+  /** Booked package value for purchases in period */
+  packageAmount: number;
+  amountPaidPurchases: number;
 }
 
 export interface ReportBranchHighlights {

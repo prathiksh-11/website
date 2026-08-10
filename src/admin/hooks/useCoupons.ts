@@ -16,7 +16,7 @@ export const useCouponMutations = () => {
   const create = useMutation({
     mutationFn: (payload: CreateCouponPayload) => couponApi.create(payload),
     onSuccess: () => {
-      message.success('Coupon created');
+      message.success('Coupon created — valid for 1 hour');
       void queryClient.invalidateQueries({ queryKey: ['coupons'] });
     },
     onError: (error: { message?: string }) => {

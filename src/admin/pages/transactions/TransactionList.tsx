@@ -1,7 +1,7 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { DatePicker, Empty, Input, Select, Table, Tag } from 'antd';
+import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Drawer, Empty, Input, Select, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import dayjs, { type Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 import { CreditCard, IndianRupee, Receipt } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { PageSkeleton } from '@/components/common';
@@ -28,12 +28,42 @@ const typeLabel = (type: string) => {
   return map[type] ?? type;
 };
 
-const statusColor = (status: string) => {
+const paymentStatusLabel = (row: PaymentTransaction) => {
+  const status = String(row.paymentStatus || '').toLowerCase();
+  if (status === 'paid' && row.isPartial) return 'Partially paid';
+  if (status === 'paid') return 'Paid';
+  if (status === 'pending') return 'Pending';
+  if (status === 'created') return 'Created';
+  if (status === 'failed') return 'Failed';
+  return row.paymentStatus || '—';
+};
+
+const paymentStatusColor = (row: PaymentTransaction) => {
+  const status = String(row.paymentStatus || '').toLowerCase();
+  if (status === 'paid' && row.isPartial) return 'orange';
   if (status === 'paid') return 'success';
   if (status === 'failed') return 'error';
   if (status === 'pending' || status === 'created') return 'warning';
   return 'default';
 };
+
+const dueAmount = (row: PaymentTransaction) => {
+  if (!row.isPartial || row.packageAmount == null) return 0;
+  return Math.max(0, Number(row.packageAmount) - Number(row.amount || 0));
+};
+
+const DetailField = ({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | number | null;
+}) => (
+  <div>
+    <dt>{label}</dt>
+    <dd>{value != null && value !== '' ? value : '—'}</dd>
+  </div>
+);
 
 export const TransactionList = () => {
   const user = useAuthStore((s) => s.user);
@@ -41,6 +71,7 @@ export const TransactionList = () => {
     useTableParams({ pageSize: 20 });
   const [type, setType] = useState<string | undefined>();
   const [range, setRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
+  const [selected, setSelected] = useState<PaymentTransaction | null>(null);
 
   const listParams = useMemo(
     () => ({
@@ -62,112 +93,78 @@ export const TransactionList = () => {
       ? 'Showing payments across all branches'
       : 'Showing payments for your assigned branches';
 
+  const selectedDue = selected ? dueAmount(selected) : 0;
+
   const columns: ColumnsType<PaymentTransaction> = [
     {
       title: 'Date',
       key: 'date',
-      width: 160,
+      width: 150,
       render: (_, row) => formatDateTime(row.paidAt || row.createdAt),
     },
     {
       title: 'Customer',
       key: 'customer',
-      render: (_, row) => (
-        <div className="txn__person">
-          <strong>{row.userName || '—'}</strong>
-          <span>{row.userMobile || 'No mobile'}</span>
-        </div>
-      ),
+      ellipsis: true,
+      render: (_, row) => row.userName || '—',
     },
     {
       title: 'Branch',
       dataIndex: 'branchName',
       key: 'branch',
+      width: 140,
+      ellipsis: true,
       render: (value?: string) => (value ? shortBranch(value) : '—'),
     },
     {
       title: 'Item',
       key: 'item',
-      render: (_, row) => (
-        <div className="txn__person">
-          <strong>{row.itemName || typeLabel(row.type)}</strong>
-          <span>{typeLabel(row.type)}</span>
-        </div>
-      ),
+      ellipsis: true,
+      render: (_, row) => row.itemName || typeLabel(row.type),
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
       align: 'right',
-      width: 168,
-      render: (value: number, row) => {
-        const pending =
-          row.isPartial && row.packageAmount != null
-            ? Math.max(0, Number(row.packageAmount) - Number(value || 0))
-            : 0;
-        return (
-          <div className="txn__money">
-            <strong className="txn__amount">{formatCurrency(value)}</strong>
-            {row.isPartial ? (
-              <div className="txn__partial">
-                <span className="txn__chip txn__chip--partial">Partial</span>
-                {row.packageAmount != null ? (
-                  <span className="txn__partial-meta">
-                    Full {formatCurrency(row.packageAmount)}
-                    {pending > 0
-                      ? ` · Due ${formatCurrency(pending)}`
-                      : ''}
-                  </span>
-                ) : null}
-              </div>
-            ) : null}
-            {row.couponCode ? (
-              <span className="txn__partial-meta">
-                Coupon {row.couponCode}
-                {row.couponDiscount != null
-                  ? ` · −${formatCurrency(row.couponDiscount)}`
-                  : ''}
-              </span>
-            ) : null}
-          </div>
-        );
-      },
-    },
-    {
-      title: 'Status',
-      dataIndex: 'paymentStatus',
-      key: 'status',
-      width: 120,
-      render: (value: string, row) => (
-        <div className="txn__status">
-          <Tag
-            bordered={false}
-            color={statusColor(value)}
-            className="txn__tag"
-          >
-            {value}
-          </Tag>
-          {row.isPartial ? (
-            <Tag bordered={false} color="orange" className="txn__tag">
-              partial
-            </Tag>
-          ) : null}
-        </div>
+      width: 110,
+      render: (value: number) => (
+        <span className="txn__amount">{formatCurrency(value)}</span>
       ),
     },
     {
-      title: 'Payment',
-      key: 'payment',
+      title: 'Payment status',
+      key: 'paymentStatus',
+      width: 130,
       render: (_, row) => (
-        <div className="txn__person">
-          <strong>{row.paymentMethod || '—'}</strong>
-          <span>
-            {row.approvedByName
-              ? `Approved by ${row.approvedByName}`
-              : row.receipt || row.razorpayPaymentId || '—'}
-          </span>
-        </div>
+        <Tag
+          bordered={false}
+          color={paymentStatusColor(row)}
+          className="txn__tag"
+        >
+          {paymentStatusLabel(row)}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Method',
+      dataIndex: 'paymentMethod',
+      key: 'method',
+      width: 90,
+      render: (value?: string) => value || '—',
+    },
+    {
+      title: '',
+      key: 'view',
+      width: 56,
+      fixed: 'right',
+      render: (_, row) => (
+        <Button
+          type="text"
+          icon={<EyeOutlined />}
+          onClick={() => setSelected(row)}
+          aria-label={`View transaction ${row.id}`}
+        />
       ),
     },
   ];
@@ -296,7 +293,7 @@ export const TransactionList = () => {
             pageSizeOptions: PAGE_SIZE_OPTIONS.map(String),
             onChange: (page, pageSize) => setPage(page, pageSize),
           }}
-          scroll={{ x: 980 }}
+          scroll={{ x: 900 }}
         />
       </section>
 
@@ -306,6 +303,183 @@ export const TransactionList = () => {
         only.
         <IndianRupee size={14} />
       </p>
+
+      <Drawer
+        title="Transaction details"
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+        width={440}
+        destroyOnHidden
+        className="txn-drawer"
+      >
+        {selected ? (
+          <div className="txn-detail">
+            <div className="txn-detail__head">
+              <div>
+                <p className="txn-detail__kicker">Amount paid</p>
+                <strong className="txn-detail__amount">
+                  {formatCurrency(selected.amount)}
+                </strong>
+              </div>
+              <div className="txn-detail__badges">
+                <Tag
+                  bordered={false}
+                  color={paymentStatusColor(selected)}
+                  className="txn__tag"
+                >
+                  {paymentStatusLabel(selected)}
+                </Tag>
+              </div>
+            </div>
+
+            <section className="txn-detail__section">
+              <h4>Customer</h4>
+              <dl>
+                <DetailField label="Name" value={selected.userName} />
+                <DetailField label="Mobile" value={selected.userMobile} />
+                <DetailField label="Customer ID" value={selected.userId} />
+                <DetailField
+                  label="Branch"
+                  value={
+                    selected.branchName
+                      ? shortBranch(selected.branchName)
+                      : undefined
+                  }
+                />
+              </dl>
+            </section>
+
+            <section className="txn-detail__section">
+              <h4>Purchase</h4>
+              <dl>
+                <DetailField
+                  label="Item"
+                  value={selected.itemName || typeLabel(selected.type)}
+                />
+                <DetailField label="Type" value={typeLabel(selected.type)} />
+                <DetailField label="Quantity" value={selected.qty} />
+                <DetailField
+                  label="Subscription ID"
+                  value={selected.subscriptionId}
+                />
+                <DetailField label="Session ID" value={selected.sessionId} />
+                <DetailField label="Event ID" value={selected.eventId} />
+                <DetailField label="Trainer ID" value={selected.trainerId} />
+                <DetailField label="Purchase ID" value={selected.purchaseId} />
+              </dl>
+            </section>
+
+            <section className="txn-detail__section">
+              <h4>Payment breakdown</h4>
+              <dl>
+                <DetailField
+                  label="Paid amount"
+                  value={formatCurrency(selected.amount)}
+                />
+                <DetailField
+                  label="Package amount"
+                  value={
+                    selected.packageAmount != null
+                      ? formatCurrency(selected.packageAmount)
+                      : undefined
+                  }
+                />
+                <DetailField
+                  label="Amount due"
+                  value={
+                    selected.isPartial && selectedDue > 0
+                      ? formatCurrency(selectedDue)
+                      : selected.isPartial
+                        ? formatCurrency(0)
+                        : undefined
+                  }
+                />
+                <DetailField
+                  label="Original amount"
+                  value={
+                    selected.originalAmount != null
+                      ? formatCurrency(selected.originalAmount)
+                      : undefined
+                  }
+                />
+                <DetailField label="Coupon code" value={selected.couponCode} />
+                <DetailField
+                  label="Coupon discount"
+                  value={
+                    selected.couponDiscount != null
+                      ? `−${formatCurrency(selected.couponDiscount)}`
+                      : undefined
+                  }
+                />
+                <DetailField label="Coupon ID" value={selected.couponId} />
+                <DetailField label="Currency" value={selected.currency} />
+              </dl>
+            </section>
+
+            <section className="txn-detail__section">
+              <h4>Payment info</h4>
+              <dl>
+                <DetailField
+                  label="Payment method"
+                  value={selected.paymentMethod}
+                />
+                <DetailField label="Receipt" value={selected.receipt} />
+                <DetailField
+                  label="Razorpay order ID"
+                  value={selected.razorpayOrderId}
+                />
+                <DetailField
+                  label="Razorpay payment ID"
+                  value={selected.razorpayPaymentId}
+                />
+                <DetailField
+                  label="Approved by"
+                  value={selected.approvedByName}
+                />
+                <DetailField
+                  label="Approved at"
+                  value={
+                    selected.approvedAt
+                      ? formatDateTime(selected.approvedAt)
+                      : undefined
+                  }
+                />
+                <DetailField
+                  label="Failure reason"
+                  value={selected.failureReason}
+                />
+              </dl>
+            </section>
+
+            <section className="txn-detail__section">
+              <h4>Record</h4>
+              <dl>
+                <DetailField label="Transaction ID" value={selected.id} />
+                <DetailField
+                  label="Paid at"
+                  value={
+                    selected.paidAt
+                      ? formatDateTime(selected.paidAt)
+                      : undefined
+                  }
+                />
+                <DetailField
+                  label="Created at"
+                  value={formatDateTime(selected.createdAt)}
+                />
+                <DetailField
+                  label="Updated at"
+                  value={
+                    selected.updatedAt
+                      ? formatDateTime(selected.updatedAt)
+                      : undefined
+                  }
+                />
+              </dl>
+            </section>
+          </div>
+        ) : null}
+      </Drawer>
     </div>
   );
 };

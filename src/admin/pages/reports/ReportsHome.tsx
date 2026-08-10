@@ -7,13 +7,16 @@ import { Button, DatePicker, Empty, Progress, Select } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import {
   Activity,
+  AlertCircle,
   Building2,
   CircleDollarSign,
   Clock3,
   Dumbbell,
+  Hourglass,
   TrendingUp,
   UserCheck,
   Users,
+  Wallet,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import {
@@ -58,7 +61,7 @@ type ReportTab = 'branch' | 'attendance' | 'revenue';
 const TABS: Array<{ key: ReportTab; label: string; hint: string }> = [
   { key: 'branch', label: 'Branch summary', hint: 'Sessions & location health' },
   { key: 'attendance', label: 'Trainer attendance', hint: 'Presence & working hours' },
-  { key: 'revenue', label: 'Revenue', hint: 'Money by stream & trainer' },
+  { key: 'revenue', label: 'Revenue', hint: 'Paid, pending, partial & due' },
 ];
 
 const PERIODS: Array<{ value: ReportDateFilter; label: string }> = [
@@ -94,68 +97,120 @@ const moneyTick = (v: number) =>
       ? `${Math.round(v / 1000)}k`
       : String(v);
 
-const OverviewCards = ({ totals }: { totals: GymReport['totals'] }) => (
-  <section className="rpt__overview" aria-label="Report overview">
-    <article className="rpt-stat rpt-stat--hero">
-      <div className="rpt-stat__icon">
+const MoneyHealthCards = ({ totals }: { totals: GymReport['totals'] }) => (
+  <section className="rpt__money" aria-label="Payment health">
+    <article className="rpt-money rpt-money--paid">
+      <div className="rpt-money__icon">
+        <Wallet size={18} />
+      </div>
+      <div>
+        <span>Paid amount</span>
+        <strong>{formatCurrency(totals.paidAmount)}</strong>
+        <small>Collected in this period</small>
+      </div>
+    </article>
+    <article className="rpt-money rpt-money--pending">
+      <div className="rpt-money__icon">
+        <Hourglass size={18} />
+      </div>
+      <div>
+        <span>Pending amount</span>
+        <strong>{formatCurrency(totals.pendingAmount)}</strong>
+        <small>{totals.pendingCount} awaiting approval</small>
+      </div>
+    </article>
+    <article className="rpt-money rpt-money--partial">
+      <div className="rpt-money__icon">
         <CircleDollarSign size={18} />
       </div>
       <div>
-        <span>Total revenue</span>
-        <strong>{formatCurrency(totals.totalRevenue)}</strong>
+        <span>Partially paid</span>
+        <strong>{formatCurrency(totals.partialPaidAmount)}</strong>
+        <small>{totals.partialPaidCount} installment payments</small>
       </div>
     </article>
-    <article className="rpt-stat">
-      <div className="rpt-stat__icon">
-        <Dumbbell size={18} />
+    <article className="rpt-money rpt-money--due">
+      <div className="rpt-money__icon">
+        <AlertCircle size={18} />
       </div>
       <div>
-        <span>PT revenue</span>
-        <strong>{formatCurrency(totals.ptRevenue)}</strong>
-        <small>{totals.ptClients} clients</small>
-      </div>
-    </article>
-    <article className="rpt-stat">
-      <div className="rpt-stat__icon">
-        <Users size={18} />
-      </div>
-      <div>
-        <span>Subscriptions</span>
-        <strong>{formatCurrency(totals.subscriberRevenue)}</strong>
-        <small>{totals.subscriberClients} clients</small>
-      </div>
-    </article>
-    <article className="rpt-stat">
-      <div className="rpt-stat__icon">
-        <TrendingUp size={18} />
-      </div>
-      <div>
-        <span>Events</span>
-        <strong>{formatCurrency(totals.eventRevenue)}</strong>
-        <small>{totals.eventClients} clients</small>
-      </div>
-    </article>
-    <article className="rpt-stat">
-      <div className="rpt-stat__icon">
-        <UserCheck size={18} />
-      </div>
-      <div>
-        <span>Customers</span>
-        <strong>{totals.totalCustomers}</strong>
-        <small>In selected range</small>
-      </div>
-    </article>
-    <article className="rpt-stat">
-      <div className="rpt-stat__icon">
-        <Activity size={18} />
-      </div>
-      <div>
-        <span>Trainers</span>
-        <strong>{totals.trainerCount || totals.activeTrainers}</strong>
-        <small>{totals.activeTrainers} active</small>
+        <span>Amount due</span>
+        <strong>{formatCurrency(totals.amountDue)}</strong>
+        <small>
+          {totals.partialOpenCount} open partial
+          {totals.partialOpenCount === 1 ? '' : 's'}
+        </small>
       </div>
     </article>
   </section>
+);
+
+const OverviewCards = ({ totals }: { totals: GymReport['totals'] }) => (
+  <>
+    <MoneyHealthCards totals={totals} />
+    <section className="rpt__overview" aria-label="Report overview">
+      <article className="rpt-stat rpt-stat--hero">
+        <div className="rpt-stat__icon">
+          <CircleDollarSign size={18} />
+        </div>
+        <div>
+          <span>Total revenue</span>
+          <strong>{formatCurrency(totals.totalRevenue)}</strong>
+          <small>Paid streams only</small>
+        </div>
+      </article>
+      <article className="rpt-stat">
+        <div className="rpt-stat__icon">
+          <Dumbbell size={18} />
+        </div>
+        <div>
+          <span>PT revenue</span>
+          <strong>{formatCurrency(totals.ptRevenue)}</strong>
+          <small>{totals.ptClients} clients</small>
+        </div>
+      </article>
+      <article className="rpt-stat">
+        <div className="rpt-stat__icon">
+          <Users size={18} />
+        </div>
+        <div>
+          <span>Subscriptions</span>
+          <strong>{formatCurrency(totals.subscriberRevenue)}</strong>
+          <small>{totals.subscriberClients} clients</small>
+        </div>
+      </article>
+      <article className="rpt-stat">
+        <div className="rpt-stat__icon">
+          <TrendingUp size={18} />
+        </div>
+        <div>
+          <span>Events</span>
+          <strong>{formatCurrency(totals.eventRevenue)}</strong>
+          <small>{totals.eventClients} clients</small>
+        </div>
+      </article>
+      <article className="rpt-stat">
+        <div className="rpt-stat__icon">
+          <UserCheck size={18} />
+        </div>
+        <div>
+          <span>Customers</span>
+          <strong>{totals.totalCustomers}</strong>
+          <small>In selected range</small>
+        </div>
+      </article>
+      <article className="rpt-stat">
+        <div className="rpt-stat__icon">
+          <Activity size={18} />
+        </div>
+        <div>
+          <span>Trainers</span>
+          <strong>{totals.trainerCount || totals.activeTrainers}</strong>
+          <small>{totals.activeTrainers} active</small>
+        </div>
+      </article>
+    </section>
+  </>
 );
 
 const BranchSummaryTab = ({
@@ -316,8 +371,8 @@ const BranchSummaryTab = ({
                 </header>
 
                 <div className="rpt-branch__hero-metric">
-                  <span>Total revenue</span>
-                  <strong>{formatCurrency(b.summary.totalRevenue)}</strong>
+                  <span>Paid amount</span>
+                  <strong>{formatCurrency(b.summary.paidAmount)}</strong>
                 </div>
 
                 <ul className="rpt-branch__streams">
@@ -332,6 +387,21 @@ const BranchSummaryTab = ({
                   <li>
                     <span>Events</span>
                     <strong>{formatCurrency(b.summary.eventRevenue)}</strong>
+                  </li>
+                </ul>
+
+                <ul className="rpt-branch__money">
+                  <li>
+                    <span>Pending</span>
+                    <strong>{formatCurrency(b.summary.pendingAmount)}</strong>
+                  </li>
+                  <li>
+                    <span>Partial paid</span>
+                    <strong>{formatCurrency(b.summary.partialPaidAmount)}</strong>
+                  </li>
+                  <li>
+                    <span>Amount due</span>
+                    <strong>{formatCurrency(b.summary.amountDue)}</strong>
                   </li>
                 </ul>
 
@@ -698,6 +768,12 @@ const RevenueTab = ({
     { name: 'Events', value: totals.eventRevenue },
   ];
 
+  const paymentMix = [
+    { name: 'Paid', value: totals.paidAmount },
+    { name: 'Pending', value: totals.pendingAmount },
+    { name: 'Amount due', value: totals.amountDue },
+  ].filter((item) => item.value > 0);
+
   const branchRevenue = branches.map((b) => ({
     id: b.id,
     name: shortBranch(b.name),
@@ -706,8 +782,15 @@ const RevenueTab = ({
     pt: b.summary.ptRevenue,
     events: b.summary.eventRevenue,
     total: b.summary.totalRevenue,
+    paid: b.summary.paidAmount,
+    pending: b.summary.pendingAmount,
+    partialPaid: b.summary.partialPaidAmount,
+    amountDue: b.summary.amountDue,
+    packageAmount: b.summary.packageAmount,
     customers: b.summary.totalCustomers,
     trainers: b.highlights.activeTrainers,
+    pendingCount: b.summary.pendingCount,
+    partialOpenCount: b.summary.partialOpenCount,
   }));
 
   const maxTotal = Math.max(...branchRevenue.map((b) => b.total), 1);
@@ -724,14 +807,19 @@ const RevenueTab = ({
 
   return (
     <div className="rpt-tab">
-      <section className="rpt__overview rpt__overview--4" aria-label="Revenue overview">
+      <MoneyHealthCards totals={totals} />
+
+      <section className="rpt__overview rpt__overview--4" aria-label="Revenue streams">
         <article className="rpt-stat rpt-stat--hero">
           <div className="rpt-stat__icon">
             <CircleDollarSign size={18} />
           </div>
           <div>
-            <span>Total revenue</span>
+            <span>Total paid revenue</span>
             <strong>{formatCurrency(totals.totalRevenue)}</strong>
+            <small>
+              Package booked {formatCurrency(totals.packageAmount)}
+            </small>
           </div>
         </article>
         <article className="rpt-stat">
@@ -815,8 +903,50 @@ const RevenueTab = ({
 
         <article className="rpt-card">
           <header>
+            <h2>Collection status</h2>
+            <p>Paid vs pending vs still due</p>
+          </header>
+          <div className="rpt-card__chart rpt-card__chart--pie">
+            {paymentMix.length ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={paymentMix}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={58}
+                    outerRadius={84}
+                    paddingAngle={3}
+                  >
+                    {paymentMix.map((_, i) => (
+                      <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={tooltipStyle}
+                    formatter={(value) => formatCurrency(Number(value))}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
+            <ul className="rpt-legend">
+              {paymentMix.map((item, i) => (
+                <li key={item.name}>
+                  <i style={{ background: PIE_COLORS[i] }} />
+                  <span>{item.name}</span>
+                  <strong>{formatCurrency(item.value)}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+
+        <article className="rpt-card">
+          <header>
             <h2>Revenue mix</h2>
-            <p>Share of each stream</p>
+            <p>Share of each paid stream</p>
           </header>
           <div className="rpt-card__chart rpt-card__chart--pie">
             <ResponsiveContainer width="100%" height={220}>
@@ -886,24 +1016,25 @@ const RevenueTab = ({
       <section className="rpt__panel">
         <div className="rpt__panel-head">
           <div>
-            <h2>Branch revenue</h2>
-            <p>Full money breakdown by location</p>
+            <h2>Branch money breakdown</h2>
+            <p>Paid, pending, partially paid, and amount still due</p>
           </div>
         </div>
 
         {branchRevenue.length ? (
           <div className="rpt__rev-list">
-            <div className="rpt__rev-head" aria-hidden>
+            <div className="rpt__rev-head rpt__rev-head--money" aria-hidden>
               <span>Branch</span>
-              <span>Subs</span>
-              <span>PT</span>
-              <span>Events</span>
+              <span>Paid</span>
+              <span>Pending</span>
+              <span>Partial</span>
+              <span>Due</span>
               <span>Total</span>
             </div>
             {branchRevenue.map((row) => {
               const share = Math.round((row.total / maxTotal) * 100);
               return (
-                <article key={row.id} className="rpt-rev-row">
+                <article key={row.id} className="rpt-rev-row rpt-rev-row--money">
                   <div className="rpt-rev-row__branch">
                     <div className="rpt-rev-row__icon">
                       <Building2 size={16} />
@@ -912,23 +1043,33 @@ const RevenueTab = ({
                       <strong>{row.name}</strong>
                       <small>
                         {row.customers} customers · {row.trainers} trainers
+                        {row.pendingCount
+                          ? ` · ${row.pendingCount} pending`
+                          : ''}
+                        {row.partialOpenCount
+                          ? ` · ${row.partialOpenCount} open partial`
+                          : ''}
                       </small>
                     </div>
                   </div>
                   <div className="rpt-rev-row__cell">
-                    <span>Subs</span>
-                    <strong>{formatCurrency(row.subscriptions)}</strong>
+                    <span>Paid</span>
+                    <strong>{formatCurrency(row.paid)}</strong>
                   </div>
                   <div className="rpt-rev-row__cell">
-                    <span>PT</span>
-                    <strong>{formatCurrency(row.pt)}</strong>
+                    <span>Pending</span>
+                    <strong>{formatCurrency(row.pending)}</strong>
                   </div>
                   <div className="rpt-rev-row__cell">
-                    <span>Events</span>
-                    <strong>{formatCurrency(row.events)}</strong>
+                    <span>Partial</span>
+                    <strong>{formatCurrency(row.partialPaid)}</strong>
+                  </div>
+                  <div className="rpt-rev-row__cell">
+                    <span>Due</span>
+                    <strong>{formatCurrency(row.amountDue)}</strong>
                   </div>
                   <div className="rpt-rev-row__total">
-                    <span>Total</span>
+                    <span>Total revenue</span>
                     <strong>{formatCurrency(row.total)}</strong>
                     <i style={{ width: `${share}%` }} />
                   </div>
@@ -1004,6 +1145,13 @@ export const ReportsHome = () => {
 
   const activeTab = TABS.find((t) => t.key === tab)!;
 
+  const excelLabel =
+    tab === 'attendance'
+      ? 'Attendance Excel'
+      : tab === 'revenue'
+        ? 'Revenue Excel'
+        : 'Branch Excel';
+
   return (
     <div className="rpt">
       <header className="rpt__hero">
@@ -1018,9 +1166,9 @@ export const ReportsHome = () => {
             icon={<FileExcelOutlined />}
             loading={excel.isPending}
             disabled={!enabled}
-            onClick={() => excel.mutate()}
+            onClick={() => excel.mutate(tab)}
           >
-            Excel
+            {excelLabel}
           </Button>
           <Button
             type="primary"

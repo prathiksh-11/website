@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { message } from 'antd';
 import { reportService } from '@/services/report.service';
-import type { ReportQuery } from '@/types';
+import type { ReportExportType, ReportQuery } from '@/types';
 
 export const useGymReport = (query: ReportQuery, enabled = true) =>
   useQuery({
@@ -15,8 +15,19 @@ export const useGymReport = (query: ReportQuery, enabled = true) =>
 
 export const useReportExport = (query: ReportQuery) => {
   const excel = useMutation({
-    mutationFn: () => reportService.downloadExcel(query),
-    onSuccess: () => message.success('Excel download started'),
+    mutationFn: (reportType: ReportExportType) =>
+      reportService.downloadExcel({ ...query, reportType }),
+    onSuccess: (_data, reportType) => {
+      const label =
+        reportType === 'attendance'
+          ? 'Trainer attendance'
+          : reportType === 'revenue'
+            ? 'Revenue'
+            : reportType === 'branch'
+              ? 'Branch'
+              : 'Report';
+      message.success(`${label} Excel download started`);
+    },
     onError: (error: { message?: string }) =>
       message.error(error.message ?? 'Excel export failed'),
   });
