@@ -423,10 +423,15 @@ export interface PaymentTransaction {
   sessionId?: string;
   eventId?: string;
   trainerId?: string;
+  trainerName?: string;
+  trainerMobile?: string;
+  raisedBy?: string;
+  raisedByName?: string;
   failureReason?: string;
   paidAt?: string;
   approvedBy?: string;
   approvedByName?: string;
+  approvedByMobile?: string;
   approvedAt?: string;
   isPartial?: boolean;
   packageAmount?: number;
@@ -437,6 +442,7 @@ export interface PaymentTransaction {
   originalAmount?: number;
   razorpayTransferId?: string;
   linkedAccountId?: string;
+  merchantBranchName?: string;
   transferAmount?: number;
   transferStatus?: string;
   settlementStatus?: string;
@@ -444,8 +450,23 @@ export interface PaymentTransaction {
   onHold?: boolean;
   onHoldUntil?: string;
   settledAt?: string;
+  settlesAt?: string;
+  settlementUtr?: string;
+  settlementHint?: string;
+  transferError?: TransactionTransferError;
+  razorpayFee?: number;
+  razorpayTax?: number;
+  transferFees?: number;
+  transferTax?: number;
+  receivingAmount?: number;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface TransactionTransferError {
+  code?: string;
+  reason?: string;
+  description?: string;
 }
 
 export interface TransactionSettlement {
@@ -460,12 +481,21 @@ export interface TransactionSettlement {
   onHold?: boolean;
   onHoldUntil?: string | null;
   settledAt?: string | null;
+  settlesAt?: string | null;
+  settlementUtr?: string | null;
   settlementHint?: string | null;
+  transferError?: TransactionTransferError | null;
+  razorpayFee?: number | null;
+  razorpayTax?: number | null;
+  transferFees?: number | null;
+  transferTax?: number | null;
+  receivingAmount?: number | null;
   paymentId?: string | null;
   orderId?: string | null;
   paidAmount?: number | null;
   branchId?: string | null;
   branchName?: string | null;
+  merchantBranchName?: string | null;
   paymentMethod?: string | null;
 }
 
