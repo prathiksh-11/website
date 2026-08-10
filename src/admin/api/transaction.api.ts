@@ -4,6 +4,7 @@ import type {
   PaymentTransaction,
   TransactionListParams,
   TransactionListResult,
+  TransactionSettlement,
 } from '@/types';
 import { apiClient } from './axios';
 import { ENDPOINTS } from './endpoints';
@@ -41,6 +42,15 @@ interface BackendTransactionRow {
   coupon_code?: string | null;
   coupon_discount?: number | string | null;
   original_amount?: number | string | null;
+  razorpay_transfer_id?: string | null;
+  linked_account_id?: string | null;
+  transfer_amount?: number | string | null;
+  transfer_status?: string | null;
+  settlement_status?: string | null;
+  settlement_id?: string | null;
+  on_hold?: boolean | null;
+  on_hold_until?: string | null;
+  settled_at?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
 }
@@ -59,6 +69,31 @@ interface BackendListResponse {
       pending_count?: number;
     };
   };
+}
+
+interface BackendSettlementResponse {
+  success?: boolean;
+  data?: {
+    routed?: boolean;
+    from?: string | null;
+    linked_account_id?: string | null;
+    transfer_id?: string | null;
+    transfer_amount?: number | string | null;
+    transfer_status?: string | null;
+    settlement_status?: string | null;
+    settlement_id?: string | null;
+    on_hold?: boolean | null;
+    on_hold_until?: string | null;
+    settled_at?: string | null;
+    settlement_hint?: string | null;
+    payment_id?: string | null;
+    order_id?: string | null;
+    paid_amount?: number | string | null;
+    branch_id?: number | string | null;
+    branch_name?: string | null;
+    payment_method?: string | null;
+  };
+  message?: string;
 }
 
 const optionalId = (value: number | string | null | undefined) =>
@@ -106,8 +141,52 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
     raw.coupon_discount != null ? Number(raw.coupon_discount) : undefined,
   originalAmount:
     raw.original_amount != null ? Number(raw.original_amount) : undefined,
+  razorpayTransferId: raw.razorpay_transfer_id
+    ? String(raw.razorpay_transfer_id)
+    : undefined,
+  linkedAccountId: raw.linked_account_id
+    ? String(raw.linked_account_id)
+    : undefined,
+  transferAmount:
+    raw.transfer_amount != null ? Number(raw.transfer_amount) : undefined,
+  transferStatus: raw.transfer_status ? String(raw.transfer_status) : undefined,
+  settlementStatus: raw.settlement_status
+    ? String(raw.settlement_status)
+    : undefined,
+  settlementId: raw.settlement_id ? String(raw.settlement_id) : undefined,
+  onHold: Boolean(raw.on_hold),
+  onHoldUntil: raw.on_hold_until ? String(raw.on_hold_until) : undefined,
+  settledAt: raw.settled_at ? String(raw.settled_at) : undefined,
   createdAt: String(raw.created_at ?? new Date().toISOString()),
   updatedAt: raw.updated_at ? String(raw.updated_at) : undefined,
+});
+
+const mapSettlement = (
+  raw: BackendSettlementResponse['data'] = {},
+): TransactionSettlement => ({
+  routed: Boolean(raw?.routed),
+  from: raw?.from ?? null,
+  linkedAccountId: raw?.linked_account_id
+    ? String(raw.linked_account_id)
+    : null,
+  transferId: raw?.transfer_id ? String(raw.transfer_id) : null,
+  transferAmount:
+    raw?.transfer_amount != null ? Number(raw.transfer_amount) : null,
+  transferStatus: raw?.transfer_status ? String(raw.transfer_status) : null,
+  settlementStatus: raw?.settlement_status
+    ? String(raw.settlement_status)
+    : null,
+  settlementId: raw?.settlement_id ? String(raw.settlement_id) : null,
+  onHold: Boolean(raw?.on_hold),
+  onHoldUntil: raw?.on_hold_until ? String(raw.on_hold_until) : null,
+  settledAt: raw?.settled_at ? String(raw.settled_at) : null,
+  settlementHint: raw?.settlement_hint ? String(raw.settlement_hint) : null,
+  paymentId: raw?.payment_id ? String(raw.payment_id) : null,
+  orderId: raw?.order_id ? String(raw.order_id) : null,
+  paidAmount: raw?.paid_amount != null ? Number(raw.paid_amount) : null,
+  branchId: optionalId(raw?.branch_id) ?? null,
+  branchName: raw?.branch_name ? String(raw.branch_name) : null,
+  paymentMethod: raw?.payment_method ? String(raw.payment_method) : null,
 });
 
 export const transactionApi = {
@@ -159,5 +238,21 @@ export const transactionApi = {
         pendingCount: Number(payload?.summary?.pending_count ?? 0),
       },
     };
+  },
+
+  getSettlement: async (id: string): Promise<TransactionSettlement> => {
+    if (USE_MOCK) {
+      await delay(200);
+      return {
+        routed: false,
+        settlementHint: 'Not routed — mock mode',
+      };
+    }
+
+    const { data } = await apiClient.get<BackendSettlementResponse>(
+      ENDPOINTS.TRANSACTIONS.SETTLEMENT(id),
+    );
+
+    return mapSettlement(data?.data);
   },
 };

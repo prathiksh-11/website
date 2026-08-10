@@ -332,8 +332,38 @@ export interface PaymentTransaction {
   couponCode?: string;
   couponDiscount?: number;
   originalAmount?: number;
+  razorpayTransferId?: string;
+  linkedAccountId?: string;
+  transferAmount?: number;
+  transferStatus?: string;
+  settlementStatus?: string;
+  settlementId?: string;
+  onHold?: boolean;
+  onHoldUntil?: string;
+  settledAt?: string;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface TransactionSettlement {
+  routed: boolean;
+  from?: string | null;
+  linkedAccountId?: string | null;
+  transferId?: string | null;
+  transferAmount?: number | null;
+  transferStatus?: string | null;
+  settlementStatus?: string | null;
+  settlementId?: string | null;
+  onHold?: boolean;
+  onHoldUntil?: string | null;
+  settledAt?: string | null;
+  settlementHint?: string | null;
+  paymentId?: string | null;
+  orderId?: string | null;
+  paidAmount?: number | null;
+  branchId?: string | null;
+  branchName?: string | null;
+  paymentMethod?: string | null;
 }
 
 export interface TransactionListParams extends PaginatedRequest {

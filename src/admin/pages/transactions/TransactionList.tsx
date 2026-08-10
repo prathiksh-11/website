@@ -1,5 +1,15 @@
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Drawer, Empty, Input, Select, Table, Tag } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Drawer,
+  Empty,
+  Input,
+  Select,
+  Spin,
+  Table,
+  Tag,
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { type Dayjs } from 'dayjs';
 import { CreditCard, IndianRupee, Receipt } from 'lucide-react';
@@ -8,9 +18,12 @@ import { PageSkeleton } from '@/components/common';
 import { PAGE_SIZE_OPTIONS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useTableParams } from '@/hooks/useTableParams';
-import { useTransactions } from '@/hooks/useTransactions';
+import {
+  useTransactionSettlement,
+  useTransactions,
+} from '@/hooks/useTransactions';
 import { useAuthStore } from '@/store/auth.store';
-import type { PaymentTransaction } from '@/types';
+import type { PaymentTransaction, TransactionSettlement } from '@/types';
 import { formatCurrency, formatDateTime } from '@/utils/format';
 
 const shortBranch = (name: string) =>
@@ -47,6 +60,71 @@ const paymentStatusColor = (row: PaymentTransaction) => {
   return 'default';
 };
 
+const settlementLabel = (
+  row: PaymentTransaction | TransactionSettlement | null | undefined,
+) => {
+  if (!row) return 'Not routed';
+  const routed =
+    'routed' in row
+      ? Boolean(row.routed)
+      : Boolean(
+          (row as PaymentTransaction).razorpayTransferId ||
+            (row as PaymentTransaction).linkedAccountId,
+        );
+  if (!routed) return 'Not routed';
+
+  const status = String(
+    ('settlementStatus' in row && row.settlementStatus) ||
+      (row as PaymentTransaction).settlementStatus ||
+      '',
+  ).toLowerCase();
+  const onHold =
+    ('onHold' in row && row.onHold) ||
+    Boolean((row as PaymentTransaction).onHold);
+
+  if (status === 'settled') return 'Settled';
+  if (status === 'on_hold' || onHold) return 'On hold';
+  if (status === 'pending') return 'Pending';
+  return status ? status : 'Pending';
+};
+
+const settlementColor = (
+  row: PaymentTransaction | TransactionSettlement | null | undefined,
+) => {
+  const label = settlementLabel(row);
+  if (label === 'Settled') return 'success';
+  if (label === 'On hold') return 'warning';
+  if (label === 'Pending') return 'processing';
+  return 'default';
+};
+
+const settlementWhenText = (
+  settlement: TransactionSettlement | null | undefined,
+  fallback: PaymentTransaction | null,
+) => {
+  const settledAt = settlement?.settledAt || fallback?.settledAt;
+  if (settledAt) return `Settled at ${formatDateTime(settledAt)}`;
+
+  const onHold =
+    settlement?.onHold ?? fallback?.onHold ?? false;
+  const onHoldUntil = settlement?.onHoldUntil || fallback?.onHoldUntil;
+  if (onHold || String(settlement?.settlementStatus || fallback?.settlementStatus || '').toLowerCase() === 'on_hold') {
+    return onHoldUntil
+      ? `On hold until ${formatDateTime(onHoldUntil)}`
+      : 'On hold';
+  }
+
+  const routed =
+    settlement?.routed ??
+    Boolean(fallback?.razorpayTransferId || fallback?.linkedAccountId);
+  if (!routed) return '—';
+
+  return (
+    settlement?.settlementHint ||
+    'Pending — settles per linked account schedule'
+  );
+};
+
 const dueAmount = (row: PaymentTransaction) => {
   if (!row.isPartial || row.packageAmount == null) return 0;
   return Math.max(0, Number(row.packageAmount) - Number(row.amount || 0));
@@ -64,6 +142,109 @@ const DetailField = ({
     <dd>{value != null && value !== '' ? value : '—'}</dd>
   </div>
 );
+
+const RouteSettlementSection = ({
+  transaction,
+}: {
+  transaction: PaymentTransaction;
+}) => {
+  const { data: settlement, isLoading, isFetching, isError } =
+    useTransactionSettlement(transaction.id, true);
+
+  const routed =
+    settlement?.routed ??
+    Boolean(transaction.razorpayTransferId || transaction.linkedAccountId);
+  const transferAmount =
+    settlement?.transferAmount ?? transaction.transferAmount ?? null;
+  const linkedAccountId =
+    settlement?.linkedAccountId ?? transaction.linkedAccountId ?? null;
+  const transferId =
+    settlement?.transferId ?? transaction.razorpayTransferId ?? null;
+  const paymentId =
+    settlement?.paymentId ?? transaction.razorpayPaymentId ?? null;
+
+  return (
+    <section className="txn-detail__section txn-detail__section--route">
+      <h4>Razorpay Route</h4>
+      {isLoading ? (
+        <div className="txn-route__loading">
+          <Spin size="small" />
+          <span>Checking settlement…</span>
+        </div>
+      ) : (
+        <>
+          <div className="txn-route__flow" aria-label="Route flow">
+            <div>
+              <span>Customer paid</span>
+              <strong>
+                {formatCurrency(settlement?.paidAmount ?? transaction.amount)}
+              </strong>
+              <small>Main Razorpay account</small>
+            </div>
+            <div className="txn-route__arrow" aria-hidden>
+              →
+            </div>
+            <div>
+              <span>Routed to linked</span>
+              <strong>
+                {routed && transferAmount != null
+                  ? formatCurrency(transferAmount)
+                  : '—'}
+              </strong>
+              <small>{linkedAccountId || 'No linked account'}</small>
+            </div>
+          </div>
+
+          <dl>
+            <div>
+              <dt>Settlement status</dt>
+              <dd>
+                <Tag
+                  bordered={false}
+                  color={settlementColor(settlement ?? transaction)}
+                  className="txn__tag"
+                >
+                  {settlementLabel(settlement ?? transaction)}
+                </Tag>
+                {isFetching && !isLoading ? (
+                  <span className="txn-route__refresh">Refreshing…</span>
+                ) : null}
+              </dd>
+            </div>
+            <DetailField
+              label="When"
+              value={settlementWhenText(settlement, transaction)}
+            />
+            <DetailField label="Linked account" value={linkedAccountId} />
+            <DetailField label="Transfer ID" value={transferId} />
+            <DetailField label="Payment ID" value={paymentId} />
+            <DetailField
+              label="Transfer status"
+              value={
+                settlement?.transferStatus || transaction.transferStatus
+              }
+            />
+            {isError ? (
+              <DetailField
+                label="Note"
+                value="Could not refresh from Razorpay — showing saved data"
+              />
+            ) : null}
+            <DetailField
+              label="Hint"
+              value={
+                settlement?.settlementHint ||
+                (routed
+                  ? 'Settles to linked account as per its Razorpay schedule (T+N)'
+                  : 'Not routed — cash or no linked account')
+              }
+            />
+          </dl>
+        </>
+      )}
+    </section>
+  );
+};
 
 export const TransactionList = () => {
   const user = useAuthStore((s) => s.user);
@@ -152,6 +333,20 @@ export const TransactionList = () => {
       key: 'method',
       width: 90,
       render: (value?: string) => value || '—',
+    },
+    {
+      title: 'Settlement',
+      key: 'settlement',
+      width: 110,
+      render: (_, row) => (
+        <Tag
+          bordered={false}
+          color={settlementColor(row)}
+          className="txn__tag"
+        >
+          {settlementLabel(row)}
+        </Tag>
+      ),
     },
     {
       title: '',
@@ -293,7 +488,7 @@ export const TransactionList = () => {
             pageSizeOptions: PAGE_SIZE_OPTIONS.map(String),
             onChange: (page, pageSize) => setPage(page, pageSize),
           }}
-          scroll={{ x: 900 }}
+          scroll={{ x: 1020 }}
         />
       </section>
 
@@ -450,6 +645,8 @@ export const TransactionList = () => {
                 />
               </dl>
             </section>
+
+            <RouteSettlementSection transaction={selected} />
 
             <section className="txn-detail__section">
               <h4>Record</h4>

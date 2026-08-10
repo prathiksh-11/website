@@ -8,3 +8,14 @@ export const useTransactions = (params: TransactionListParams = {}) =>
     queryFn: () => transactionApi.list(params),
     placeholderData: (prev) => prev,
   });
+
+export const useTransactionSettlement = (
+  id: string | undefined,
+  enabled = true,
+) =>
+  useQuery({
+    queryKey: ['transaction-settlement', id],
+    queryFn: () => transactionApi.getSettlement(String(id)),
+    enabled: Boolean(id) && enabled,
+    staleTime: 30_000,
+  });

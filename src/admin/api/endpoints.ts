@@ -15,6 +15,7 @@ export const ENDPOINTS = {
   },
   TRANSACTIONS: {
     ROOT: '/transactions',
+    SETTLEMENT: (id: string) => `/transactions/${id}/settlement`,
   },
   CASH_PAYMENTS: {
     PENDING: '/payment/cash-orders/pending',
