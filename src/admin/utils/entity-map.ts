@@ -8,9 +8,12 @@ import type {
   Status,
   Subscription,
   Trainer,
+  TrainerAttendance,
+  TrainerBooking,
   TrainerCustomerTotal,
   TrainerDetails,
   TrainerHistorySummary,
+  TrainerStartedSession,
 } from '@/types';
 
 const asString = (value: unknown, fallback = '') =>
@@ -164,6 +167,10 @@ export const mapBackendTrainer = (raw: Record<string, unknown>): Trainer => {
     })
     .filter(Boolean);
 
+  const firstName = asString(raw.name);
+  const lastName = asString(raw.last_name ?? raw.lastName);
+  const fullName = [firstName, lastName].filter(Boolean).join(' ').trim() || 'Employee';
+
   const roleId = raw.role_id != null ? asNumber(raw.role_id) : undefined;
   const roleName = asString(raw.role_name ?? raw.roleName);
   const description = asString(raw.description);
@@ -198,7 +205,7 @@ export const mapBackendTrainer = (raw: Record<string, unknown>): Trainer => {
 
   return {
     id: asString(raw.id),
-    name: asString(raw.name, 'Employee'),
+    name: fullName,
     email: asString(raw.email),
     phone: asString(raw.mobile ?? raw.phone),
     specialization: description || roleName || 'Trainer',
@@ -225,11 +232,29 @@ export const mapBackendTrainerHistory = (
     ? raw.customer_totals
     : [];
 
+  const employeeRaw = raw.employee && typeof raw.employee === 'object'
+    ? (raw.employee as Record<string, unknown>)
+    : undefined;
+  const mappedTrainer = employeeRaw ? mapBackendTrainer(employeeRaw) : trainer;
+
+  const totalPurchasedSessionAmount = asNumber(
+    raw.total_purchased_session_amount ?? summaryRaw.total_amount
+  );
+  const myEarnings = raw.my_earnings != null ? asNumber(raw.my_earnings) : undefined;
+  const totalSessionsPurchasedQty = asNumber(
+    raw.total_sessions_purchased_qty ?? summaryRaw.total_sessions_purchased ?? summaryRaw.total_sessions_taken
+  );
+  const totalCustomers = asNumber(
+    raw.total_customers ?? summaryRaw.total_customers
+  );
+  const todaySessionsTotal = raw.today_sessions_total != null ? asNumber(raw.today_sessions_total) : undefined;
+  const isCheckin = raw.is_checkin != null ? Boolean(raw.is_checkin) : undefined;
+
   const summary: TrainerHistorySummary = {
-    totalSessionsTaken: asNumber(summaryRaw.total_sessions_taken),
+    totalSessionsTaken: totalSessionsPurchasedQty || asNumber(summaryRaw.total_sessions_taken),
     totalSessionsCompleted: asNumber(summaryRaw.total_sessions_completed),
-    totalAmount: asNumber(summaryRaw.total_amount),
-    totalCustomers: asNumber(summaryRaw.total_customers),
+    totalAmount: totalPurchasedSessionAmount,
+    totalCustomers,
   };
 
   const customers: TrainerCustomerTotal[] = customersRaw.map((row) => {
@@ -245,7 +270,67 @@ export const mapBackendTrainerHistory = (
     };
   });
 
-  return { trainer, summary, customers };
+  const todayBookingsRaw = Array.isArray(raw.today_bookings) ? raw.today_bookings : [];
+  const todayBookings: TrainerBooking[] = todayBookingsRaw.map((b) => {
+    const r = b as Record<string, unknown>;
+    return {
+      bookingId: asString(r.booking_id),
+      sessionId: asString(r.session_id),
+      customerId: asString(r.customer_id),
+      customerName: asString(r.customer_name, 'Customer'),
+      customerMobile: r.customer_mobile ? asString(r.customer_mobile) : undefined,
+      customerImage: resolveImageUrl(r.customer_image),
+      sessionName: asString(r.session_name, 'Session'),
+      branchName: r.branch_name ? asString(r.branch_name) : undefined,
+      bookingDate: r.booking_date ? asString(r.booking_date) : undefined,
+      slotStart: r.slot_start ? asString(r.slot_start) : undefined,
+      slotEnd: r.slot_end ? asString(r.slot_end) : undefined,
+      status: asString(r.status, 'booked'),
+    };
+  });
+
+  const startedSessionRaw = Array.isArray(raw.started_session) ? raw.started_session : [];
+  const startedSession: TrainerStartedSession[] = startedSessionRaw.map((s) => {
+    const r = s as Record<string, unknown>;
+    return {
+      checkinId: asString(r.checkin_id),
+      customerId: asString(r.customer_id),
+      customerName: asString(r.customer_name, 'Customer'),
+      customerMobile: r.customer_mobile ? asString(r.customer_mobile) : undefined,
+      customerImage: resolveImageUrl(r.customer_image),
+      sessionId: asString(r.session_id),
+      sessionName: asString(r.session_name, 'Session'),
+      branchId: r.branch_id != null ? asString(r.branch_id) : undefined,
+      branchName: r.branch_name ? asString(r.branch_name) : undefined,
+      slotStart: r.slot_start ? asString(r.slot_start) : undefined,
+      slotEnd: r.slot_end ? asString(r.slot_end) : undefined,
+      status: asString(r.status, 'started'),
+      sessionDate: r.session_date ? asString(r.session_date) : undefined,
+    };
+  });
+
+  const lastAttRaw = raw.last_attendance as Record<string, unknown> | undefined;
+  const lastAttendance: TrainerAttendance | null = lastAttRaw ? {
+    id: asString(lastAttRaw.id),
+    checkInTime: lastAttRaw.check_in_time ? asString(lastAttRaw.check_in_time) : undefined,
+    checkOutTime: lastAttRaw.check_out_time ? asString(lastAttRaw.check_out_time) : undefined,
+    branchId: lastAttRaw.branch_id != null ? asString(lastAttRaw.branch_id) : undefined,
+    workMinutes: lastAttRaw.work_minutes != null ? asNumber(lastAttRaw.work_minutes) : null,
+  } : null;
+
+  return {
+    trainer: mappedTrainer,
+    summary,
+    customers,
+    totalPurchasedSessionAmount,
+    myEarnings,
+    totalSessionsPurchasedQty,
+    todaySessionsTotal,
+    isCheckin,
+    lastAttendance,
+    todayBookings,
+    startedSession,
+  };
 };
 
 const formatTime = (value: unknown) => {
@@ -312,6 +397,18 @@ export const mapBackendEvent = (raw: Record<string, unknown>): GymEvent => {
       raw.offer != null && raw.offer !== ''
         ? asNumber(raw.offer)
         : undefined,
+    gstType:
+      raw.gst_type != null
+        ? asString(raw.gst_type)
+        : raw.gstType != null
+          ? asString(raw.gstType)
+          : undefined,
+    gstPercentage:
+      raw.gst_percentage != null
+        ? asNumber(raw.gst_percentage)
+        : raw.gstPercentage != null
+          ? asNumber(raw.gstPercentage)
+          : undefined,
     location: raw.location ? asString(raw.location) : undefined,
   };
 };
@@ -324,6 +421,8 @@ export const toBackendEventPayload = (payload: Partial<GymEvent>) => {
   if (payload.location != null) body.location = payload.location;
   if (payload.price != null) body.price = payload.price;
   if (payload.offerPrice != null) body.offer = payload.offerPrice;
+  if (payload.gstType != null) body.gst_type = payload.gstType;
+  if (payload.gstPercentage != null) body.gst_percentage = payload.gstPercentage;
   if (payload.capacity != null) body.slot_limit = payload.capacity;
   if (payload.image != null) body.image = payload.image;
   if (payload.startTime != null) body.start_time = payload.startTime;

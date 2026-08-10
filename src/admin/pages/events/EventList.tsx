@@ -35,9 +35,29 @@ import { formatCurrency, formatDate } from '@/utils/format';
 
 const shortBranch = (name: string) =>
   name
-    .replace(/^Game On Fitness\s*/i, '')
-    .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
+    .replace(/^Game On Fitness\s*[-–—]?\s*/i, '')
+    .replace(/^(Premium Club|Luxury Club)\s*[-–—]?\s*/i, '')
+    .replace(/^[-–—]\s*/, '')
     .trim() || name;
+
+const GST_TYPE_OPTIONS = [
+  { value: 'exclusive', label: 'GST Exclusive' },
+  { value: 'inclusive', label: 'GST Inclusive' },
+];
+
+const GST_PERCENTAGE_OPTIONS = [
+  { value: 0, label: '0%' },
+  { value: 5, label: '5%' },
+  { value: 12, label: '12%' },
+  { value: 18, label: '18%' },
+  { value: 28, label: '28%' },
+];
+
+const gstLabel = (type?: string, percentage?: number) => {
+  if (percentage == null || percentage === 0) return '0% GST';
+  if (type === 'inclusive') return `${percentage}% GST incl.`;
+  return `${percentage}% GST extra`;
+};
 
 const readFileAsDataUrl = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -92,6 +112,8 @@ export const EventList = () => {
       endTime: dayjs().hour(9).minute(0),
       capacity: 30,
       price: 0,
+      gstType: 'exclusive',
+      gstPercentage: 18,
     });
     setOpen(true);
   };
@@ -119,6 +141,8 @@ export const EventList = () => {
       capacity: record.capacity,
       price: record.price ?? 0,
       offerPrice: record.offerPrice,
+      gstType: record.gstType ?? 'exclusive',
+      gstPercentage: record.gstPercentage ?? 18,
     });
     setOpen(true);
   };
@@ -149,6 +173,8 @@ export const EventList = () => {
       price: Number(values.price ?? 0),
       offerPrice:
         values.offerPrice != null ? Number(values.offerPrice) : undefined,
+      gstType: values.gstType,
+      gstPercentage: Number(values.gstPercentage ?? 0),
       // Only send a new base64 upload; keep existing server path untouched on edit
       image: imagePreview?.startsWith('data:') ? imagePreview : undefined,
     };
@@ -253,11 +279,11 @@ export const EventList = () => {
               const fill =
                 event.capacity > 0
                   ? Math.min(
-                      100,
-                      Math.round(
-                        (event.registeredCount / event.capacity) * 100,
-                      ),
-                    )
+                    100,
+                    Math.round(
+                      (event.registeredCount / event.capacity) * 100,
+                    ),
+                  )
                   : 0;
 
               return (
@@ -279,8 +305,8 @@ export const EventList = () => {
                     {(event.offerPrice != null || event.price != null) && (
                       <div className="evt-card__price">
                         {event.offerPrice != null &&
-                        event.price != null &&
-                        event.offerPrice < event.price ? (
+                          event.price != null &&
+                          event.offerPrice < event.price ? (
                           <>
                             <s>{formatCurrency(event.price)}</s>
                             <strong>{formatCurrency(event.offerPrice)}</strong>
@@ -289,6 +315,11 @@ export const EventList = () => {
                           <strong>
                             {formatCurrency(event.offerPrice ?? event.price ?? 0)}
                           </strong>
+                        )}
+                        {event.gstPercentage != null && (
+                          <small className="evt-card__gst">
+                            {gstLabel(event.gstType, event.gstPercentage)}
+                          </small>
                         )}
                       </div>
                     )}
@@ -559,9 +590,30 @@ export const EventList = () => {
             </Form.Item>
           </div>
 
-          <Form.Item name="offerPrice" label="Offer price (optional)">
-            <InputNumber min={0} style={{ width: '100%' }} prefix="₹" />
-          </Form.Item>
+          <div className="evt-form-row">
+            <Form.Item name="offerPrice" label="Offer price (optional)" style={{ flex: 1 }}>
+              <InputNumber min={0} style={{ width: '100%' }} prefix="₹" />
+            </Form.Item>
+          </div>
+
+          <div className="evt-form-row">
+            <Form.Item
+              name="gstType"
+              label="GST type"
+              rules={[{ required: true, message: 'Select GST type' }]}
+              style={{ flex: 1 }}
+            >
+              <Select options={GST_TYPE_OPTIONS} />
+            </Form.Item>
+            <Form.Item
+              name="gstPercentage"
+              label="GST percentage"
+              rules={[{ required: true, message: 'Select GST percentage' }]}
+              style={{ flex: 1 }}
+            >
+              <Select options={GST_PERCENTAGE_OPTIONS} />
+            </Form.Item>
+          </div>
         </Form>
       </Drawer>
     </div>

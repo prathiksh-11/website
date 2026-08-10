@@ -4,8 +4,6 @@ import {
   DeleteOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  MoonOutlined,
-  SunOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Avatar, Badge, Button, Dropdown, Empty, Skeleton } from 'antd';
@@ -162,7 +160,7 @@ export const AppHeader = () => {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const { mode, collapsed, toggleCollapsed, toggleMode } = useThemeStore();
+  const { collapsed, toggleCollapsed } = useThemeStore();
   const { data: unreadFromApi = 0 } = useUnreadNotificationCount();
   const { data: notifications = [] } = useNotifications();
   const unreadFromList = notifications.filter((n) => !n.isRead).length;
@@ -190,14 +188,6 @@ export const AppHeader = () => {
       </div>
 
       <div className="admin-header__actions">
-        <button
-          type="button"
-          className="admin-icon-btn"
-          onClick={toggleMode}
-          aria-label="Toggle theme"
-        >
-          {mode === 'light' ? <MoonOutlined /> : <SunOutlined />}
-        </button>
         <Badge
           count={unread}
           overflowCount={99}

@@ -187,10 +187,57 @@ export interface TrainerCustomerTotal {
   totalAmount: number;
 }
 
+export interface TrainerBooking {
+  bookingId: string;
+  sessionId: string;
+  customerId: string;
+  customerName: string;
+  customerMobile?: string;
+  customerImage?: string;
+  sessionName: string;
+  branchName?: string;
+  bookingDate?: string;
+  slotStart?: string;
+  slotEnd?: string;
+  status: string;
+}
+
+export interface TrainerStartedSession {
+  checkinId: string;
+  customerId: string;
+  customerName: string;
+  customerMobile?: string;
+  customerImage?: string;
+  sessionId: string;
+  sessionName: string;
+  branchId?: string;
+  branchName?: string;
+  slotStart?: string;
+  slotEnd?: string | null;
+  status: string;
+  sessionDate?: string;
+}
+
+export interface TrainerAttendance {
+  id: string;
+  checkInTime?: string;
+  checkOutTime?: string | null;
+  branchId?: string;
+  workMinutes?: number | null;
+}
+
 export interface TrainerDetails {
   trainer: Trainer;
   summary: TrainerHistorySummary;
   customers: TrainerCustomerTotal[];
+  totalPurchasedSessionAmount?: number;
+  myEarnings?: number;
+  totalSessionsPurchasedQty?: number;
+  todaySessionsTotal?: number;
+  isCheckin?: boolean;
+  lastAttendance?: TrainerAttendance | null;
+  todayBookings?: TrainerBooking[];
+  startedSession?: TrainerStartedSession[];
 }
 
 export interface Branch {
@@ -301,6 +348,8 @@ export interface GymEvent {
   image?: string;
   price?: number;
   offerPrice?: number;
+  gstType?: string;
+  gstPercentage?: number;
   location?: string;
 }
 

@@ -1,7 +1,5 @@
 import {
   BellOutlined,
-  MoonOutlined,
-  SunOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Input, Select, Switch, message } from 'antd';
@@ -9,7 +7,6 @@ import {
   BellRing,
   Building2,
   Mail,
-  Palette,
   Shield,
   UserRound,
 } from 'lucide-react';
@@ -18,7 +15,6 @@ import { Link } from 'react-router-dom';
 import { useBranches } from '@/hooks/useBranches';
 import { useAuthStore } from '@/store/auth.store';
 import { useSettingsStore } from '@/store/settings.store';
-import { useThemeStore } from '@/store/theme.store';
 
 const shortBranch = (name: string) =>
   name
@@ -26,19 +22,17 @@ const shortBranch = (name: string) =>
     .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
     .trim() || name;
 
-type SettingsTab = 'appearance' | 'notifications' | 'workspace' | 'account';
+type SettingsTab = 'notifications' | 'workspace' | 'account';
 
 const TABS: Array<{ key: SettingsTab; label: string; hint: string }> = [
-  { key: 'appearance', label: 'Appearance', hint: 'Theme & look' },
   { key: 'notifications', label: 'Notifications', hint: 'Alerts & digests' },
   { key: 'workspace', label: 'Workspace', hint: 'Defaults for admin' },
   { key: 'account', label: 'Account', hint: 'Your signed-in user' },
 ];
 
 export const Settings = () => {
-  const [tab, setTab] = useState<SettingsTab>('appearance');
+  const [tab, setTab] = useState<SettingsTab>('notifications');
   const user = useAuthStore((s) => s.user);
-  const { mode, setMode } = useThemeStore();
   const {
     defaultBranchId,
     emailExpiryAlerts,
@@ -92,62 +86,6 @@ export const Settings = () => {
           </button>
         ))}
       </nav>
-
-      {tab === 'appearance' && (
-        <section className="set__panel">
-          <div className="set__panel-head">
-            <Palette size={18} />
-            <div>
-              <h2>Appearance</h2>
-              <p>Choose how the admin panel looks on this device</p>
-            </div>
-          </div>
-
-          <div className="set-theme">
-            <button
-              type="button"
-              className={
-                mode === 'light'
-                  ? 'set-theme__card set-theme__card--on'
-                  : 'set-theme__card'
-              }
-              onClick={() => setMode('light')}
-            >
-              <span className="set-theme__preview set-theme__preview--light">
-                <SunOutlined />
-              </span>
-              <strong>Light</strong>
-              <small>Warm, bright workspace</small>
-            </button>
-            <button
-              type="button"
-              className={
-                mode === 'dark'
-                  ? 'set-theme__card set-theme__card--on'
-                  : 'set-theme__card'
-              }
-              onClick={() => setMode('dark')}
-            >
-              <span className="set-theme__preview set-theme__preview--dark">
-                <MoonOutlined />
-              </span>
-              <strong>Dark</strong>
-              <small>Low-glare evening mode</small>
-            </button>
-          </div>
-
-          <div className="set-row">
-            <div>
-              <strong>Dark mode toggle</strong>
-              <p>Quick switch without leaving this page</p>
-            </div>
-            <Switch
-              checked={mode === 'dark'}
-              onChange={(checked) => setMode(checked ? 'dark' : 'light')}
-            />
-          </div>
-        </section>
-      )}
 
       {tab === 'notifications' && (
         <section className="set__panel">

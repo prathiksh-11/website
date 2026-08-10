@@ -23,12 +23,15 @@ import {
 import {
   Activity,
   BarChart3,
+  Calendar,
   CheckCircle2,
+  Clock,
   DollarSign,
   Dumbbell,
   Mail,
   MapPin,
   Phone,
+  PlayCircle,
   ShieldCheck,
   TrendingUp,
   UserCheck,
@@ -47,7 +50,7 @@ import {
 import { useAuthStore } from '@/store/auth.store';
 import { useTableParams } from '@/hooks/useTableParams';
 import type { Trainer, TrainerType } from '@/types';
-import { formatCurrency } from '@/utils/format';
+import { formatCurrency, formatDate, formatDateTime } from '@/utils/format';
 
 const shortBranch = (name: string) =>
   name
@@ -418,6 +421,14 @@ export const TrainerList = () => {
                         {trainerTypeLabel(trainer.trainerType)}
                       </Tag>
                       <Tag style={{ borderRadius: 8, fontWeight: 600 }}>ID #{trainer.id}</Tag>
+                      {details?.isCheckin !== undefined && (
+                        <Tag
+                          color={details.isCheckin ? 'success' : 'default'}
+                          style={{ borderRadius: 8, fontWeight: 600 }}
+                        >
+                          {details.isCheckin ? 'Checked In' : 'Checked Out'}
+                        </Tag>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -452,21 +463,35 @@ export const TrainerList = () => {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="emp-detail__graph-stats">
+                    <div className="emp-detail__graph-stats" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
                       <div className="emp-detail__graph-stat-item">
                         <span className="emp-detail__graph-stat-label">Total Revenue</span>
                         <span className="emp-detail__graph-stat-value" style={{ color: '#34d399' }}>
-                          {formatCurrency(summary.totalAmount)}
+                          {formatCurrency(details?.totalPurchasedSessionAmount ?? summary.totalAmount)}
                         </span>
                       </div>
                       <div className="emp-detail__graph-stat-item">
-                        <span className="emp-detail__graph-stat-label">Total Sessions</span>
-                        <span className="emp-detail__graph-stat-value">{summary.totalSessionsTaken}</span>
+                        <span className="emp-detail__graph-stat-label">My Earnings</span>
+                        <span className="emp-detail__graph-stat-value" style={{ color: '#f59e0b' }}>
+                          {details?.myEarnings != null ? formatCurrency(details.myEarnings) : '—'}
+                        </span>
+                      </div>
+                      <div className="emp-detail__graph-stat-item">
+                        <span className="emp-detail__graph-stat-label">Purchased Sessions</span>
+                        <span className="emp-detail__graph-stat-value">
+                          {details?.totalSessionsPurchasedQty ?? summary.totalSessionsTaken}
+                        </span>
                       </div>
                       <div className="emp-detail__graph-stat-item">
                         <span className="emp-detail__graph-stat-label">Completed</span>
                         <span className="emp-detail__graph-stat-value" style={{ color: '#60a5fa' }}>
                           {summary.totalSessionsCompleted}
+                        </span>
+                      </div>
+                      <div className="emp-detail__graph-stat-item">
+                        <span className="emp-detail__graph-stat-label">Today's Sessions</span>
+                        <span className="emp-detail__graph-stat-value" style={{ color: '#e879f9' }}>
+                          {details?.todaySessionsTotal ?? 0}
                         </span>
                       </div>
                       <div className="emp-detail__graph-stat-item">
@@ -476,6 +501,127 @@ export const TrainerList = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Active / Started Sessions Section */}
+                {details?.startedSession && details.startedSession.length > 0 && (
+                  <div className="emp-detail__card" style={{ borderColor: 'rgba(255, 80, 0, 0.3)', background: '#fffcfb' }}>
+                    <div className="emp-detail__card-title">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <PlayCircle size={18} style={{ color: '#ff5000' }} />
+                        <span>Active Started Sessions</span>
+                      </div>
+                      <Tag color="processing" style={{ borderRadius: 8, fontWeight: 600 }}>
+                        {details.startedSession.length} Active
+                      </Tag>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                      {details.startedSession.map((s) => (
+                        <div
+                          key={s.checkinId}
+                          style={{
+                            padding: '0.75rem 0.85rem',
+                            borderRadius: '14px',
+                            background: '#ffffff',
+                            border: '1px solid rgba(255, 80, 0, 0.15)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                            {s.customerImage ? (
+                              <img src={s.customerImage} alt={s.customerName} className="emp-detail__chart-avatar" />
+                            ) : (
+                              <span className="emp-detail__chart-avatar emp-detail__chart-avatar--fallback">
+                                {initials(s.customerName) || <UserOutlined />}
+                              </span>
+                            )}
+                            <div>
+                              <strong style={{ fontSize: '0.9rem', color: '#16181f', display: 'block' }}>
+                                {s.customerName}
+                              </strong>
+                              <small style={{ color: '#6f7685', fontSize: '0.75rem' }}>
+                                {s.sessionName} {s.branchName ? `· ${shortBranch(s.branchName)}` : ''}
+                              </small>
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <Tag color="green" style={{ borderRadius: 6, fontWeight: 600 }}>
+                              Started
+                            </Tag>
+                            {s.slotStart && (
+                              <div style={{ fontSize: '0.72rem', color: '#6f7685', marginTop: 2 }}>
+                                <Clock size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+                                {formatDateTime(s.slotStart)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Today's Booked Sessions Section */}
+                {details?.todayBookings && details.todayBookings.length > 0 && (
+                  <div className="emp-detail__card">
+                    <div className="emp-detail__card-title">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Calendar size={18} style={{ color: '#3b82f6' }} />
+                        <span>Today's Booked Sessions</span>
+                      </div>
+                      <Tag color="blue" style={{ borderRadius: 8, fontWeight: 600 }}>
+                        {details.todayBookings.length} Booked
+                      </Tag>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                      {details.todayBookings.map((b) => (
+                        <div
+                          key={b.bookingId}
+                          style={{
+                            padding: '0.75rem 0.85rem',
+                            borderRadius: '14px',
+                            background: '#f8fafc',
+                            border: '1px solid rgba(22, 24, 31, 0.05)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                            {b.customerImage ? (
+                              <img src={b.customerImage} alt={b.customerName} className="emp-detail__chart-avatar" />
+                            ) : (
+                              <span className="emp-detail__chart-avatar emp-detail__chart-avatar--fallback">
+                                {initials(b.customerName) || <UserOutlined />}
+                              </span>
+                            )}
+                            <div>
+                              <strong style={{ fontSize: '0.9rem', color: '#16181f', display: 'block' }}>
+                                {b.customerName}
+                              </strong>
+                              <small style={{ color: '#6f7685', fontSize: '0.75rem' }}>
+                                {b.sessionName}
+                              </small>
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <Tag color="orange" style={{ borderRadius: 6, fontWeight: 600, textTransform: 'capitalize' }}>
+                              {b.status}
+                            </Tag>
+                            {b.slotStart && (
+                              <div style={{ fontSize: '0.72rem', color: '#6f7685', marginTop: 2 }}>
+                                <Clock size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+                                {formatDate(b.slotStart, 'hh:mm A')}
+                                {b.slotEnd ? ` - ${formatDate(b.slotEnd, 'hh:mm A')}` : ''}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Client Sessions & Revenue Breakdown Charts */}
                 <div className="emp-detail__card">
@@ -567,7 +713,7 @@ export const TrainerList = () => {
                   )}
                 </div>
 
-                {/* Trainer Contact & Branch Info Grid */}
+                {/* Trainer Contact, Branch & Attendance Info Grid */}
                 <div className="emp-detail__info-grid">
                   <div className="emp-detail__info-item">
                     <div className="emp-detail__info-icon"><Phone size={15} /></div>
@@ -613,6 +759,21 @@ export const TrainerList = () => {
                       </span>
                     </div>
                   </div>
+
+                  {details?.lastAttendance?.checkInTime && (
+                    <div className="emp-detail__info-item" style={{ gridColumn: 'span 2' }}>
+                      <div className="emp-detail__info-icon"><Clock size={15} /></div>
+                      <div>
+                        <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: '#6f7685', fontWeight: 600, display: 'block' }}>Last Attendance Check-in</span>
+                        <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>
+                          {formatDateTime(details.lastAttendance.checkInTime)}
+                          {details.lastAttendance.checkOutTime
+                            ? ` (Out: ${formatDateTime(details.lastAttendance.checkOutTime)})`
+                            : ' (Active)'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );

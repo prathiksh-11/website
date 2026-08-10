@@ -36,7 +36,7 @@ export const ENDPOINTS = {
   },
   TRAINERS: {
     ROOT: '/getemployeesbybranch',
-    DETAILS: '/employee-details/',
+    DETAILS: '/employee-details',
     CREATE: '/addemployees',
     UPDATE: '/updateemployee',
     DELETE: '/deleteemployee',
