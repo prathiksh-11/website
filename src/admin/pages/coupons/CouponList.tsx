@@ -9,12 +9,21 @@ import {
   Select,
   Table,
   Tag,
+  Tooltip,
   message,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { Clock3, Copy, Ticket } from 'lucide-react';
+import {
+  Clock3,
+  Copy,
+  MapPin,
+  Sparkles,
+  Ticket,
+  UserCheck,
+  Users,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { getCouponExpiresAt } from '@/api/coupon.api';
 import { PageSkeleton } from '@/components/common';
@@ -53,7 +62,7 @@ const statusLabel = (status: string) => {
 const copyCode = async (code: string) => {
   try {
     await navigator.clipboard.writeText(code);
-    message.success('Coupon code copied');
+    message.success('Coupon code copied to clipboard!');
   } catch {
     message.error('Could not copy code');
   }
@@ -88,19 +97,6 @@ const useNowTicker = (enabled: boolean, intervalMs = 1000) => {
   return now;
 };
 
-const DetailField = ({
-  label,
-  value,
-}: {
-  label: string;
-  value?: string | number | null;
-}) => (
-  <div>
-    <dt>{label}</dt>
-    <dd>{value != null && value !== '' ? value : '—'}</dd>
-  </div>
-);
-
 export const CouponList = () => {
   const user = useAuthStore((s) => s.user);
   const { params, setSearch, setBranchId, setStatus, setPage } = useTableParams({
@@ -117,7 +113,7 @@ export const CouponList = () => {
 
   const roleHint =
     user?.role === 'Super Admin'
-      ? 'Every coupon created across all branches'
+      ? 'Coupons created across all branches'
       : 'Coupons created for your assigned branches';
 
   const summary = data?.summary;
@@ -127,11 +123,11 @@ export const CouponList = () => {
     () => items.some((row) => row.status === 'active'),
     [items],
   );
-  const now = useNowTicker(hasActive || createOpen);
+  const now = useNowTicker(hasActive || createOpen || Boolean(selected));
 
   const openCreate = () => {
     form.resetFields();
-    form.setFieldsValue({ price: 0 });
+    form.setFieldsValue({ price: 500 });
     setCreateOpen(true);
   };
 
@@ -143,24 +139,27 @@ export const CouponList = () => {
       branchId: values.branchId,
     });
     const expiresAt = getCouponExpiresAt(created);
-    message.info(`Expires at ${formatDateTime(expiresAt)} (1 hour)`);
+    message.info(`Coupon active! Expires at ${formatDateTime(expiresAt)} (1 hour)`);
     setCreateOpen(false);
   };
 
   const columns: ColumnsType<Coupon> = [
     {
-      title: 'Coupon',
+      title: 'Coupon Code & Name',
       key: 'coupon',
       render: (_, row) => (
         <div className="coupon-cell">
           <button
             type="button"
             className="coupon-row__chip"
-            onClick={() => void copyCode(row.couponCode)}
-            title="Copy code"
+            onClick={(e) => {
+              e.stopPropagation();
+              void copyCode(row.couponCode);
+            }}
+            title="Click to copy coupon code"
           >
             <span>{row.couponCode}</span>
-            <Copy size={14} />
+            <Copy size={13} />
           </button>
           <strong>{row.couponName || 'Untitled coupon'}</strong>
         </div>
@@ -170,32 +169,73 @@ export const CouponList = () => {
       title: 'Value',
       dataIndex: 'price',
       key: 'price',
-      width: 100,
-      align: 'right',
-      render: (value: number) => formatCurrency(value),
+      width: 110,
+      render: (value: number) => (
+        <Tag color="orange" style={{ borderRadius: 8, fontWeight: 700, fontSize: '0.88rem' }}>
+          {formatCurrency(value)}
+        </Tag>
+      ),
     },
     {
-      title: 'Created by',
+      title: 'Time Remaining',
+      key: 'remaining',
+      width: 140,
+      render: (_, row) => {
+        const remainingStr = formatRemaining(row, now);
+        if (remainingStr === 'Expired') {
+          return <Tag color="error" style={{ borderRadius: 8 }}>Expired</Tag>;
+        }
+        if (remainingStr === '—') {
+          return <span style={{ color: '#94a3b8' }}>—</span>;
+        }
+        return (
+          <Tag color="gold" style={{ borderRadius: 8, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <Clock3 size={12} />
+            <span>{remainingStr}</span>
+          </Tag>
+        );
+      },
+    },
+    {
+      title: 'Created By',
       dataIndex: 'createdByName',
       key: 'createdBy',
-      width: 150,
+      width: 160,
       ellipsis: true,
-      render: (value?: string) => value || '—',
+      render: (value?: string) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <Users size={14} style={{ color: '#64748b' }} />
+          <span>{value || 'System'}</span>
+        </div>
+      ),
     },
     {
-      title: 'Used by',
+      title: 'Used By',
       key: 'usedBy',
-      width: 140,
+      width: 150,
       ellipsis: true,
-      render: (_, row) => row.usedByName || '—',
+      render: (_, row) =>
+        row.usedByName ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <UserCheck size={14} style={{ color: '#10b981' }} />
+            <span style={{ fontWeight: 600, color: '#0f172a' }}>{row.usedByName}</span>
+          </div>
+        ) : (
+          <span style={{ color: '#94a3b8' }}>Unused</span>
+        ),
     },
     {
       title: 'Branch',
       dataIndex: 'branchName',
       key: 'branch',
-      width: 140,
+      width: 150,
       ellipsis: true,
-      render: (value?: string) => (value ? shortBranch(value) : '—'),
+      render: (value?: string) => (
+        <span className="emp-branch">
+          <MapPin size={14} />
+          {value ? shortBranch(value) : 'Unassigned'}
+        </span>
+      ),
     },
     {
       title: 'Status',
@@ -209,22 +249,27 @@ export const CouponList = () => {
       ),
     },
     {
-      title: '',
+      title: 'Actions',
       key: 'view',
-      width: 56,
+      width: 80,
       fixed: 'right',
       render: (_, row) => (
-        <Button
-          type="text"
-          icon={<EyeOutlined />}
-          onClick={() => setSelected(row)}
-          aria-label={`View coupon ${row.couponCode}`}
-        />
+        <Tooltip title="View Coupon Details">
+          <Button
+            type="text"
+            icon={<EyeOutlined style={{ color: '#ff5000' }} />}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelected(row);
+            }}
+            aria-label={`View coupon ${row.couponCode}`}
+          />
+        </Tooltip>
       ),
     },
   ];
 
-  if (isLoading && !items.length) {
+  if (isLoading && (!items || items.length === 0)) {
     return <PageSkeleton variant="list" />;
   }
 
@@ -232,65 +277,70 @@ export const CouponList = () => {
     <div className="coupon">
       <header className="coupon__hero">
         <div>
-          <p className="coupon__kicker">Offers</p>
-          <h1>Coupon history</h1>
+          <p className="coupon__kicker">Offers & Promotions</p>
+          <h1>Coupon History</h1>
           <p className="coupon__sub">{roleHint}</p>
-          <p className="coupon__ttl-note">
-            Unused coupons expire in exactly 1 hour and cannot be used after that
-          </p>
+          <div className="coupon__ttl-note">
+            <Clock3 size={14} />
+            <span>Unused coupons automatically expire in 1 hour from creation</span>
+          </div>
         </div>
         <div className="coupon__hero-actions">
           <div className="coupon__hero-meta">
-            <Ticket size={18} />
+            <Ticket size={20} style={{ color: '#ff5000' }} />
             <div>
               <strong>{summary?.total ?? 0}</strong>
-              <span>created</span>
+              <span>Total Created</span>
             </div>
           </div>
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-            Add coupon
+          <Button type="primary" size="large" icon={<PlusOutlined />} onClick={openCreate}>
+            Create Coupon
           </Button>
         </div>
       </header>
 
+      {/* Stats Cards Section */}
       <section className="coupon__stats" aria-label="Coupon stats">
         <article className="coupon-stat">
-          <span>Total coupons</span>
+          <span>Total Coupons</span>
           <strong>{summary?.total ?? '—'}</strong>
         </article>
-        <article className="coupon-stat">
-          <span>Active</span>
-          <strong>{summary?.active ?? '—'}</strong>
+        <article className="coupon-stat" style={{ borderLeft: '4px solid #10b981' }}>
+          <span>Active (1-Hr)</span>
+          <strong style={{ color: '#10b981' }}>{summary?.active ?? '—'}</strong>
         </article>
-        <article className="coupon-stat">
-          <span>Used</span>
-          <strong>{summary?.used ?? '—'}</strong>
+        <article className="coupon-stat" style={{ borderLeft: '4px solid #8b5cf6' }}>
+          <span>Redeemed</span>
+          <strong style={{ color: '#8b5cf6' }}>{summary?.used ?? '—'}</strong>
         </article>
-        <article className="coupon-stat">
+        <article className="coupon-stat" style={{ borderLeft: '4px solid #ef4444' }}>
           <span>Expired</span>
-          <strong>{summary?.expired ?? '—'}</strong>
+          <strong style={{ color: '#ef4444' }}>{summary?.expired ?? '—'}</strong>
         </article>
-        <article className="coupon-stat">
-          <span>Total value</span>
-          <strong>
+        <article className="coupon-stat" style={{ borderLeft: '4px solid #ff5000' }}>
+          <span>Total Value</span>
+          <strong style={{ color: '#ff5000' }}>
             {summary ? formatCurrency(summary.totalValue) : '—'}
           </strong>
         </article>
       </section>
 
+      {/* Main Panel */}
       <section className="coupon__panel">
         <div className="coupon__toolbar">
           <Input
             allowClear
+            size="large"
             prefix={<SearchOutlined />}
-            placeholder="Search code, name, creator, customer, branch"
+            placeholder="Search coupon code, name, creator, customer, branch…"
             value={params.search}
             onChange={(e) => setSearch(e.target.value)}
             className="coupon__search"
           />
           <Select
             allowClear
-            placeholder="Branch"
+            size="large"
+            placeholder="Filter by Branch"
             value={params.branchId}
             onChange={(value) => setBranchId(value)}
             options={branches.map((b) => ({
@@ -301,6 +351,7 @@ export const CouponList = () => {
           />
           <Select
             allowClear
+            size="large"
             placeholder="Status"
             value={params.status}
             onChange={(value) => setStatus(value)}
@@ -319,11 +370,15 @@ export const CouponList = () => {
           loading={isLoading || isFetching}
           columns={columns}
           dataSource={items}
+          onRow={(row) => ({
+            onClick: () => setSelected(row),
+            style: { cursor: 'pointer' },
+          })}
           locale={{
             emptyText: (
               <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description="No coupons found"
+                description="No coupons found matching your search"
               />
             ),
           }}
@@ -335,162 +390,205 @@ export const CouponList = () => {
             pageSizeOptions: PAGE_SIZE_OPTIONS.map(String),
             onChange: (page, pageSize) => setPage(page, pageSize),
           }}
-          scroll={{ x: 860 }}
+          scroll={{ x: 900 }}
         />
       </section>
 
+      {/* Coupon Details Sidebar Drawer */}
       <Drawer
-        title="Coupon details"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Sparkles size={18} style={{ color: '#ff5000' }} />
+            <span style={{ fontWeight: 700 }}>Coupon Ticket Voucher</span>
+          </div>
+        }
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
-        width={440}
-        destroyOnHidden
+        width={500}
+        destroyOnClose
         className="coupon-drawer"
       >
         {selected ? (
           <div className="coupon-detail">
-            <div className="coupon-detail__head">
-              <div>
-                <p className="coupon-detail__kicker">Coupon value</p>
-                <strong className="coupon-detail__amount">
-                  {formatCurrency(selected.price)}
-                </strong>
-                <p className="coupon-detail__name">
-                  {selected.couponName || 'Untitled coupon'}
-                </p>
+            {/* Ticket Voucher Graphic Card */}
+            <div className="coupon-voucher-card">
+              <div className="coupon-voucher__header">
+                <div>
+                  <span className="coupon-voucher__kicker">Discount Voucher</span>
+                  <div className="coupon-voucher__amount">
+                    {formatCurrency(selected.price)}
+                  </div>
+                  <div className="coupon-voucher__name">
+                    {selected.couponName || 'Untitled coupon'}
+                  </div>
+                </div>
+                <Tag
+                  bordered={false}
+                  color={statusColor(selected.status)}
+                  style={{ borderRadius: 999, fontWeight: 700, padding: '4px 12px', fontSize: '0.82rem' }}
+                >
+                  {statusLabel(selected.status)}
+                </Tag>
               </div>
-              <Tag
-                bordered={false}
-                color={statusColor(selected.status)}
-                className="coupon__tag"
-              >
-                {statusLabel(selected.status)}
-              </Tag>
+
+              {/* Coupon Code Ticket Stub */}
+              <div className="coupon-voucher__stub">
+                <span className="coupon-voucher__code">{selected.couponCode}</span>
+                <Button
+                  size="small"
+                  type="primary"
+                  icon={<Copy size={13} />}
+                  onClick={() => void copyCode(selected.couponCode)}
+                  style={{ borderRadius: 8, background: 'rgba(255,255,255,0.25)', borderColor: 'transparent' }}
+                >
+                  Copy Code
+                </Button>
+              </div>
             </div>
 
-            <button
-              type="button"
-              className="coupon-row__chip coupon-detail__code"
-              onClick={() => void copyCode(selected.couponCode)}
-              title="Copy code"
-            >
-              <span>{selected.couponCode}</span>
-              <Copy size={14} />
-            </button>
+            {/* Creation Info Card */}
+            <div className="coupon-detail__card">
+              <div className="coupon-detail__card-title">
+                <Users size={16} style={{ color: '#ff5000' }} />
+                <span>Creation & Issuer Details</span>
+              </div>
+              <div className="coupon-detail__grid">
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Created By</span>
+                  <span className="coupon-detail__grid-value">{selected.createdByName || 'System'}</span>
+                </div>
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Created At</span>
+                  <span className="coupon-detail__grid-value">{formatDateTime(selected.createdAt)}</span>
+                </div>
+                <div className="coupon-detail__grid-item coupon-detail__grid-item--full">
+                  <span className="coupon-detail__grid-label">Creator User ID</span>
+                  <span className="coupon-detail__grid-value">{selected.createdBy || '—'}</span>
+                </div>
+              </div>
+            </div>
 
-            <section className="coupon-detail__section">
-              <h4>Created</h4>
-              <dl>
-                <DetailField
-                  label="Created by"
-                  value={selected.createdByName}
-                />
-                <DetailField
-                  label="Created at"
-                  value={formatDateTime(selected.createdAt)}
-                />
-                <DetailField label="Creator ID" value={selected.createdBy} />
-              </dl>
-            </section>
+            {/* Customer Usage Card */}
+            <div className="coupon-detail__card">
+              <div className="coupon-detail__card-title">
+                <UserCheck size={16} style={{ color: '#ff5000' }} />
+                <span>Redemption & Usage Status</span>
+              </div>
+              <div className="coupon-detail__grid">
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Used By Customer</span>
+                  <span className="coupon-detail__grid-value">{selected.usedByName || 'Not Used Yet'}</span>
+                </div>
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Redeemed At</span>
+                  <span className="coupon-detail__grid-value">
+                    {selected.usedAt ? formatDateTime(selected.usedAt) : '—'}
+                  </span>
+                </div>
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Customer ID</span>
+                  <span className="coupon-detail__grid-value">{selected.usedBy || '—'}</span>
+                </div>
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Transaction ID</span>
+                  <span className="coupon-detail__grid-value">{selected.transactionId || '—'}</span>
+                </div>
+              </div>
+            </div>
 
-            <section className="coupon-detail__section">
-              <h4>Customer usage</h4>
-              <dl>
-                <DetailField
-                  label="Used by customer"
-                  value={selected.usedByName}
-                />
-                <DetailField label="Customer ID" value={selected.usedBy} />
-                <DetailField
-                  label="Used at"
-                  value={
-                    selected.usedAt
-                      ? formatDateTime(selected.usedAt)
-                      : undefined
-                  }
-                />
-                <DetailField
-                  label="Transaction ID"
-                  value={selected.transactionId}
-                />
-              </dl>
-            </section>
-
-            <section className="coupon-detail__section">
-              <h4>Branch & expiry</h4>
-              <dl>
-                <DetailField
-                  label="Branch"
-                  value={shortBranch(selected.branchName)}
-                />
-                <DetailField label="Branch ID" value={selected.branchId} />
-                <DetailField
-                  label="Expires at"
-                  value={formatDateTime(getCouponExpiresAt(selected))}
-                />
-                <DetailField
-                  label="Time remaining"
-                  value={formatRemaining(selected, now)}
-                />
-              </dl>
-            </section>
-
-            <section className="coupon-detail__section">
-              <h4>Record</h4>
-              <dl>
-                <DetailField label="Coupon ID" value={selected.id} />
-                <DetailField
-                  label="Status"
-                  value={statusLabel(selected.status)}
-                />
-              </dl>
-            </section>
+            {/* Branch & Expiry Card */}
+            <div className="coupon-detail__card">
+              <div className="coupon-detail__card-title">
+                <Clock3 size={16} style={{ color: '#ff5000' }} />
+                <span>Branch Assignment & Expiration</span>
+              </div>
+              <div className="coupon-detail__grid">
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Assigned Branch</span>
+                  <span className="coupon-detail__grid-value">{shortBranch(selected.branchName) || 'Unassigned'}</span>
+                </div>
+                <div className="coupon-detail__grid-item">
+                  <span className="coupon-detail__grid-label">Time Remaining</span>
+                  <span className="coupon-detail__grid-value" style={{ color: '#ff5000' }}>
+                    {formatRemaining(selected, now)}
+                  </span>
+                </div>
+                <div className="coupon-detail__grid-item coupon-detail__grid-item--full">
+                  <span className="coupon-detail__grid-label">Auto-Expiration Timestamp</span>
+                  <span className="coupon-detail__grid-value">
+                    {formatDateTime(getCouponExpiresAt(selected))}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         ) : null}
       </Drawer>
 
+      {/* Add Coupon Modal Form */}
       <Drawer
-        title="Add coupon"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Ticket size={18} style={{ color: '#ff5000' }} />
+            <span style={{ fontWeight: 700 }}>Issue New Coupon</span>
+          </div>
+        }
         open={createOpen}
         onClose={() => setCreateOpen(false)}
-        width={420}
-        destroyOnHidden
+        width={440}
+        destroyOnClose
         extra={
           <Button
             type="primary"
             loading={create.isPending}
             onClick={() => void onSubmit()}
           >
-            Create
+            Issue Coupon
           </Button>
         }
       >
         <Form form={form} layout="vertical" requiredMark={false}>
           <Form.Item
             name="couponName"
-            label="Coupon name"
-            rules={[{ required: true, message: 'Enter a coupon name' }]}
+            label="Coupon Name / Title"
+            rules={[{ required: true, message: 'Enter a coupon title' }]}
           >
-            <Input placeholder="e.g. Summer welcome offer" />
+            <Input placeholder="e.g. Summer Special Welcome Pass" size="large" />
           </Form.Item>
+
           <Form.Item
             name="price"
-            label="Value"
-            rules={[{ required: true, message: 'Enter a value' }]}
+            label="Discount Value (₹)"
+            rules={[{ required: true, message: 'Enter a coupon value' }]}
           >
             <InputNumber
-              min={0}
+              min={1}
               prefix="₹"
-              className="coupon__full"
+              size="large"
               style={{ width: '100%' }}
             />
           </Form.Item>
+
+          {/* Preset Buttons */}
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', marginTop: '-0.5rem' }}>
+            {[100, 250, 500, 1000].map((amount) => (
+              <Button
+                key={amount}
+                size="small"
+                onClick={() => form.setFieldsValue({ price: amount })}
+              >
+                ₹{amount}
+              </Button>
+            ))}
+          </div>
+
           <Form.Item
             name="branchId"
-            label="Branch"
+            label="Target Branch"
             rules={[{ required: true, message: 'Select a branch' }]}
           >
             <Select
+              size="large"
               placeholder="Select branch"
               options={branches.map((b) => ({
                 value: b.id,
@@ -500,14 +598,14 @@ export const CouponList = () => {
               optionFilterProp="label"
             />
           </Form.Item>
+
           <div className="coupon-create-expiry">
-            <Clock3 size={16} aria-hidden />
+            <Clock3 size={18} />
             <div>
-              <strong>Auto-expires in 1 hour</strong>
+              <strong>1-Hour Expiry Window</strong>
               <span>
-                If unused, it expires at{' '}
-                {formatDateTime(dayjs().add(1, 'hour').toISOString())} and
-                cannot be used by any user.
+                Coupons auto-expire at{' '}
+                <strong>{formatDateTime(dayjs().add(1, 'hour').toISOString())}</strong>. Unused coupons cannot be redeemed after 1 hour.
               </span>
             </div>
           </div>
