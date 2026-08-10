@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { App as AntApp, ConfigProvider } from 'antd';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/common';
@@ -18,13 +19,16 @@ const queryClient = new QueryClient({
 
 /** Admin dashboard shell — mounted on /login, /dashboard, etc. */
 export const AdminApp = () => {
-  const mode = useThemeStore((s) => s.mode);
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   return (
     <div className="admin-shell">
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <ConfigProvider theme={getAntdTheme(mode)}>
+          <ConfigProvider theme={getAntdTheme('light')}>
             <AntApp
               notification={{
                 placement: 'topRight',

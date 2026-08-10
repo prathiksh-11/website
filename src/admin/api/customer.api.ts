@@ -1,6 +1,12 @@
 import { USE_MOCK } from '@/constants';
 import { delay, MOCK_CUSTOMERS } from '@/mocks/data';
-import type { Customer, PaginatedRequest, PaginatedResponse } from '@/types';
+import type {
+  Customer,
+  CustomerDetailsApiResponse,
+  CustomerFullDetails,
+  PaginatedRequest,
+  PaginatedResponse,
+} from '@/types';
 import { mapBackendCustomer } from '@/utils/entity-map';
 import { filterBySearch, generateId, paginate } from '@/utils/query';
 import { apiClient } from './axios';
@@ -64,6 +70,72 @@ export const customerApi = {
     const found = all.find((c) => c.id === id);
     if (!found) throw { message: 'Customer not found', status: 404 };
     return found;
+  },
+
+  getDetails: async (id: string): Promise<CustomerFullDetails> => {
+    if (USE_MOCK) {
+      await delay();
+      const customer = customers.find((c) => c.id === id);
+      return {
+        id: id,
+        name: customer?.name ?? 'Rajitha Nair',
+        phone: customer?.phone ?? '8971969057',
+        email: customer?.email ?? '',
+        membership_type: 'Level 1 PT 12 session ',
+        status: customer?.membershipStatus ?? 'active',
+        last_visit: '2026-08-10',
+        joined_on: customer?.joinDate ?? '2026-08-03',
+        branch_name: customer?.branchName ?? 'Game On Fitness Luxury Club - Kasavanahalli',
+        profile_image_url: customer?.avatar ?? null,
+        subscription: {
+          plan_name: 'LEVEL 1 PT-12 SESSIONS',
+          start_date: '2026-08-09',
+          end_date: '2026-09-09',
+          amount: '1.00',
+          status: 'active',
+          billing_cycle: 'Monthly',
+        },
+        session_plan: {
+          plan_name: 'Level 1 PT 12 session ',
+          total_sessions: 12,
+          used_sessions: 1,
+          price: '2256',
+          purchased_on: '2026-08-09',
+          status: 'active',
+        },
+        session_plans: [
+          {
+            plan_name: 'Level 1 PT 12 session ',
+            total_sessions: 12,
+            used_sessions: 1,
+            price: '2256',
+            purchased_on: '2026-08-09',
+            status: 'active',
+          },
+        ],
+        remaining_sessions: 11,
+        payment_due: 0,
+        payment_due_note: null,
+        attendance_history: [
+          {
+            id: '121',
+            session_name: 'Level 1 PT 12 session ',
+            date: '2026-08-10',
+            time: '11:07',
+            trainer: 'Chandra l',
+            status: 'attended',
+          },
+        ],
+      };
+    }
+
+    const { data } = await apiClient.get<CustomerDetailsApiResponse>(
+      ENDPOINTS.CUSTOMERS.DETAILS(id),
+    );
+    if (data?.CustomerDetails) {
+      return data.CustomerDetails;
+    }
+    return (data as unknown as { CustomerDetails: CustomerFullDetails })?.CustomerDetails ?? (data as unknown as CustomerFullDetails);
   },
 
   create: async (

@@ -32,10 +32,11 @@ export const ENDPOINTS = {
   CUSTOMERS: {
     ROOT: '/get-customers',
     BY_ID: (id: string) => `/get-customers/${id}`,
+    DETAILS: (id: string) => `/get-customer-details/${id}`,
   },
   TRAINERS: {
     ROOT: '/getemployeesbybranch',
-    DETAILS: '/employee-details/',
+    DETAILS: '/employee-details',
     CREATE: '/addemployees',
     UPDATE: '/updateemployee',
     DELETE: '/deleteemployee',

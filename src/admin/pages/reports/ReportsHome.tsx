@@ -75,8 +75,9 @@ const PERIODS: Array<{ value: ReportDateFilter; label: string }> = [
 
 const shortBranch = (name: string) =>
   name
-    .replace(/^Game On Fitness\s*/i, '')
-    .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
+    .replace(/^Game On Fitness\s*[-–—]?\s*/i, '')
+    .replace(/^(Premium Club|Luxury Club)\s*[-–—]?\s*/i, '')
+    .replace(/^[-–—]\s*/, '')
     .trim() || name;
 
 const tooltipStyle = {
@@ -357,9 +358,14 @@ const BranchSummaryTab = ({
             return (
               <article key={b.id} className="rpt-branch">
                 <header className="rpt-branch__head">
-                  <div>
-                    <h3>{shortBranch(b.name)}</h3>
-                    <p className="rpt-branch__full">{b.name}</p>
+                  <div className="rpt-branch__title-group">
+                    <span className="rpt-branch__badge">
+                      <Building2 size={15} />
+                    </span>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <h3>{shortBranch(b.name)}</h3>
+                      <p className="rpt-branch__full" title={b.name}>{b.name}</p>
+                    </div>
                   </div>
                   <div
                     className="rpt-branch__util-ring"
@@ -371,50 +377,55 @@ const BranchSummaryTab = ({
                 </header>
 
                 <div className="rpt-branch__hero-metric">
-                  <span>Paid amount</span>
-                  <strong>{formatCurrency(b.summary.paidAmount)}</strong>
+                  <div>
+                    <span className="rpt-branch__hero-label">Paid Amount</span>
+                    <strong className="rpt-branch__hero-value">{formatCurrency(b.summary.paidAmount)}</strong>
+                  </div>
+                  <span className="rpt-branch__hero-tag">Collected</span>
                 </div>
 
+                <div className="rpt-branch__section-label">Revenue Streams</div>
                 <ul className="rpt-branch__streams">
                   <li>
                     <span>PT</span>
-                    <strong>{formatCurrency(b.summary.ptRevenue)}</strong>
+                    <strong title={formatCurrency(b.summary.ptRevenue)}>{formatCurrency(b.summary.ptRevenue)}</strong>
                   </li>
                   <li>
                     <span>Subs</span>
-                    <strong>{formatCurrency(b.summary.subscriberRevenue)}</strong>
+                    <strong title={formatCurrency(b.summary.subscriberRevenue)}>{formatCurrency(b.summary.subscriberRevenue)}</strong>
                   </li>
                   <li>
                     <span>Events</span>
-                    <strong>{formatCurrency(b.summary.eventRevenue)}</strong>
+                    <strong title={formatCurrency(b.summary.eventRevenue)}>{formatCurrency(b.summary.eventRevenue)}</strong>
                   </li>
                 </ul>
 
+                <div className="rpt-branch__section-label">Payment Status</div>
                 <ul className="rpt-branch__money">
-                  <li>
+                  <li className="rpt-branch__money--pending">
                     <span>Pending</span>
-                    <strong>{formatCurrency(b.summary.pendingAmount)}</strong>
+                    <strong title={formatCurrency(b.summary.pendingAmount)}>{formatCurrency(b.summary.pendingAmount)}</strong>
                   </li>
-                  <li>
-                    <span>Partial paid</span>
-                    <strong>{formatCurrency(b.summary.partialPaidAmount)}</strong>
+                  <li className="rpt-branch__money--partial">
+                    <span>Partial</span>
+                    <strong title={formatCurrency(b.summary.partialPaidAmount)}>{formatCurrency(b.summary.partialPaidAmount)}</strong>
                   </li>
-                  <li>
-                    <span>Amount due</span>
-                    <strong>{formatCurrency(b.summary.amountDue)}</strong>
+                  <li className="rpt-branch__money--due">
+                    <span>Due</span>
+                    <strong title={formatCurrency(b.summary.amountDue)}>{formatCurrency(b.summary.amountDue)}</strong>
                   </li>
                 </ul>
 
                 <div className="rpt-branch__people">
-                  <div>
-                    <UserCheck size={14} />
+                  <div className="rpt-branch__person-box">
+                    <UserCheck size={16} />
                     <div>
                       <strong>{b.summary.totalCustomers}</strong>
                       <span>Customers</span>
                     </div>
                   </div>
-                  <div>
-                    <Dumbbell size={14} />
+                  <div className="rpt-branch__person-box">
+                    <Dumbbell size={16} />
                     <div>
                       <strong>{b.highlights.activeTrainers}</strong>
                       <span>Trainers</span>
@@ -423,23 +434,24 @@ const BranchSummaryTab = ({
                 </div>
 
                 <footer className="rpt-branch__foot">
-                  <div>
-                    <span>Sessions</span>
-                    <strong>
-                      {b.highlights.sessionsCompleted}/
-                      {b.highlights.sessionsPurchased}
-                    </strong>
-                  </div>
-                  <div>
-                    <span>Remaining</span>
-                    <strong>{b.highlights.sessionsRemaining}</strong>
+                  <div className="rpt-branch__foot-meta">
+                    <div>
+                      <span>Completed / Purchased</span>
+                      <strong>
+                        {b.highlights.sessionsCompleted} / {b.highlights.sessionsPurchased}
+                      </strong>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span>Remaining</span>
+                      <strong>{b.highlights.sessionsRemaining}</strong>
+                    </div>
                   </div>
                   <Progress
                     percent={util}
                     showInfo={false}
-                    strokeColor="#ff8a4c"
+                    strokeColor="#ff5000"
                     trailColor="#f1f3f7"
-                    size={5}
+                    size={6}
                   />
                 </footer>
               </article>

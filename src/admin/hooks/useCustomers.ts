@@ -42,6 +42,14 @@ export const useCustomers = (params: PaginatedRequest = {}) => {
   };
 };
 
+export const useCustomerDetails = (id?: string | null) =>
+  useQuery({
+    queryKey: ['customers', 'details', id],
+    queryFn: () => customerService.getDetails(id!),
+    enabled: Boolean(id),
+    staleTime: 30_000,
+  });
+
 export const useCustomerMutations = () => {
   const queryClient = useQueryClient();
 

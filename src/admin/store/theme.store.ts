@@ -18,9 +18,8 @@ export const useThemeStore = create<ThemeState>()(
     (set, get) => ({
       mode: 'light',
       collapsed: false,
-      toggleMode: () =>
-        set({ mode: get().mode === 'light' ? 'dark' : 'light' }),
-      setMode: (mode) => set({ mode }),
+      toggleMode: () => set({ mode: 'light' }),
+      setMode: () => set({ mode: 'light' }),
       toggleCollapsed: () => set({ collapsed: !get().collapsed }),
       setCollapsed: (collapsed) => set({ collapsed }),
     }),

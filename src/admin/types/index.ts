@@ -95,6 +95,60 @@ export interface Customer {
   dateOfBirth?: string;
 }
 
+export interface CustomerSubscriptionDetail {
+  plan_name: string;
+  start_date: string;
+  end_date: string;
+  amount: string | number;
+  status: string;
+  billing_cycle: string;
+}
+
+export interface CustomerSessionPlanDetail {
+  plan_name: string;
+  total_sessions: number;
+  used_sessions: number;
+  price: string | number;
+  purchased_on: string;
+  status: string;
+}
+
+export interface CustomerAttendanceHistoryItem {
+  id: string;
+  session_name: string;
+  date: string;
+  time: string;
+  trainer: string;
+  status: string;
+}
+
+export interface CustomerFullDetails {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string | null;
+  membership_type?: string | null;
+  status: string;
+  last_visit?: string | null;
+  joined_on?: string | null;
+  branch_name?: string | null;
+  profile_image_url?: string | null;
+  subscription?: CustomerSubscriptionDetail | null;
+  session_plan?: CustomerSessionPlanDetail | null;
+  session_plans?: CustomerSessionPlanDetail[] | null;
+  remaining_sessions?: number;
+  payment_due?: number | string;
+  payment_due_note?: string | null;
+  attendance_history?: CustomerAttendanceHistoryItem[] | null;
+}
+
+export interface CustomerDetailsApiResponse {
+  success: boolean;
+  CustomerDetails: CustomerFullDetails;
+  message?: string;
+}
+
+
 export interface Trainer {
   id: string;
   name: string;
@@ -133,10 +187,57 @@ export interface TrainerCustomerTotal {
   totalAmount: number;
 }
 
+export interface TrainerBooking {
+  bookingId: string;
+  sessionId: string;
+  customerId: string;
+  customerName: string;
+  customerMobile?: string;
+  customerImage?: string;
+  sessionName: string;
+  branchName?: string;
+  bookingDate?: string;
+  slotStart?: string;
+  slotEnd?: string;
+  status: string;
+}
+
+export interface TrainerStartedSession {
+  checkinId: string;
+  customerId: string;
+  customerName: string;
+  customerMobile?: string;
+  customerImage?: string;
+  sessionId: string;
+  sessionName: string;
+  branchId?: string;
+  branchName?: string;
+  slotStart?: string;
+  slotEnd?: string | null;
+  status: string;
+  sessionDate?: string;
+}
+
+export interface TrainerAttendance {
+  id: string;
+  checkInTime?: string;
+  checkOutTime?: string | null;
+  branchId?: string;
+  workMinutes?: number | null;
+}
+
 export interface TrainerDetails {
   trainer: Trainer;
   summary: TrainerHistorySummary;
   customers: TrainerCustomerTotal[];
+  totalPurchasedSessionAmount?: number;
+  myEarnings?: number;
+  totalSessionsPurchasedQty?: number;
+  todaySessionsTotal?: number;
+  isCheckin?: boolean;
+  lastAttendance?: TrainerAttendance | null;
+  todayBookings?: TrainerBooking[];
+  startedSession?: TrainerStartedSession[];
 }
 
 export interface Branch {
@@ -247,6 +348,8 @@ export interface GymEvent {
   image?: string;
   price?: number;
   offerPrice?: number;
+  gstType?: string;
+  gstPercentage?: number;
   location?: string;
 }
 
