@@ -11,7 +11,10 @@ import {
 import { useAuthStore } from '@/store/auth.store';
 import type { SendNotificationPayload } from '@/types';
 import { showPushToast } from '@/utils/push-toast';
-import { CASH_PAYMENT_EVENT } from '@/components/cash/CashPaymentApprovalHost';
+import {
+  CASH_PAYMENT_EVENT,
+  CASH_PAYMENT_RESOLVED_EVENT,
+} from '@/components/cash/CashPaymentApprovalHost';
 
 const LIST_KEY = ['notifications'];
 const UNREAD_KEY = ['notifications', 'unread'];
@@ -176,6 +179,14 @@ export const useFcmRegistration = () => {
         if (String(type) === 'cash_payment_pending' && payload.data) {
           window.dispatchEvent(
             new CustomEvent(CASH_PAYMENT_EVENT, {
+              detail: payload.data as Record<string, unknown>,
+            }),
+          );
+        }
+
+        if (String(type) === 'cash_payment_resolved' && payload.data) {
+          window.dispatchEvent(
+            new CustomEvent(CASH_PAYMENT_RESOLVED_EVENT, {
               detail: payload.data as Record<string, unknown>,
             }),
           );

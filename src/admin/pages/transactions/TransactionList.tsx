@@ -60,10 +60,24 @@ const paymentStatusColor = (row: PaymentTransaction) => {
   return 'default';
 };
 
+const isCashPayment = (row: PaymentTransaction) =>
+  String(row.paymentMethod || '').toLowerCase() === 'cash';
+
 const settlementLabel = (
   row: PaymentTransaction | TransactionSettlement | null | undefined,
 ) => {
   if (!row) return 'Not routed';
+  if ('paymentMethod' in row && isCashPayment(row as PaymentTransaction)) {
+    return '—';
+  }
+
+  const transferStatus = String(
+    ('transferStatus' in row && row.transferStatus) ||
+      (row as PaymentTransaction).transferStatus ||
+      '',
+  ).toLowerCase();
+  if (transferStatus === 'failed') return 'Transfer failed';
+
   const routed =
     'routed' in row
       ? Boolean(row.routed)
@@ -95,40 +109,12 @@ const settlementColor = (
   if (label === 'Settled') return 'success';
   if (label === 'On hold') return 'warning';
   if (label === 'Pending') return 'processing';
+  if (label === 'Transfer failed') return 'error';
   return 'default';
 };
 
-const settlementWhenText = (
-  settlement: TransactionSettlement | null | undefined,
-  fallback: PaymentTransaction | null,
-) => {
-  const settledAt = settlement?.settledAt || fallback?.settledAt;
-  if (settledAt) return `Settled at ${formatDateTime(settledAt)}`;
-
-  const onHold =
-    settlement?.onHold ?? fallback?.onHold ?? false;
-  const onHoldUntil = settlement?.onHoldUntil || fallback?.onHoldUntil;
-  if (onHold || String(settlement?.settlementStatus || fallback?.settlementStatus || '').toLowerCase() === 'on_hold') {
-    return onHoldUntil
-      ? `On hold until ${formatDateTime(onHoldUntil)}`
-      : 'On hold';
-  }
-
-  const routed =
-    settlement?.routed ??
-    Boolean(fallback?.razorpayTransferId || fallback?.linkedAccountId);
-  if (!routed) return '—';
-
-  return (
-    settlement?.settlementHint ||
-    'Pending — settles per linked account schedule'
-  );
-};
-
-const dueAmount = (row: PaymentTransaction) => {
-  if (!row.isPartial || row.packageAmount == null) return 0;
-  return Math.max(0, Number(row.packageAmount) - Number(row.amount || 0));
-};
+const money = (value?: number | null) =>
+  value != null ? formatCurrency(value) : '—';
 
 const DetailField = ({
   label,
@@ -143,29 +129,73 @@ const DetailField = ({
   </div>
 );
 
+const BreakdownRow = ({
+  label,
+  value,
+  tone,
+  emphasis,
+}: {
+  label: string;
+  value: string;
+  tone?: 'deduct' | 'receive' | 'neutral';
+  emphasis?: boolean;
+}) => (
+  <div
+    className={[
+      'txn-route__row',
+      tone ? `txn-route__row--${tone}` : '',
+      emphasis ? 'txn-route__row--emphasis' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')}
+  >
+    <span>{label}</span>
+    <strong>{value}</strong>
+  </div>
+);
+
 const RouteSettlementSection = ({
   transaction,
 }: {
   transaction: PaymentTransaction;
 }) => {
+  const cash = isCashPayment(transaction);
   const { data: settlement, isLoading, isFetching, isError } =
-    useTransactionSettlement(transaction.id, true);
+    useTransactionSettlement(transaction.id, !cash);
 
-  const routed =
-    settlement?.routed ??
-    Boolean(transaction.razorpayTransferId || transaction.linkedAccountId);
-  const transferAmount =
-    settlement?.transferAmount ?? transaction.transferAmount ?? null;
-  const linkedAccountId =
-    settlement?.linkedAccountId ?? transaction.linkedAccountId ?? null;
-  const transferId =
-    settlement?.transferId ?? transaction.razorpayTransferId ?? null;
-  const paymentId =
-    settlement?.paymentId ?? transaction.razorpayPaymentId ?? null;
+  if (cash) return null;
+
+  const paidAmount = settlement?.paidAmount ?? transaction.amount;
+  const merchantBranchName =
+    settlement?.merchantBranchName ?? transaction.merchantBranchName ?? null;
+  const razorpayFee = settlement?.razorpayFee ?? transaction.razorpayFee ?? null;
+  const razorpayTax = settlement?.razorpayTax ?? transaction.razorpayTax ?? null;
+  const transferFees =
+    settlement?.transferFees ?? transaction.transferFees ?? null;
+  const transferTax =
+    settlement?.transferTax ?? transaction.transferTax ?? null;
+  const receivingAmount =
+    settlement?.receivingAmount ?? transaction.receivingAmount ?? null;
+  const settledAt = settlement?.settledAt ?? transaction.settledAt ?? null;
+  const settlesAt = settlement?.settlesAt ?? transaction.settlesAt ?? null;
+  const settlementHint =
+    settlement?.settlementHint ?? transaction.settlementHint ?? null;
+  const transferError =
+    settlement?.transferError ?? transaction.transferError ?? null;
+  const settlementUtr =
+    settlement?.settlementUtr ?? transaction.settlementUtr ?? null;
+
+  const hasFeeBreakdown =
+    razorpayFee != null ||
+    razorpayTax != null ||
+    transferFees != null ||
+    transferTax != null;
+  const deductedAmount =
+    receivingAmount != null ? Math.max(0, paidAmount - receivingAmount) : null;
 
   return (
     <section className="txn-detail__section txn-detail__section--route">
-      <h4>Razorpay Route</h4>
+      <h4>Razorpay breakdown</h4>
       {isLoading ? (
         <div className="txn-route__loading">
           <Spin size="small" />
@@ -173,73 +203,110 @@ const RouteSettlementSection = ({
         </div>
       ) : (
         <>
-          <div className="txn-route__flow" aria-label="Route flow">
-            <div>
-              <span>Customer paid</span>
-              <strong>
-                {formatCurrency(settlement?.paidAmount ?? transaction.amount)}
-              </strong>
-              <small>Main Razorpay account</small>
-            </div>
-            <div className="txn-route__arrow" aria-hidden>
-              →
-            </div>
-            <div>
-              <span>Routed to linked</span>
-              <strong>
-                {routed && transferAmount != null
-                  ? formatCurrency(transferAmount)
-                  : '—'}
-              </strong>
-              <small>{linkedAccountId || 'No linked account'}</small>
-            </div>
-          </div>
-
-          <dl>
-            <div>
-              <dt>Settlement status</dt>
-              <dd>
-                <Tag
-                  bordered={false}
-                  color={settlementColor(settlement ?? transaction)}
-                  className="txn__tag"
-                >
-                  {settlementLabel(settlement ?? transaction)}
-                </Tag>
-                {isFetching && !isLoading ? (
-                  <span className="txn-route__refresh">Refreshing…</span>
+          <div className="txn-route__card">
+            <BreakdownRow
+              label="Customer paid"
+              value={money(paidAmount)}
+              tone="neutral"
+            />
+            {hasFeeBreakdown ? (
+              <>
+                {razorpayFee != null ? (
+                  <BreakdownRow
+                    label="Razorpay fee"
+                    value={`−${money(razorpayFee)}`}
+                    tone="deduct"
+                  />
                 ) : null}
-              </dd>
-            </div>
-            <DetailField
-              label="When"
-              value={settlementWhenText(settlement, transaction)}
-            />
-            <DetailField label="Linked account" value={linkedAccountId} />
-            <DetailField label="Transfer ID" value={transferId} />
-            <DetailField label="Payment ID" value={paymentId} />
-            <DetailField
-              label="Transfer status"
-              value={
-                settlement?.transferStatus || transaction.transferStatus
-              }
-            />
-            {isError ? (
-              <DetailField
-                label="Note"
-                value="Could not refresh from Razorpay — showing saved data"
+                {razorpayTax != null && razorpayTax > 0 ? (
+                  <BreakdownRow
+                    label="Razorpay tax"
+                    value={`−${money(razorpayTax)}`}
+                    tone="deduct"
+                  />
+                ) : null}
+                {transferFees != null && transferFees > 0 ? (
+                  <BreakdownRow
+                    label="Transfer fee"
+                    value={`−${money(transferFees)}`}
+                    tone="deduct"
+                  />
+                ) : null}
+                {transferTax != null && transferTax > 0 ? (
+                  <BreakdownRow
+                    label="Transfer tax"
+                    value={`−${money(transferTax)}`}
+                    tone="deduct"
+                  />
+                ) : null}
+              </>
+            ) : deductedAmount != null && deductedAmount > 0 ? (
+              <BreakdownRow
+                label="Razorpay deduction"
+                value={`−${money(deductedAmount)}`}
+                tone="deduct"
               />
             ) : null}
-            <DetailField
-              label="Hint"
-              value={
-                settlement?.settlementHint ||
-                (routed
-                  ? 'Settles to linked account as per its Razorpay schedule (T+N)'
-                  : 'Not routed — cash or no linked account')
-              }
+            <BreakdownRow
+              label="Branch receives"
+              value={money(receivingAmount)}
+              tone="receive"
+              emphasis
             />
-          </dl>
+            <p className="txn-route__branch">
+              {merchantBranchName || 'No merchant branch'}
+            </p>
+          </div>
+
+          <div className="txn-route__meta">
+            <div className="txn-route__status">
+              <span>Settlement</span>
+              <Tag
+                bordered={false}
+                color={settlementColor(settlement ?? transaction)}
+                className="txn__tag"
+              >
+                {settlementLabel(settlement ?? transaction)}
+              </Tag>
+              {isFetching && !isLoading ? (
+                <span className="txn-route__refresh">Refreshing…</span>
+              ) : null}
+            </div>
+
+            <dl>
+              <DetailField
+                label="Settles at"
+                value={settlesAt ? formatDateTime(settlesAt) : undefined}
+              />
+              <DetailField
+                label="Settled at"
+                value={settledAt ? formatDateTime(settledAt) : undefined}
+              />
+              <DetailField label="Settlement UTR" value={settlementUtr} />
+            </dl>
+
+            {transferError ? (
+              <div className="txn-route__alert" role="alert">
+                <strong>Transfer failed</strong>
+                <p>
+                  {transferError.description ||
+                    transferError.reason ||
+                    transferError.code ||
+                    'Transfer could not be completed'}
+                </p>
+              </div>
+            ) : null}
+
+            {settlementHint ? (
+              <p className="txn-route__hint">{settlementHint}</p>
+            ) : null}
+
+            {isError ? (
+              <p className="txn-route__hint txn-route__hint--muted">
+                Could not refresh from Razorpay — showing saved data
+              </p>
+            ) : null}
+          </div>
         </>
       )}
     </section>
@@ -274,8 +341,6 @@ export const TransactionList = () => {
       ? 'Showing payments across all branches'
       : 'Showing payments for your assigned branches';
 
-  const selectedDue = selected ? dueAmount(selected) : 0;
-
   const columns: ColumnsType<PaymentTransaction> = [
     {
       title: 'Date',
@@ -302,6 +367,20 @@ export const TransactionList = () => {
       key: 'item',
       ellipsis: true,
       render: (_, row) => row.itemName || typeLabel(row.type),
+    },
+    {
+      title: 'Trainer',
+      key: 'trainer',
+      width: 130,
+      ellipsis: true,
+      render: (_, row) => row.trainerName || '—',
+    },
+    {
+      title: 'Approved by',
+      key: 'approvedBy',
+      width: 130,
+      ellipsis: true,
+      render: (_, row) => row.approvedByName || '—',
     },
     {
       title: 'Amount',
@@ -338,15 +417,18 @@ export const TransactionList = () => {
       title: 'Settlement',
       key: 'settlement',
       width: 110,
-      render: (_, row) => (
-        <Tag
-          bordered={false}
-          color={settlementColor(row)}
-          className="txn__tag"
-        >
-          {settlementLabel(row)}
-        </Tag>
-      ),
+      render: (_, row) =>
+        isCashPayment(row) ? (
+          <span className="txn__dash">—</span>
+        ) : (
+          <Tag
+            bordered={false}
+            color={settlementColor(row)}
+            className="txn__tag"
+          >
+            {settlementLabel(row)}
+          </Tag>
+        ),
     },
     {
       title: '',
@@ -365,8 +447,9 @@ export const TransactionList = () => {
   ];
 
   const summary = data?.summary;
+  const hasRows = (data?.items?.length ?? 0) > 0;
 
-  if (isLoading && !data?.items?.length) {
+  if (isLoading && !hasRows) {
     return <PageSkeleton variant="list" />;
   }
 
@@ -488,7 +571,7 @@ export const TransactionList = () => {
             pageSizeOptions: PAGE_SIZE_OPTIONS.map(String),
             onChange: (page, pageSize) => setPage(page, pageSize),
           }}
-          scroll={{ x: 1020 }}
+          scroll={{ x: 1280 }}
         />
       </section>
 
@@ -500,10 +583,14 @@ export const TransactionList = () => {
       </p>
 
       <Drawer
-        title="Transaction details"
+        title={
+          selected && isCashPayment(selected)
+            ? 'Cash payment'
+            : 'Razorpay payment'
+        }
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
-        width={440}
+        width={460}
         destroyOnHidden
         className="txn-drawer"
       >
@@ -511,10 +598,18 @@ export const TransactionList = () => {
           <div className="txn-detail">
             <div className="txn-detail__head">
               <div>
-                <p className="txn-detail__kicker">Amount paid</p>
+                <p className="txn-detail__kicker">
+                  {isCashPayment(selected) ? 'Cash collected' : 'Customer paid'}
+                </p>
                 <strong className="txn-detail__amount">
                   {formatCurrency(selected.amount)}
                 </strong>
+                {!isCashPayment(selected) &&
+                selected.receivingAmount != null ? (
+                  <p className="txn-detail__receive">
+                    Branch gets {formatCurrency(selected.receivingAmount)}
+                  </p>
+                ) : null}
               </div>
               <div className="txn-detail__badges">
                 <Tag
@@ -524,15 +619,23 @@ export const TransactionList = () => {
                 >
                   {paymentStatusLabel(selected)}
                 </Tag>
+                {!isCashPayment(selected) ? (
+                  <Tag
+                    bordered={false}
+                    color={settlementColor(selected)}
+                    className="txn__tag"
+                  >
+                    {settlementLabel(selected)}
+                  </Tag>
+                ) : null}
               </div>
             </div>
 
             <section className="txn-detail__section">
-              <h4>Customer</h4>
+              <h4>Payment</h4>
               <dl>
-                <DetailField label="Name" value={selected.userName} />
+                <DetailField label="Customer" value={selected.userName} />
                 <DetailField label="Mobile" value={selected.userMobile} />
-                <DetailField label="Customer ID" value={selected.userId} />
                 <DetailField
                   label="Branch"
                   value={
@@ -541,31 +644,55 @@ export const TransactionList = () => {
                       : undefined
                   }
                 />
-              </dl>
-            </section>
-
-            <section className="txn-detail__section">
-              <h4>Purchase</h4>
-              <dl>
                 <DetailField
                   label="Item"
                   value={selected.itemName || typeLabel(selected.type)}
                 />
                 <DetailField label="Type" value={typeLabel(selected.type)} />
                 <DetailField label="Quantity" value={selected.qty} />
+                <DetailField label="Method" value={selected.paymentMethod} />
+                <DetailField label="Receipt" value={selected.receipt} />
                 <DetailField
-                  label="Subscription ID"
-                  value={selected.subscriptionId}
+                  label="Paid at"
+                  value={
+                    selected.paidAt
+                      ? formatDateTime(selected.paidAt)
+                      : undefined
+                  }
                 />
-                <DetailField label="Session ID" value={selected.sessionId} />
-                <DetailField label="Event ID" value={selected.eventId} />
-                <DetailField label="Trainer ID" value={selected.trainerId} />
-                <DetailField label="Purchase ID" value={selected.purchaseId} />
               </dl>
             </section>
 
             <section className="txn-detail__section">
-              <h4>Payment breakdown</h4>
+              <h4>People</h4>
+              <dl>
+                <DetailField label="Trainer" value={selected.trainerName} />
+                <DetailField
+                  label="Trainer mobile"
+                  value={selected.trainerMobile}
+                />
+                <DetailField label="Raised by" value={selected.raisedByName} />
+                <DetailField
+                  label="Approved by"
+                  value={selected.approvedByName}
+                />
+                <DetailField
+                  label="Approver mobile"
+                  value={selected.approvedByMobile}
+                />
+                <DetailField
+                  label="Approved at"
+                  value={
+                    selected.approvedAt
+                      ? formatDateTime(selected.approvedAt)
+                      : undefined
+                  }
+                />
+              </dl>
+            </section>
+
+            <section className="txn-detail__section">
+              <h4>Amount</h4>
               <dl>
                 <DetailField
                   label="Paid amount"
@@ -577,16 +704,6 @@ export const TransactionList = () => {
                     selected.packageAmount != null
                       ? formatCurrency(selected.packageAmount)
                       : undefined
-                  }
-                />
-                <DetailField
-                  label="Amount due"
-                  value={
-                    selected.isPartial && selectedDue > 0
-                      ? formatCurrency(selectedDue)
-                      : selected.isPartial
-                        ? formatCurrency(0)
-                        : undefined
                   }
                 />
                 <DetailField
@@ -606,74 +723,10 @@ export const TransactionList = () => {
                       : undefined
                   }
                 />
-                <DetailField label="Coupon ID" value={selected.couponId} />
-                <DetailField label="Currency" value={selected.currency} />
-              </dl>
-            </section>
-
-            <section className="txn-detail__section">
-              <h4>Payment info</h4>
-              <dl>
-                <DetailField
-                  label="Payment method"
-                  value={selected.paymentMethod}
-                />
-                <DetailField label="Receipt" value={selected.receipt} />
-                <DetailField
-                  label="Razorpay order ID"
-                  value={selected.razorpayOrderId}
-                />
-                <DetailField
-                  label="Razorpay payment ID"
-                  value={selected.razorpayPaymentId}
-                />
-                <DetailField
-                  label="Approved by"
-                  value={selected.approvedByName}
-                />
-                <DetailField
-                  label="Approved at"
-                  value={
-                    selected.approvedAt
-                      ? formatDateTime(selected.approvedAt)
-                      : undefined
-                  }
-                />
-                <DetailField
-                  label="Failure reason"
-                  value={selected.failureReason}
-                />
               </dl>
             </section>
 
             <RouteSettlementSection transaction={selected} />
-
-            <section className="txn-detail__section">
-              <h4>Record</h4>
-              <dl>
-                <DetailField label="Transaction ID" value={selected.id} />
-                <DetailField
-                  label="Paid at"
-                  value={
-                    selected.paidAt
-                      ? formatDateTime(selected.paidAt)
-                      : undefined
-                  }
-                />
-                <DetailField
-                  label="Created at"
-                  value={formatDateTime(selected.createdAt)}
-                />
-                <DetailField
-                  label="Updated at"
-                  value={
-                    selected.updatedAt
-                      ? formatDateTime(selected.updatedAt)
-                      : undefined
-                  }
-                />
-              </dl>
-            </section>
           </div>
         ) : null}
       </Drawer>

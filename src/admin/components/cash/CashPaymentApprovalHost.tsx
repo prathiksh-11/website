@@ -8,7 +8,7 @@ import {
   Layers,
   X,
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   cashPaymentApi,
   type CashPaymentPending,
@@ -17,6 +17,7 @@ import { getNotificationSocket } from '@/lib/socket';
 import { useAuthStore } from '@/store/auth.store';
 
 export const CASH_PAYMENT_EVENT = 'gym:cash-payment-pending';
+export const CASH_PAYMENT_RESOLVED_EVENT = 'gym:cash-payment-resolved';
 export const CASH_PAYMENT_REOPEN_EVENT = 'gym:cash-payment-reopen';
 
 const formatInr = (amount: number) =>
@@ -24,6 +25,20 @@ const formatInr = (amount: number) =>
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;
+
+const asRecord = (value: unknown): Record<string, unknown> =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+
+/** Normalize socket/FCM payloads that may nest fields under `data`. */
+export const unwrapCashPayload = (
+  payload: Record<string, unknown> | null | undefined,
+): Record<string, unknown> => {
+  const root = asRecord(payload);
+  const nested = asRecord(root.data);
+  return { ...nested, ...root };
+};
 
 const upsertQueue = (
   prev: CashPaymentPending[],
@@ -39,43 +54,50 @@ const upsertQueue = (
 export const mapCashPaymentPayload = (
   payload: Record<string, unknown>,
 ): CashPaymentPending => {
-  const id = String(payload.transaction_id ?? payload.id ?? '');
+  const data = unwrapCashPayload(payload);
+  const id = String(data.transaction_id ?? data.id ?? '');
   return {
     id,
     transactionId: id,
-    branchId:
-      payload.branch_id != null ? String(payload.branch_id) : undefined,
-    branchName: payload.branch_name
-      ? String(payload.branch_name)
-      : undefined,
+    branchId: data.branch_id != null ? String(data.branch_id) : undefined,
+    branchName: data.branch_name ? String(data.branch_name) : undefined,
     customerId:
-      payload.customer_id != null ? String(payload.customer_id) : undefined,
-    customerName: String(payload.customer_name || 'Customer'),
-    customerMobile: payload.customer_mobile
-      ? String(payload.customer_mobile)
+      data.customer_id != null ? String(data.customer_id) : undefined,
+    customerName: String(data.customer_name || 'Customer'),
+    customerMobile: data.customer_mobile
+      ? String(data.customer_mobile)
       : undefined,
-    trainerId:
-      payload.trainer_id != null ? String(payload.trainer_id) : undefined,
-    trainerName: String(payload.trainer_name || 'Trainer'),
-    sessionId:
-      payload.session_id != null ? String(payload.session_id) : undefined,
-    sessionName: String(payload.session_name || 'Session'),
-    amount: Number(payload.amount ?? 0),
-    qty: Number(payload.qty ?? 1),
+    trainerId: data.trainer_id != null ? String(data.trainer_id) : undefined,
+    trainerName: String(data.trainer_name || 'Trainer'),
+    sessionId: data.session_id != null ? String(data.session_id) : undefined,
+    sessionName: String(data.session_name || 'Session'),
+    amount: Number(data.amount ?? 0),
+    qty: Number(data.qty ?? 1),
     paymentMethod: 'cash',
-    paymentStatus: String(payload.payment_status || 'pending'),
+    paymentStatus: String(data.payment_status || 'pending'),
     isPartial:
-      payload.is_partial === true ||
-      payload.is_partial === 'true' ||
-      payload.is_partial === 1,
+      data.is_partial === true ||
+      data.is_partial === 'true' ||
+      data.is_partial === 1,
     packageAmount:
-      payload.package_amount != null
-        ? Number(payload.package_amount)
-        : undefined,
+      data.package_amount != null ? Number(data.package_amount) : undefined,
     purchaseId:
-      payload.purchase_id != null ? String(payload.purchase_id) : undefined,
-    createdAt: payload.created_at ? String(payload.created_at) : undefined,
+      data.purchase_id != null ? String(data.purchase_id) : undefined,
+    createdAt: data.created_at ? String(data.created_at) : undefined,
   };
+};
+
+const resolveCashAction = (
+  payload: Record<string, unknown>,
+): 'approved' | 'rejected' | null => {
+  const action = String(payload.action || '').toLowerCase();
+  if (action === 'approved' || action === 'approve') return 'approved';
+  if (action === 'rejected' || action === 'reject') return 'rejected';
+
+  const status = String(payload.payment_status || '').toLowerCase();
+  if (status === 'paid' || status === 'approved') return 'approved';
+  if (status === 'failed' || status === 'rejected') return 'rejected';
+  return null;
 };
 
 export const CashPaymentApprovalHost = () => {
@@ -85,6 +107,8 @@ export const CashPaymentApprovalHost = () => {
   const [queue, setQueue] = useState<CashPaymentPending[]>([]);
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(true);
+  const queueRef = useRef(queue);
+  queueRef.current = queue;
 
   const current = queue[0] ?? null;
   const remaining = Math.max(queue.length - 1, 0);
@@ -92,8 +116,60 @@ export const CashPaymentApprovalHost = () => {
   const showLauncher = !open && queue.length > 0;
 
   const removeFromQueue = useCallback((id: string) => {
-    setQueue((prev) => prev.filter((item) => item.id !== id));
+    setQueue((prev) => {
+      const next = prev.filter((item) => item.id !== id);
+      return next.length === prev.length ? prev : next;
+    });
   }, []);
+
+  /** Close matching popup when this (or another) device resolves the cash order. */
+  const closeCashApprovalPopup = useCallback(
+    (
+      payload: Record<string, unknown>,
+      options?: { notify?: boolean },
+    ): boolean => {
+      const data = unwrapCashPayload(payload);
+      const id = String(data.transaction_id ?? data.id ?? '');
+      if (!id) return false;
+
+      // Backend may send close_popup: true; treat missing as true for resolved events.
+      const closeFlag = data.close_popup;
+      const shouldClose =
+        closeFlag === undefined ||
+        closeFlag === null ||
+        closeFlag === true ||
+        closeFlag === 'true' ||
+        closeFlag === 1 ||
+        closeFlag === '1';
+      if (!shouldClose) return false;
+
+      const wasQueued = queueRef.current.some((item) => item.id === id);
+      removeFromQueue(id);
+
+      if (options?.notify !== false) {
+        const action = resolveCashAction(data);
+        const approvedBy =
+          data.approved_by != null ? String(data.approved_by) : '';
+        const resolvedBySelf =
+          Boolean(userId) && approvedBy !== '' && approvedBy === String(userId);
+
+        // Toast only when another device/user closed a popup still open here.
+        if (wasQueued && !resolvedBySelf && action) {
+          const customer = data.customer_name
+            ? String(data.customer_name)
+            : 'Customer';
+          if (action === 'approved') {
+            message.info(`Cash payment for ${customer} was approved`);
+          } else {
+            message.info(`Cash payment for ${customer} was rejected`);
+          }
+        }
+      }
+
+      return true;
+    },
+    [message, removeFromQueue, userId],
+  );
 
   const loadPending = useCallback(async () => {
     try {
@@ -142,9 +218,7 @@ export const CashPaymentApprovalHost = () => {
     };
 
     const onResolved = (payload: Record<string, unknown>) => {
-      const id = String(payload?.transaction_id ?? payload?.id ?? '');
-      if (!id) return;
-      removeFromQueue(id);
+      closeCashApprovalPopup(payload || {});
     };
 
     if (!socket.connected) socket.connect();
@@ -155,30 +229,37 @@ export const CashPaymentApprovalHost = () => {
       pendingEvents.forEach((event) => socket.off(event, onPending));
       resolvedEvents.forEach((event) => socket.off(event, onResolved));
     };
-  }, [isAuthenticated, userId, removeFromQueue]);
+  }, [isAuthenticated, userId, closeCashApprovalPopup]);
 
   useEffect(() => {
-    const onFcm = (event: Event) => {
+    const onFcmPending = (event: Event) => {
       const custom = event as CustomEvent<Record<string, unknown>>;
       const item = mapCashPaymentPayload(custom.detail || {});
       if (!item.id) return;
       setQueue((prev) => upsertQueue(prev, item));
       setOpen(true);
     };
+    const onFcmResolved = (event: Event) => {
+      const custom = event as CustomEvent<Record<string, unknown>>;
+      closeCashApprovalPopup(custom.detail || {});
+    };
     const onReopen = () => {
       setOpen(true);
       void loadPending();
     };
-    window.addEventListener(CASH_PAYMENT_EVENT, onFcm);
+    window.addEventListener(CASH_PAYMENT_EVENT, onFcmPending);
+    window.addEventListener(CASH_PAYMENT_RESOLVED_EVENT, onFcmResolved);
     window.addEventListener(CASH_PAYMENT_REOPEN_EVENT, onReopen);
     return () => {
-      window.removeEventListener(CASH_PAYMENT_EVENT, onFcm);
+      window.removeEventListener(CASH_PAYMENT_EVENT, onFcmPending);
+      window.removeEventListener(CASH_PAYMENT_RESOLVED_EVENT, onFcmResolved);
       window.removeEventListener(CASH_PAYMENT_REOPEN_EVENT, onReopen);
     };
-  }, [loadPending]);
+  }, [closeCashApprovalPopup, loadPending]);
 
   const handleApprove = () => {
     if (!current || busy) return;
+    const transactionId = current.id;
     modal.confirm({
       title: 'Confirm cash received?',
       content: `Approve cash payment of ${formatInr(current.amount)} from ${current.customerName}?`,
@@ -188,9 +269,10 @@ export const CashPaymentApprovalHost = () => {
       onOk: async () => {
         setBusy(true);
         try {
-          await cashPaymentApi.approve(current.id);
+          await cashPaymentApi.approve(transactionId);
           message.success('Cash payment approved');
-          removeFromQueue(current.id);
+          // Close locally; socket notifies other devices via cash_payment_resolved_*
+          removeFromQueue(transactionId);
         } catch (error: unknown) {
           const err = error as { response?: { data?: { message?: string } } };
           message.error(
@@ -206,6 +288,7 @@ export const CashPaymentApprovalHost = () => {
 
   const handleReject = () => {
     if (!current || busy) return;
+    const transactionId = current.id;
     modal.confirm({
       title: 'Reject cash payment?',
       content: `Reject cash request from ${current.customerName} for ${current.sessionName}?`,
@@ -215,9 +298,10 @@ export const CashPaymentApprovalHost = () => {
       onOk: async () => {
         setBusy(true);
         try {
-          await cashPaymentApi.reject(current.id);
+          await cashPaymentApi.reject(transactionId);
           message.success('Cash payment rejected');
-          removeFromQueue(current.id);
+          // Close locally; socket notifies other devices via cash_payment_resolved_*
+          removeFromQueue(transactionId);
         } catch (error: unknown) {
           const err = error as { response?: { data?: { message?: string } } };
           message.error(
