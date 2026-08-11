@@ -49,6 +49,9 @@ interface BackendTransactionRow {
   approved_at?: string | null;
   is_partial?: boolean | null;
   package_amount?: number | string | null;
+  amount_pending?: number | string | null;
+  last_paid_amount?: number | string | null;
+  payments?: BackendPaymentHistoryRow[];
   purchase_id?: number | string | null;
   coupon_id?: number | string | null;
   coupon_code?: string | null;
@@ -75,6 +78,21 @@ interface BackendTransactionRow {
   receiving_amount?: number | string | null;
   created_at?: string | null;
   updated_at?: string | null;
+}
+
+interface BackendPaymentHistoryRow {
+  id?: number | string;
+  transaction_id?: number | string | null;
+  amount?: number | string;
+  amount_paid?: number | string | null;
+  amount_pending?: number | string | null;
+  payment_method?: string | null;
+  payment_status?: string | null;
+  razorpay_order_id?: string | null;
+  razorpay_payment_id?: string | null;
+  receipt?: string | null;
+  paid_at?: string | null;
+  created_at?: string | null;
 }
 
 interface BackendListResponse {
@@ -192,6 +210,28 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
   isPartial: Boolean(raw.is_partial),
   packageAmount:
     raw.package_amount != null ? Number(raw.package_amount) : undefined,
+  amountPending:
+    raw.amount_pending != null ? Number(raw.amount_pending) : undefined,
+  lastPaidAmount:
+    raw.last_paid_amount != null ? Number(raw.last_paid_amount) : undefined,
+  payments: Array.isArray(raw.payments)
+    ? raw.payments.map((item) => ({
+        id: String(item.id),
+        transactionId: optionalId(item.transaction_id),
+        amount: Number(item.amount ?? 0),
+        amountPaid:
+          item.amount_paid != null ? Number(item.amount_paid) : undefined,
+        amountPending:
+          item.amount_pending != null ? Number(item.amount_pending) : undefined,
+        paymentMethod: optionalString(item.payment_method),
+        paymentStatus: optionalString(item.payment_status),
+        razorpayOrderId: optionalString(item.razorpay_order_id),
+        razorpayPaymentId: optionalString(item.razorpay_payment_id),
+        receipt: optionalString(item.receipt),
+        paidAt: optionalString(item.paid_at),
+        createdAt: optionalString(item.created_at),
+      }))
+    : undefined,
   purchaseId: optionalId(raw.purchase_id),
   couponId: optionalId(raw.coupon_id),
   couponCode: raw.coupon_code ? String(raw.coupon_code) : undefined,

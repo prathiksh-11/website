@@ -3,10 +3,12 @@ import {
   ArrowUpRight,
   Building2,
   CalendarDays,
+  Check,
   ChevronDown,
   Dumbbell,
   Users,
 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Area,
@@ -27,6 +29,7 @@ import {
 } from 'recharts';
 import { PageSkeleton } from '@/components/common';
 import { THEME_TOKENS } from '@/constants';
+import { useBranches } from '@/hooks/useBranches';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useAuthStore } from '@/store/auth.store';
 import { formatCurrency, formatDate, formatDateTime } from '@/utils/format';
@@ -46,6 +49,18 @@ const MUTED = '#9aa0ab';
 
 const SESSION_IMAGES = [sessionImg1, sessionImg2, sessionImg3];
 const EVENT_IMAGES = [eventImg1, eventImg2, eventImg3, eventImg4];
+const DASHBOARD_BRANCH_KEY = 'dashboard-branch-id';
+
+const shortBranch = (name?: string) => {
+  if (!name) return 'Studio';
+  return (
+    name
+      .replace(/^Game On Fitness\s*[-–—]?\s*/i, '')
+      .replace(/^(Premium Club|Luxury Club)\s*[-–—]?\s*/i, '')
+      .replace(/^[-–—]\s*/, '')
+      .trim() || name
+  );
+};
 
 const tooltipStyle = {
   borderRadius: 14,
@@ -81,9 +96,153 @@ const ChartDot = (props: {
   );
 };
 
+const BranchSwitcher = ({
+  value,
+  onChange,
+  branches,
+  allowAll,
+}: {
+  value?: string;
+  onChange: (next?: string) => void;
+  branches: Array<{ id: string; name: string }>;
+  allowAll: boolean;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDoc = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
+
+  const selected = branches.find((b) => b.id === value);
+  const label = selected ? shortBranch(selected.name) : allowAll ? 'All studios' : 'Select studio';
+  const filtered = branches.filter((b) =>
+    shortBranch(b.name).toLowerCase().includes(search.trim().toLowerCase()),
+  );
+
+  return (
+    <div className="bento-branch" ref={rootRef}>
+      <button
+        type="button"
+        className={open ? 'bento-branch__trigger bento-branch__trigger--open' : 'bento-branch__trigger'}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      >
+        <span className="bento-branch__icon">
+          <Building2 size={16} />
+        </span>
+        <span className="bento-branch__copy">
+          <small>Viewing</small>
+          <strong>{label}</strong>
+        </span>
+        <ChevronDown size={16} className="bento-branch__chevron" />
+      </button>
+
+      {open ? (
+        <div className="bento-branch__menu" role="listbox">
+          <input
+            className="bento-branch__search"
+            placeholder="Search studio"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            autoFocus
+          />
+          {allowAll ? (
+            <button
+              type="button"
+              className={!value ? 'bento-branch__option bento-branch__option--on' : 'bento-branch__option'}
+              onClick={() => {
+                onChange(undefined);
+                setOpen(false);
+                setSearch('');
+              }}
+            >
+              <span>
+                <strong>All studios</strong>
+                <small>Combined dashboard</small>
+              </span>
+              {!value ? <Check size={15} /> : null}
+            </button>
+          ) : null}
+          <div className="bento-branch__list">
+            {filtered.map((branch) => {
+              const active = value === branch.id;
+              return (
+                <button
+                  key={branch.id}
+                  type="button"
+                  className={
+                    active
+                      ? 'bento-branch__option bento-branch__option--on'
+                      : 'bento-branch__option'
+                  }
+                  onClick={() => {
+                    onChange(branch.id);
+                    setOpen(false);
+                    setSearch('');
+                  }}
+                >
+                  <span>
+                    <strong>{shortBranch(branch.name)}</strong>
+                    <small>{branch.name}</small>
+                  </span>
+                  {active ? <Check size={15} /> : null}
+                </button>
+              );
+            })}
+            {!filtered.length ? (
+              <p className="bento-branch__empty">No studio matches</p>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 export const Dashboard = () => {
-  const { data, isLoading, isError } = useDashboard();
   const user = useAuthStore((s) => s.user);
+  const [branchId, setBranchId] = useState<string | undefined>(() => {
+    try {
+      return sessionStorage.getItem(DASHBOARD_BRANCH_KEY) || undefined;
+    } catch {
+      return undefined;
+    }
+  });
+
+  const { data: branchesData } = useBranches({ page: 1, pageSize: 200 });
+  const branches = branchesData?.data ?? [];
+  const { data, isLoading, isError, isFetching } = useDashboard(branchId);
+
+  const selectedBranch = useMemo(
+    () => branches.find((b) => b.id === branchId),
+    [branches, branchId],
+  );
+
+  const onBranchChange = (next?: string) => {
+    setBranchId(next);
+    try {
+      if (next) sessionStorage.setItem(DASHBOARD_BRANCH_KEY, next);
+      else sessionStorage.removeItem(DASHBOARD_BRANCH_KEY);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  useEffect(() => {
+    if (!branchId || !branches.length) return;
+    if (!branches.some((b) => b.id === branchId)) {
+      onBranchChange(undefined);
+    }
+  }, [branchId, branches]);
 
   if (isLoading) return <PageSkeleton variant="dashboard" />;
   if (isError || !data?.summary) {
@@ -124,19 +283,19 @@ export const Dashboard = () => {
     monthlyRevenue.length > 0
       ? monthlyRevenue.map((p) => ({ label: p.label, v: p.value }))
       : [
-          { label: 'Now', v: summary.revenue },
-          { label: 'PT', v: summary.ptPurchaseAmount },
-          { label: 'Subs', v: Math.max(summary.revenue - summary.ptPurchaseAmount, 0) },
-        ];
+        { label: 'Now', v: summary.revenue },
+        { label: 'PT', v: summary.ptPurchaseAmount },
+        { label: 'Subs', v: Math.max(summary.revenue - summary.ptPurchaseAmount, 0) },
+      ];
 
   const subSpark =
     subscriptionGrowth.length > 0
       ? subscriptionGrowth.map((p) => ({ label: p.label, v: p.value }))
       : [
-          { label: 'A', v: Math.max(summary.subscribers - 2, 0) },
-          { label: 'B', v: Math.max(summary.subscribers - 1, 0) },
-          { label: 'C', v: summary.subscribers },
-        ];
+        { label: 'A', v: Math.max(summary.subscribers - 2, 0) },
+        { label: 'B', v: Math.max(summary.subscribers - 1, 0) },
+        { label: 'C', v: summary.subscribers },
+      ];
 
   const arcOuter = Math.PI * 78;
   const arcMid = Math.PI * 62;
@@ -175,23 +334,27 @@ export const Dashboard = () => {
         <div className="bento-greet">
           <p className="bento-kicker">{dayjs().format('dddd, D MMMM YYYY')}</p>
           <h1>
-            Hey {firstName}, <em>here&apos;s your studio today</em>
+            Hey {firstName},{' '}
+            <em>
+              here&apos;s{' '}
+              {selectedBranch
+                ? shortBranch(selectedBranch.name)
+                : 'your studio'}{' '}
+              today
+            </em>
           </h1>
         </div>
 
         <div className="bento-top__actions">
-          <div className="bento-date">
-            <strong>{dayjs().format('D')}</strong>
-            <span>
-              {dayjs().format('ddd')}
-              <br />
-              {dayjs().format('MMM')}
-            </span>
-          </div>
-          <Link to="/reports" className="bento-cta">
-            View reports
-            <ArrowUpRight size={16} />
-          </Link>
+          <BranchSwitcher
+            value={branchId}
+            onChange={onBranchChange}
+            branches={branches}
+            allowAll={user?.role === 'Super Admin' || branches.length > 1}
+          />
+          {isFetching && !isLoading ? (
+            <span className="bento-branch__sync">Updating</span>
+          ) : null}
         </div>
       </header>
 

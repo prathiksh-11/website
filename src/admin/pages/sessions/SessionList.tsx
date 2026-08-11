@@ -52,12 +52,60 @@ const gstLabel = (type?: string, percentage?: number) => {
   return `${pct}% GST extra`;
 };
 
-const featureChips = (features: string) =>
-  features
-    .split(/[,|•]/)
-    .map((f) => f.trim())
-    .filter(Boolean)
-    .slice(0, 4);
+const parseFeatures = (raw?: string): string[] => {
+  if (!raw || typeof raw !== 'string') return [];
+  const cleaned = raw.trim();
+  if (!cleaned) return [];
+
+  // If explicit delimiters exist (*, •, ,, |, ;, \n, bullet unicode)
+  if (/[*•,|\n;\u2022]/.test(cleaned)) {
+    return cleaned
+      .split(/[*•,|\n;\u2022]+/)
+      .map((f) => f.replace(/^[-*\s]+|[-*\s]+$/g, '').trim())
+      .filter((f) => f.length > 0);
+  }
+
+  // Known fitness tags fallback if no delimiters are present
+  const knownKeywords = [
+    'Strength Training',
+    'Muscle Building',
+    'Functional Training',
+    'Core Training',
+    'Cardio Training',
+    'Endurance Training',
+    'Weight Loss',
+    'Fat Loss',
+    'HIIT',
+    'Flexibility',
+    'Mobility',
+    'Personal Training',
+    'Body Building',
+    'CrossFit',
+    'Boxing',
+    'Yoga',
+    'Pilates',
+  ];
+
+  let remaining = cleaned;
+  const found: string[] = [];
+
+  for (const kw of knownKeywords) {
+    const reg = new RegExp(`\\b${kw.replace(/\s+/g, '\\s+')}\\b`, 'gi');
+    if (reg.test(remaining)) {
+      found.push(kw);
+      remaining = remaining.replace(reg, '').trim();
+    }
+  }
+
+  if (found.length > 0) {
+    if (remaining.replace(/[-*\s]/g, '').length > 0) {
+      found.push(remaining.trim());
+    }
+    return found;
+  }
+
+  return [cleaned];
+};
 
 export const SessionList = () => {
   const user = useAuthStore((s) => s.user);
@@ -229,7 +277,14 @@ export const SessionList = () => {
         ) : (
           <div className="sess__grid">
             {data.data.map((session) => {
-              const chips = featureChips(session.sessionFeature);
+              const features = parseFeatures(session.sessionFeature);
+              const maxVisible = 3;
+              const visibleChips =
+                features.length > 4 ? features.slice(0, maxVisible) : features;
+              const remainingCount =
+                features.length > 4 ? features.length - maxVisible : 0;
+              const hiddenFeaturesText =
+                remainingCount > 0 ? features.slice(maxVisible).join(' • ') : '';
 
               return (
                 <article
@@ -256,47 +311,75 @@ export const SessionList = () => {
                   </div>
 
                   <div className="sess-card__body">
-                    <div className="sess-card__title-row">
-                      <h3>{session.name}</h3>
-                      <em>{shortBranch(session.branchName)}</em>
+                    <div className="sess-card__header">
+                      <h3 className="sess-card__title" title={session.name}>
+                        {session.name}
+                      </h3>
+                      <span
+                        className="sess-card__branch-badge"
+                        title={session.branchName}
+                      >
+                        {shortBranch(session.branchName)}
+                      </span>
                     </div>
 
-                    {chips.length > 0 ? (
-                      <div className="sess-card__features">
-                        {chips.map((chip) => (
-                          <span key={chip}>{chip}</span>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="sess-card__desc">No features listed</p>
-                    )}
+                    <div className="sess-card__features-wrapper">
+                      {features.length > 0 ? (
+                        <div className="sess-card__features">
+                          {visibleChips.map((chip, idx) => (
+                            <span
+                              key={`${chip}-${idx}`}
+                              className="sess-card__chip"
+                            >
+                              <span className="sess-card__chip-dot" />
+                              {chip}
+                            </span>
+                          ))}
+                          {remainingCount > 0 && (
+                            <span
+                              className="sess-card__chip sess-card__chip--more"
+                              title={hiddenFeaturesText}
+                            >
+                              +{remainingCount} more
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="sess-card__no-features">
+                          No features listed
+                        </p>
+                      )}
+                    </div>
 
-                    <p className="sess-card__gst">
-                      {gstLabel(session.gstType, session.gstPercentage)}
-                    </p>
-
-                    <div className="sess-card__metrics">
-                      <div>
-                        <Layers size={14} />
-                        <span>
-                          <strong>{session.qty}</strong> sessions
+                    <div className="sess-card__footer-info">
+                      <div className="sess-card__meta-row">
+                        <span className="sess-card__gst-badge">
+                          <Tag size={13} />
+                          {gstLabel(session.gstType, session.gstPercentage)}
+                        </span>
+                        <span className="sess-card__qty-badge">
+                          <Layers size={13} />
+                          <span>
+                            <strong>{session.qty}</strong> sessions
+                          </span>
                         </span>
                       </div>
+
                       {session.partiallyAllow &&
                       session.installmentAmount != null ? (
-                        <div className="sess-card__discount">
-                          <Percent size={14} />
+                        <div className="sess-card__installment-badge">
+                          <Percent size={13} />
                           <span>
-                            EMI{' '}
+                            EMI:{' '}
                             <strong>
                               {formatCurrency(session.installmentAmount)}
                             </strong>
                           </span>
                         </div>
                       ) : (
-                        <div>
-                          <Tag size={14} />
-                          <span>Full price</span>
+                        <div className="sess-card__installment-badge sess-card__installment-badge--full">
+                          <Tag size={13} />
+                          <span>Full price option</span>
                         </div>
                       )}
                     </div>
@@ -306,6 +389,7 @@ export const SessionList = () => {
                         type="text"
                         icon={<EditOutlined />}
                         onClick={() => openEdit(session)}
+                        className="sess-card__btn-edit"
                       >
                         Edit
                       </Button>
@@ -319,6 +403,7 @@ export const SessionList = () => {
                             onOk: () => remove.mutateAsync(session.id),
                           })
                         }
+                        className="sess-card__btn-delete"
                       >
                         Delete
                       </Button>

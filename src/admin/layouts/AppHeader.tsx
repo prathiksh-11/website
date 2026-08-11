@@ -6,7 +6,7 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Badge, Button, Dropdown, Empty, Skeleton } from 'antd';
+import { Avatar, Badge, Button, Dropdown, Empty, Modal, Skeleton } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { MouseEvent } from 'react';
@@ -168,6 +168,22 @@ export const AppHeader = () => {
   const firstName = user?.name?.split(' ')[0] ?? 'there';
   const today = dayjs().format('dddd, D MMMM YYYY');
 
+  const confirmLogout = () => {
+    Modal.confirm({
+      title: 'Log out of studio admin?',
+      content: 'Are you sure you want to sign out? You will need to log in again to access the dashboard.',
+      okText: 'Logout',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      centered: true,
+      maskClosable: true,
+      onOk: async () => {
+        await logout();
+        navigate('/login');
+      },
+    });
+  };
+
   return (
     <header className="admin-header">
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -226,9 +242,8 @@ export const AppHeader = () => {
               {
                 key: 'logout',
                 label: 'Logout',
-                onClick: () => {
-                  void logout().then(() => navigate('/login'));
-                },
+                danger: true,
+                onClick: confirmLogout,
               },
             ],
           }}

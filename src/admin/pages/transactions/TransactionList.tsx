@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { type Dayjs } from 'dayjs';
-import { CreditCard, IndianRupee, Receipt } from 'lucide-react';
+import { Banknote, Building2, Calendar, Clock, CreditCard, Dumbbell, FileText, IndianRupee, Phone, Receipt, ShieldCheck, Ticket, User, Wallet } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { PageSkeleton } from '@/components/common';
 import { PAGE_SIZE_OPTIONS } from '@/constants';
@@ -26,11 +26,15 @@ import { useAuthStore } from '@/store/auth.store';
 import type { PaymentTransaction, TransactionSettlement } from '@/types';
 import { formatCurrency, formatDateTime } from '@/utils/format';
 
-const shortBranch = (name: string) =>
-  name
-    .replace(/^Game On Fitness\s*/i, '')
-    .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
-    .trim() || name;
+const shortBranch = (name?: string) => {
+  if (!name) return '—';
+  return (
+    name
+      .replace(/^Game On Fitness\s*/i, '')
+      .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
+      .trim() || name
+  );
+};
 
 const typeLabel = (type: string) => {
   const map: Record<string, string> = {
@@ -41,9 +45,12 @@ const typeLabel = (type: string) => {
   return map[type] ?? type;
 };
 
+const stillPartial = (row: PaymentTransaction) =>
+  Boolean(row.isPartial) && Number(row.amountPending || 0) > 0.009;
+
 const paymentStatusLabel = (row: PaymentTransaction) => {
   const status = String(row.paymentStatus || '').toLowerCase();
-  if (status === 'paid' && row.isPartial) return 'Partially paid';
+  if (status === 'paid' && stillPartial(row)) return 'Partially paid';
   if (status === 'paid') return 'Paid';
   if (status === 'pending') return 'Pending';
   if (status === 'created') return 'Created';
@@ -53,7 +60,7 @@ const paymentStatusLabel = (row: PaymentTransaction) => {
 
 const paymentStatusColor = (row: PaymentTransaction) => {
   const status = String(row.paymentStatus || '').toLowerCase();
-  if (status === 'paid' && row.isPartial) return 'orange';
+  if (status === 'paid' && stillPartial(row)) return 'orange';
   if (status === 'paid') return 'success';
   if (status === 'failed') return 'error';
   if (status === 'pending' || status === 'created') return 'warning';
@@ -73,8 +80,8 @@ const settlementLabel = (
 
   const transferStatus = String(
     ('transferStatus' in row && row.transferStatus) ||
-      (row as PaymentTransaction).transferStatus ||
-      '',
+    (row as PaymentTransaction).transferStatus ||
+    '',
   ).toLowerCase();
   if (transferStatus === 'failed') return 'Transfer failed';
 
@@ -82,15 +89,15 @@ const settlementLabel = (
     'routed' in row
       ? Boolean(row.routed)
       : Boolean(
-          (row as PaymentTransaction).razorpayTransferId ||
-            (row as PaymentTransaction).linkedAccountId,
-        );
+        (row as PaymentTransaction).razorpayTransferId ||
+        (row as PaymentTransaction).linkedAccountId,
+      );
   if (!routed) return 'Not routed';
 
   const status = String(
     ('settlementStatus' in row && row.settlementStatus) ||
-      (row as PaymentTransaction).settlementStatus ||
-      '',
+    (row as PaymentTransaction).settlementStatus ||
+    '',
   ).toLowerCase();
   const onHold =
     ('onHold' in row && row.onHold) ||
@@ -387,9 +394,22 @@ export const TransactionList = () => {
       dataIndex: 'amount',
       key: 'amount',
       align: 'right',
-      width: 110,
-      render: (value: number) => (
-        <span className="txn__amount">{formatCurrency(value)}</span>
+      width: 130,
+      render: (value: number, row) => (
+        <span className="txn__amount-cell">
+          <span className="txn__amount">{formatCurrency(value)}</span>
+          {stillPartial(row) ? (
+            <span className="txn__partial-meta">
+              Pending {formatCurrency(row.amountPending)}
+            </span>
+          ) : row.lastPaidAmount != null &&
+            row.payments &&
+            row.payments.length > 1 ? (
+            <span className="txn__partial-meta">
+              Last {formatCurrency(row.lastPaidAmount)}
+            </span>
+          ) : null}
+        </span>
       ),
     },
     {
@@ -534,6 +554,7 @@ export const TransactionList = () => {
             onChange={(value) => setStatus(value)}
             options={[
               { value: 'paid', label: 'Paid' },
+              { value: 'partial', label: 'Partially paid' },
               { value: 'pending', label: 'Pending' },
               { value: 'created', label: 'Created' },
               { value: 'failed', label: 'Failed' },
@@ -584,149 +605,322 @@ export const TransactionList = () => {
 
       <Drawer
         title={
-          selected && isCashPayment(selected)
-            ? 'Cash payment'
-            : 'Razorpay payment'
+          selected ? (
+            <div className="txn-drawer__title">
+              {isCashPayment(selected) ? (
+                <span className="txn-drawer__title-badge txn-drawer__title-badge--cash">
+                  <Banknote size={16} /> Cash Payment
+                </span>
+              ) : (
+                <span className="txn-drawer__title-badge txn-drawer__title-badge--online">
+                  <CreditCard size={16} /> Online Payment
+                </span>
+              )}
+              <span className="txn-drawer__receipt-id">
+                #{selected.receipt || selected.id}
+              </span>
+            </div>
+          ) : (
+            'Transaction Details'
+          )
         }
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
-        width={460}
+        width={480}
         destroyOnHidden
         className="txn-drawer"
       >
         {selected ? (
           <div className="txn-detail">
-            <div className="txn-detail__head">
-              <div>
-                <p className="txn-detail__kicker">
-                  {isCashPayment(selected) ? 'Cash collected' : 'Customer paid'}
-                </p>
-                <strong className="txn-detail__amount">
-                  {formatCurrency(selected.amount)}
-                </strong>
-                {!isCashPayment(selected) &&
-                selected.receivingAmount != null ? (
-                  <p className="txn-detail__receive">
-                    Branch gets {formatCurrency(selected.receivingAmount)}
-                  </p>
-                ) : null}
-              </div>
-              <div className="txn-detail__badges">
-                <Tag
-                  bordered={false}
-                  color={paymentStatusColor(selected)}
-                  className="txn__tag"
-                >
-                  {paymentStatusLabel(selected)}
-                </Tag>
-                {!isCashPayment(selected) ? (
+            {/* Hero Payment Banner */}
+            <div className="txn-hero-card">
+              <div className="txn-hero-card__top">
+                <div>
+                  <span className="txn-hero-card__kicker">
+                    {isCashPayment(selected)
+                      ? 'Total Cash Collected'
+                      : 'Total Customer Paid'}
+                  </span>
+                  <div className="txn-hero-card__amount">
+                    {formatCurrency(selected.amount)}
+                    {stillPartial(selected) && (
+                      <span className="txn-hero-card__partial-tag">
+                        Installment
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="txn-hero-card__badges">
                   <Tag
                     bordered={false}
-                    color={settlementColor(selected)}
+                    color={paymentStatusColor(selected)}
                     className="txn__tag"
                   >
-                    {settlementLabel(selected)}
+                    {paymentStatusLabel(selected)}
                   </Tag>
-                ) : null}
+                  {!isCashPayment(selected) && (
+                    <Tag
+                      bordered={false}
+                      color={settlementColor(selected)}
+                      className="txn__tag"
+                    >
+                      {settlementLabel(selected)}
+                    </Tag>
+                  )}
+                </div>
+              </div>
+              <div className="txn-hero-card__footer">
+                <span className="txn-hero-card__date">
+                  <Calendar size={13} />
+                  {formatDateTime(selected.paidAt || selected.createdAt)}
+                </span>
+                <span className="txn-hero-card__method">
+                  {isCashPayment(selected) ? (
+                    <Wallet size={13} />
+                  ) : (
+                    <CreditCard size={13} />
+                  )}
+                  {(selected.paymentMethod || 'cash').toUpperCase()}
+                </span>
               </div>
             </div>
 
-            <section className="txn-detail__section">
-              <h4>Payment</h4>
-              <dl>
-                <DetailField label="Customer" value={selected.userName} />
-                <DetailField label="Mobile" value={selected.userMobile} />
-                <DetailField
-                  label="Branch"
-                  value={
-                    selected.branchName
-                      ? shortBranch(selected.branchName)
-                      : undefined
-                  }
-                />
-                <DetailField
-                  label="Item"
-                  value={selected.itemName || typeLabel(selected.type)}
-                />
-                <DetailField label="Type" value={typeLabel(selected.type)} />
-                <DetailField label="Quantity" value={selected.qty} />
-                <DetailField label="Method" value={selected.paymentMethod} />
-                <DetailField label="Receipt" value={selected.receipt} />
-                <DetailField
-                  label="Paid at"
-                  value={
-                    selected.paidAt
-                      ? formatDateTime(selected.paidAt)
-                      : undefined
-                  }
-                />
-              </dl>
-            </section>
+            {/* Item & Package Details Card */}
+            <div className="txn-card">
+              <div className="txn-card__header">
+                <Dumbbell size={16} className="txn-card__icon" />
+                <span className="txn-card__title">Item & Package</span>
+              </div>
+              <div className="txn-card__body">
+                <div className="txn-item-box">
+                  <strong className="txn-item-box__name">
+                    {selected.itemName || typeLabel(selected.type)}
+                  </strong>
+                  <div className="txn-item-box__meta">
+                    <span className="txn-pill">{typeLabel(selected.type)}</span>
+                    <span className="txn-pill">
+                      <Building2 size={12} /> {shortBranch(selected.branchName)}
+                    </span>
+                    {selected.qty ? (
+                      <span className="txn-pill">Qty: {selected.qty}</span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <section className="txn-detail__section">
-              <h4>People</h4>
-              <dl>
-                <DetailField label="Trainer" value={selected.trainerName} />
-                <DetailField
-                  label="Trainer mobile"
-                  value={selected.trainerMobile}
-                />
-                <DetailField label="Raised by" value={selected.raisedByName} />
-                <DetailField
-                  label="Approved by"
-                  value={selected.approvedByName}
-                />
-                <DetailField
-                  label="Approver mobile"
-                  value={selected.approvedByMobile}
-                />
-                <DetailField
-                  label="Approved at"
-                  value={
-                    selected.approvedAt
-                      ? formatDateTime(selected.approvedAt)
-                      : undefined
-                  }
-                />
-              </dl>
-            </section>
+            {/* Pricing & Discount Breakdown Card */}
+            <div className="txn-card">
+              <div className="txn-card__header">
+                <IndianRupee size={16} className="txn-card__icon" />
+                <span className="txn-card__title">Payment Breakdown</span>
+              </div>
+              <div className="txn-card__body txn-breakdown">
+                {selected.packageAmount != null && (
+                  <div className="txn-breakdown__row">
+                    <span>Package Price</span>
+                    <strong>{formatCurrency(selected.packageAmount)}</strong>
+                  </div>
+                )}
 
-            <section className="txn-detail__section">
-              <h4>Amount</h4>
-              <dl>
-                <DetailField
-                  label="Paid amount"
-                  value={formatCurrency(selected.amount)}
-                />
-                <DetailField
-                  label="Package amount"
-                  value={
-                    selected.packageAmount != null
-                      ? formatCurrency(selected.packageAmount)
-                      : undefined
-                  }
-                />
-                <DetailField
-                  label="Original amount"
-                  value={
-                    selected.originalAmount != null
-                      ? formatCurrency(selected.originalAmount)
-                      : undefined
-                  }
-                />
-                <DetailField label="Coupon code" value={selected.couponCode} />
-                <DetailField
-                  label="Coupon discount"
-                  value={
-                    selected.couponDiscount != null
-                      ? `−${formatCurrency(selected.couponDiscount)}`
-                      : undefined
-                  }
-                />
-              </dl>
-            </section>
+                {selected.originalAmount != null &&
+                  selected.originalAmount !== selected.packageAmount && (
+                    <div className="txn-breakdown__row">
+                      <span>Original Amount</span>
+                      <span>{formatCurrency(selected.originalAmount)}</span>
+                    </div>
+                  )}
 
+                {selected.couponCode ? (
+                  <div className="txn-breakdown__row txn-breakdown__row--discount">
+                    <span className="txn-coupon-tag">
+                      <Ticket size={12} /> {selected.couponCode}
+                    </span>
+                    <strong className="txn-discount-text">
+                      −{formatCurrency(selected.couponDiscount ?? 0)}
+                    </strong>
+                  </div>
+                ) : null}
+
+                {stillPartial(selected) ? (
+                  <div className="txn-breakdown__row">
+                    <span>Payment Structure</span>
+                    <span className="txn-badge--amber">
+                      Partial / EMI Payment
+                    </span>
+                  </div>
+                ) : null}
+
+                {selected.lastPaidAmount != null &&
+                (selected.payments?.length || 0) > 1 ? (
+                  <div className="txn-breakdown__row">
+                    <span>Last paid</span>
+                    <span>{formatCurrency(selected.lastPaidAmount)}</span>
+                  </div>
+                ) : null}
+
+                {stillPartial(selected) ? (
+                  <div className="txn-breakdown__row">
+                    <span>Pending</span>
+                    <strong className="txn-discount-text">
+                      {formatCurrency(selected.amountPending)}
+                    </strong>
+                  </div>
+                ) : null}
+
+                <div className="txn-breakdown__row txn-breakdown__row--total">
+                  <span>Net Amount Collected</span>
+                  <strong className="txn-total-amount">
+                    {formatCurrency(selected.amount)}
+                  </strong>
+                </div>
+              </div>
+            </div>
+
+            {(selected.payments?.length || 0) > 0 ? (
+              <div className="txn-card">
+                <div className="txn-card__header">
+                  <Receipt size={16} className="txn-card__icon" />
+                  <span className="txn-card__title">Payment history</span>
+                </div>
+                <div className="txn-card__body txn-history">
+                  {selected.payments?.map((payment, index) => (
+                    <div key={payment.id} className="txn-history__row">
+                      <div>
+                        <strong>
+                          {index === 0 ? 'First payment' : `Installment ${index + 1}`}
+                        </strong>
+                        <span>
+                          {formatDateTime(payment.paidAt || payment.createdAt)}
+                          {payment.paymentMethod
+                            ? ` · ${payment.paymentMethod}`
+                            : ''}
+                        </span>
+                      </div>
+                      <div className="txn-history__amounts">
+                        <strong>{formatCurrency(payment.amount)}</strong>
+                        {payment.amountPending != null &&
+                        payment.amountPending > 0.009 ? (
+                          <small>
+                            Pending {formatCurrency(payment.amountPending)}
+                          </small>
+                        ) : (
+                          <small>Balance cleared</small>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {/* People Involved Card */}
+            <div className="txn-card">
+              <div className="txn-card__header">
+                <User size={16} className="txn-card__icon" />
+                <span className="txn-card__title">Customer & Staff</span>
+              </div>
+              <div className="txn-card__body txn-people-grid">
+                {/* Customer */}
+                <div className="txn-person-card">
+                  <div className="txn-person-card__role">Customer</div>
+                  <div className="txn-person-card__name">
+                    {selected.userName || '—'}
+                  </div>
+                  {selected.userMobile && (
+                    <div className="txn-person-card__phone">
+                      <Phone size={12} /> {selected.userMobile}
+                    </div>
+                  )}
+                </div>
+
+                {/* Trainer */}
+                <div className="txn-person-card">
+                  <div className="txn-person-card__role">Trainer</div>
+                  <div className="txn-person-card__name">
+                    {selected.trainerName || 'Unassigned'}
+                  </div>
+                  {selected.trainerMobile && (
+                    <div className="txn-person-card__phone">
+                      <Phone size={12} /> {selected.trainerMobile}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Approval Audit Trail */}
+              {(selected.approvedByName || selected.raisedByName) && (
+                <div className="txn-approval-box">
+                  <div className="txn-approval-box__title">
+                    <ShieldCheck size={14} /> Approval Audit Trail
+                  </div>
+                  <div className="txn-approval-box__grid">
+                    {selected.raisedByName && (
+                      <div>
+                        <span className="txn-sublabel">Collected By</span>
+                        <strong>{selected.raisedByName}</strong>
+                      </div>
+                    )}
+                    {selected.approvedByName && (
+                      <div>
+                        <span className="txn-sublabel">Approved By</span>
+                        <strong>{selected.approvedByName}</strong>
+                        {selected.approvedByMobile && (
+                          <small> ({selected.approvedByMobile})</small>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {selected.approvedAt && (
+                    <div className="txn-approval-box__time">
+                      <Clock size={12} /> Verified on{' '}
+                      {formatDateTime(selected.approvedAt)}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Banking & Settlement Section */}
             <RouteSettlementSection transaction={selected} />
+
+            {/* Identifiers & Raw Meta */}
+            <div className="txn-card txn-card--muted">
+              <div className="txn-card__header">
+                <FileText size={15} className="txn-card__icon" />
+                <span className="txn-card__title">Identifiers & Meta</span>
+              </div>
+              <div className="txn-card__body txn-meta-grid">
+                <div className="txn-meta-item">
+                  <span>Transaction ID</span>
+                  <code>#{selected.id}</code>
+                </div>
+                {selected.receipt && (
+                  <div className="txn-meta-item">
+                    <span>Receipt Ref</span>
+                    <code>{selected.receipt}</code>
+                  </div>
+                )}
+                {selected.razorpayOrderId && (
+                  <div className="txn-meta-item">
+                    <span>Order ID</span>
+                    <code>{selected.razorpayOrderId}</code>
+                  </div>
+                )}
+                {selected.razorpayPaymentId && (
+                  <div className="txn-meta-item">
+                    <span>Razorpay Payment ID</span>
+                    <code>{selected.razorpayPaymentId}</code>
+                  </div>
+                )}
+                {selected.linkedAccountId && (
+                  <div className="txn-meta-item">
+                    <span>Linked Account</span>
+                    <code>{selected.linkedAccountId}</code>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         ) : null}
       </Drawer>
