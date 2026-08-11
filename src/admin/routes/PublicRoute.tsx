@@ -8,7 +8,7 @@ export const PublicRoute = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   if (!hydrated) {
-    return <PageSkeleton variant="detail" />;
+    return null;
   }
 
   if (isAuthenticated) {

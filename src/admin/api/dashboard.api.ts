@@ -137,7 +137,7 @@ export const mapBackendDashboard = (
 };
 
 export const dashboardApi = {
-  getDashboard: async (): Promise<DashboardData> => {
+  getDashboard: async (branchId?: string): Promise<DashboardData> => {
     if (USE_MOCK) {
       await delay();
       return structuredClone(MOCK_DASHBOARD);
@@ -145,6 +145,9 @@ export const dashboardApi = {
 
     const { data } = await apiClient.get<BackendDashboardResponse>(
       ENDPOINTS.DASHBOARD.ROOT,
+      {
+        params: branchId ? { branch_id: Number(branchId) } : undefined,
+      },
     );
 
     // Backend: { success, data: { total_clients, ... } }

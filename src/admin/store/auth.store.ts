@@ -48,11 +48,14 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          await authApi.logout();
+          if (localStorage.getItem(STORAGE_KEYS.TOKEN)) {
+            await authApi.logout().catch(() => {});
+          }
         } finally {
           localStorage.removeItem(STORAGE_KEYS.TOKEN);
           localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
           localStorage.removeItem(STORAGE_KEYS.USER);
+          localStorage.removeItem('gym-admin-auth');
           set({
             token: null,
             user: null,
@@ -71,6 +74,23 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (!state?.token || !state?.isAuthenticated) {
+          localStorage.removeItem(STORAGE_KEYS.TOKEN);
+          localStorage.removeItem(STORAGE_KEYS.USER);
+          localStorage.removeItem('gym-admin-auth');
+          if (state) {
+            state.token = null;
+            state.user = null;
+            state.isAuthenticated = false;
+          }
+        } else {
+          localStorage.setItem(STORAGE_KEYS.TOKEN, state.token);
+          if (state.user) {
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(state.user));
+          }
+        }
+      },
     },
   ),
 );

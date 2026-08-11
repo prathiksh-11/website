@@ -355,6 +355,8 @@ const BranchSummaryTab = ({
         <div className="rpt__branch-grid">
           {branches.map((b) => {
             const util = Math.min(100, b.highlights.sessionUtilization);
+            const totalCustomers = b.summary.totalCustomers;
+            const ptCustomers = b.summary.ptClients;
             return (
               <article key={b.id} className="rpt-branch">
                 <header className="rpt-branch__head">
@@ -416,12 +418,20 @@ const BranchSummaryTab = ({
                   </li>
                 </ul>
 
+                <div className="rpt-branch__section-label">Customers & Staff</div>
                 <div className="rpt-branch__people">
                   <div className="rpt-branch__person-box">
+                    <Users size={16} />
+                    <div>
+                      <strong>{totalCustomers}</strong>
+                      <span>Total Customers</span>
+                    </div>
+                  </div>
+                  <div className="rpt-branch__person-box rpt-branch__person-box--pt">
                     <UserCheck size={16} />
                     <div>
-                      <strong>{b.summary.totalCustomers}</strong>
-                      <span>Customers</span>
+                      <strong>{ptCustomers}</strong>
+                      <span>PT Customers</span>
                     </div>
                   </div>
                   <div className="rpt-branch__person-box">

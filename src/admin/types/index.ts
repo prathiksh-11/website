@@ -435,6 +435,9 @@ export interface PaymentTransaction {
   approvedAt?: string;
   isPartial?: boolean;
   packageAmount?: number;
+  amountPending?: number;
+  lastPaidAmount?: number;
+  payments?: TransactionPaymentHistory[];
   purchaseId?: string;
   couponId?: string;
   couponCode?: string;
@@ -461,6 +464,21 @@ export interface PaymentTransaction {
   receivingAmount?: number;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface TransactionPaymentHistory {
+  id: string;
+  transactionId?: string;
+  amount: number;
+  amountPaid?: number;
+  amountPending?: number;
+  paymentMethod?: string;
+  paymentStatus?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  receipt?: string;
+  paidAt?: string;
+  createdAt?: string;
 }
 
 export interface TransactionTransferError {

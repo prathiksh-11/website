@@ -34,10 +34,23 @@ apiClient.interceptors.response.use(
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER);
-      if (!window.location.pathname.includes('/login')) {
-        message.error('Session expired. Please sign in again.');
-        window.location.href = '/login';
-      }
+      localStorage.removeItem('gym-admin-auth');
+
+      // Import auth store state and reset cleanly to prevent redirect loops
+      import('@/store/auth.store').then(({ useAuthStore }) => {
+        const { isAuthenticated } = useAuthStore.getState();
+        if (isAuthenticated) {
+          useAuthStore.setState({
+            token: null,
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+          if (!window.location.pathname.includes('/login')) {
+            message.error('Session expired. Please sign in again.');
+          }
+        }
+      });
     } else if (status === 403) {
       if (!window.location.pathname.includes('/login')) {
         message.error('You do not have permission to perform this action.');

@@ -26,12 +26,20 @@ const resolveImageUrl = (image: unknown) => {
 };
 
 const mapSummary = (raw: Record<string, unknown> = {}): ReportBranchSummary => {
-  const totalRevenue = asNumber(raw.total_revenue);
+  const totalRevenue = asNumber(raw.total_revenue ?? raw.totalRevenue);
   return {
-    totalCustomers: asNumber(raw.total_customers),
-    subscriberClients: asNumber(raw.subscriber_clients),
-    subscriberRevenue: asNumber(raw.subscriber_revenue),
-    ptClients: asNumber(raw.pt_clients),
+    totalCustomers: asNumber(
+      raw.total_customers ?? raw.totalCustomers ?? raw.total_clients,
+    ),
+    subscriberClients: asNumber(
+      raw.subscriber_clients ?? raw.subscriberClients,
+    ),
+    subscriberRevenue: asNumber(
+      raw.subscriber_revenue ?? raw.subscriberRevenue,
+    ),
+    ptClients: asNumber(
+      raw.pt_clients ?? raw.ptClients ?? raw.total_pt_clients ?? raw.total_pt_customers,
+    ),
     ptRevenue: asNumber(raw.pt_revenue),
     eventClients: asNumber(raw.event_clients),
     eventRevenue: asNumber(raw.event_revenue),
