@@ -788,7 +788,11 @@ export const TransactionList = () => {
                     <div key={payment.id} className="txn-history__row">
                       <div>
                         <strong>
-                          {index === 0 ? 'First payment' : `Installment ${index + 1}`}
+                          {selected.payments && selected.payments.length > 1
+                            ? index === 0
+                              ? 'First payment'
+                              : `Installment ${index + 1}`
+                            : 'Payment'}
                         </strong>
                         <span>
                           {formatDateTime(payment.paidAt || payment.createdAt)}
@@ -796,6 +800,19 @@ export const TransactionList = () => {
                             ? ` · ${payment.paymentMethod}`
                             : ''}
                         </span>
+                        {payment.approvedByName ? (
+                          <span className="txn-history__approver">
+                            Approved by {payment.approvedByName}
+                            {payment.approvedAt
+                              ? ` · ${formatDateTime(payment.approvedAt)}`
+                              : ''}
+                          </span>
+                        ) : String(payment.paymentMethod || '').toLowerCase() ===
+                          'cash' ? (
+                          <span className="txn-history__approver">
+                            Cash — approver not recorded
+                          </span>
+                        ) : null}
                       </div>
                       <div className="txn-history__amounts">
                         <strong>{formatCurrency(payment.amount)}</strong>
@@ -804,8 +821,10 @@ export const TransactionList = () => {
                           <small>
                             Pending {formatCurrency(payment.amountPending)}
                           </small>
-                        ) : (
+                        ) : selected.payments && selected.payments.length > 1 ? (
                           <small>Balance cleared</small>
+                        ) : (
+                          <small>Paid in full</small>
                         )}
                       </div>
                     </div>
@@ -849,7 +868,9 @@ export const TransactionList = () => {
               </div>
 
               {/* Approval Audit Trail */}
-              {(selected.approvedByName || selected.raisedByName) && (
+              {(selected.approvedByName ||
+                selected.raisedByName ||
+                selected.payments?.some((p) => p.approvedByName)) && (
                 <div className="txn-approval-box">
                   <div className="txn-approval-box__title">
                     <ShieldCheck size={14} /> Approval Audit Trail
@@ -861,7 +882,8 @@ export const TransactionList = () => {
                         <strong>{selected.raisedByName}</strong>
                       </div>
                     )}
-                    {selected.approvedByName && (
+                    {selected.approvedByName &&
+                    !(selected.payments && selected.payments.length > 1) ? (
                       <div>
                         <span className="txn-sublabel">Approved By</span>
                         <strong>{selected.approvedByName}</strong>
@@ -869,14 +891,35 @@ export const TransactionList = () => {
                           <small> ({selected.approvedByMobile})</small>
                         )}
                       </div>
-                    )}
+                    ) : null}
                   </div>
-                  {selected.approvedAt && (
+                  {selected.payments &&
+                  selected.payments.some((p) => p.approvedByName) ? (
+                    <div className="txn-approval-box__payments">
+                      {selected.payments.map((payment, index) =>
+                        payment.approvedByName ? (
+                          <div
+                            key={payment.id}
+                            className="txn-approval-box__time"
+                          >
+                            <Clock size={12} />
+                            {selected.payments && selected.payments.length > 1
+                              ? `${index === 0 ? 'First' : `Installment ${index + 1}`} · `
+                              : ''}
+                            Approved by {payment.approvedByName}
+                            {payment.approvedAt
+                              ? ` · ${formatDateTime(payment.approvedAt)}`
+                              : ''}
+                          </div>
+                        ) : null,
+                      )}
+                    </div>
+                  ) : selected.approvedAt ? (
                     <div className="txn-approval-box__time">
                       <Clock size={12} /> Verified on{' '}
                       {formatDateTime(selected.approvedAt)}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               )}
             </div>

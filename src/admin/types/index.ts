@@ -469,6 +469,7 @@ export interface PaymentTransaction {
 export interface TransactionPaymentHistory {
   id: string;
   transactionId?: string;
+  installmentTransactionId?: string;
   amount: number;
   amountPaid?: number;
   amountPending?: number;
@@ -477,6 +478,10 @@ export interface TransactionPaymentHistory {
   razorpayOrderId?: string;
   razorpayPaymentId?: string;
   receipt?: string;
+  approvedBy?: string;
+  approvedByName?: string;
+  approvedByMobile?: string;
+  approvedAt?: string;
   paidAt?: string;
   createdAt?: string;
 }
