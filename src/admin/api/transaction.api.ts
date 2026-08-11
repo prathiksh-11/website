@@ -83,6 +83,7 @@ interface BackendTransactionRow {
 interface BackendPaymentHistoryRow {
   id?: number | string;
   transaction_id?: number | string | null;
+  installment_transaction_id?: number | string | null;
   amount?: number | string;
   amount_paid?: number | string | null;
   amount_pending?: number | string | null;
@@ -91,6 +92,10 @@ interface BackendPaymentHistoryRow {
   razorpay_order_id?: string | null;
   razorpay_payment_id?: string | null;
   receipt?: string | null;
+  approved_by?: number | string | null;
+  approved_by_name?: string | null;
+  approved_by_mobile?: string | null;
+  approved_at?: string | null;
   paid_at?: string | null;
   created_at?: string | null;
 }
@@ -218,6 +223,7 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
     ? raw.payments.map((item) => ({
         id: String(item.id),
         transactionId: optionalId(item.transaction_id),
+        installmentTransactionId: optionalId(item.installment_transaction_id),
         amount: Number(item.amount ?? 0),
         amountPaid:
           item.amount_paid != null ? Number(item.amount_paid) : undefined,
@@ -228,6 +234,10 @@ const mapRow = (raw: BackendTransactionRow): PaymentTransaction => ({
         razorpayOrderId: optionalString(item.razorpay_order_id),
         razorpayPaymentId: optionalString(item.razorpay_payment_id),
         receipt: optionalString(item.receipt),
+        approvedBy: optionalId(item.approved_by),
+        approvedByName: optionalString(item.approved_by_name),
+        approvedByMobile: optionalString(item.approved_by_mobile),
+        approvedAt: optionalString(item.approved_at),
         paidAt: optionalString(item.paid_at),
         createdAt: optionalString(item.created_at),
       }))

@@ -6612,6 +6612,17 @@
   color: var(--admin-muted);
 }
 
+.txn-history__approver {
+  color: #0f766e !important;
+}
+
+.txn-approval-box__payments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
 /* Payment Breakdown */
 .txn-breakdown {
   display: flex;
