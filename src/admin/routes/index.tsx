@@ -47,6 +47,7 @@ const TransactionList = lazy(() =>
 const CouponList = lazy(() =>
   import('@/pages/coupons/CouponList').then((m) => ({ default: m.CouponList })),
 );
+const AdminOffers = lazy(() => import('@/components/AdminOffers'));
 const BookingReport = lazy(() =>
   import('@/pages/reports/BookingReport').then((m) => ({ default: m.BookingReport })),
 );
@@ -128,6 +129,15 @@ export const AppRouter = () =>
                 {
                   path: '/coupons',
                   element: withSuspense(<CouponList />),
+                },
+              ],
+            },
+            {
+              element: <ProtectedRoute permission="offers" />,
+              children: [
+                {
+                  path: '/offers',
+                  element: withSuspense(<AdminOffers />),
                 },
               ],
             },

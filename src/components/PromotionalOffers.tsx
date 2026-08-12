@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 interface Banner {
-  id: number;
+  id: number | string;
   title: string;
   image_url: string;
   redirect_url?: string;
@@ -18,6 +18,13 @@ interface Banner {
   is_active: boolean;
   display_order?: number;
 }
+
+// Helper to safely compose API URLs without double or missing slashes
+const getApiUrl = (endpoint: string) => {
+  const base = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/').replace(/\/+$/, '');
+  const cleanEndpoint = endpoint.replace(/^\/+/, '').replace(/^api\//, '');
+  return `${base}/${cleanEndpoint}`;
+};
 
 export default function PromotionalOffers() {
   const [promoCards, setPromoCards] = useState<Banner[]>([]);
@@ -28,8 +35,7 @@ export default function PromotionalOffers() {
 
   const getFullImageUrl = useCallback((relativePath: string) => {
     if (!relativePath) return '';
-
-    if (relativePath.startsWith('http')) {
+    if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
       return relativePath;
     }
 
@@ -39,19 +45,15 @@ export default function PromotionalOffers() {
       'http://localhost:5000';
 
     baseUrl = baseUrl.replace(/\/+$/, '');
-
     return `${baseUrl}/${relativePath.replace(/^\/+/, '')}`;
   }, []);
 
   const fetchOffers = useCallback(async () => {
     try {
-      const apiUrl = `${
-        import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
-      }/api/get-banners`;
-
+      const apiUrl = getApiUrl('get-banners');
       const response = await axios.get(apiUrl);
 
-      if (response.data.success) {
+      if (response.data && response.data.success && Array.isArray(response.data.data)) {
         const allBanners = response.data.data.filter((item: Banner) => item.is_active);
 
         const promos = allBanners
@@ -70,7 +72,7 @@ export default function PromotionalOffers() {
         setCarouselBanners(carousels);
       }
     } catch (error) {
-      console.error('Failed to fetch offers:', error);
+      console.error('Failed to fetch promotional offers:', error);
     }
   }, []);
 
@@ -83,7 +85,7 @@ export default function PromotionalOffers() {
 
     const interval = setInterval(() => {
       setCurrentPromoSlide((prev) => (prev + 1) % promoCards.length);
-    }, 4000);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, [promoCards.length, isHovered]);
@@ -93,7 +95,7 @@ export default function PromotionalOffers() {
 
     const interval = setInterval(() => {
       setCurrentCarouselSlide((prev) => (prev + 1) % carouselBanners.length);
-    }, 5000);
+    }, 5500);
 
     return () => clearInterval(interval);
   }, [carouselBanners.length, isHovered]);
@@ -118,39 +120,46 @@ export default function PromotionalOffers() {
 
   if (promoCards.length === 0 && carouselBanners.length === 0) return null;
 
+  const totalOffersCount = promoCards.length + carouselBanners.length;
+
   return (
     <section
-      className="relative py-16 md:py-20 section-soft overflow-hidden"
+      className="relative py-16 md:py-24 bg-[#f7f8fb] overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Background Decorative Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-radial from-[#ff5000]/10 via-transparent to-transparent pointer-events-none blur-3xl" />
+
       <div className="relative max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-8 animate-fade-in-up">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <div className="section-ornament mb-3">
-              <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
-                Limited Time
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fff0e8] border border-[#ff5000]/20 mb-3">
+              <Sparkles size={14} className="text-[#ff5000]" />
+              <span className="text-xs font-bold text-[#ff5000] uppercase tracking-wider">
+                Limited Time Deals
               </span>
             </div>
-            <h2 className="font-display text-2xl md:text-4xl font-bold text-[#16181f] tracking-tight">
-              Exclusive <span className="italic text-[#ff5000]">offers</span>
+            <h2 className="font-display text-3xl md:text-5xl font-extrabold text-[#16181f] tracking-tight">
+              Exclusive <span className="text-[#ff5000] italic">Offers & Deals</span>
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#f7f8fb] border border-[rgba(18,20,26,0.06)]">
-            <Sparkles size={14} className="text-[#ff5000]" />
-            <span className="text-xs font-semibold text-[#6f7685] uppercase tracking-wider">
-              {promoCards.length + carouselBanners.length} Active{' '}
-              {promoCards.length + carouselBanners.length === 1 ? 'Offer' : 'Offers'}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-[rgba(22,24,31,0.08)] shadow-sm">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5000] animate-pulse" />
+            <span className="text-xs font-bold text-[#16181f] uppercase tracking-wider">
+              {totalOffersCount} Active {totalOffersCount === 1 ? 'Offer' : 'Offers'}
             </span>
           </div>
         </div>
 
+        {/* Promo Cards Section (2:1 Ratio) */}
         {promoCards.length > 0 && (
-          <div className="relative mb-12 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-            <div className="overflow-hidden rounded-[1.5rem]">
+          <div className="relative mb-14">
+            <div className="overflow-hidden rounded-[2rem] shadow-[0_20px_50px_rgba(22,24,31,0.06)] border border-[rgba(22,24,31,0.08)] bg-white">
               <div
-                className="flex transition-transform duration-700"
+                className="flex transition-transform duration-700 ease-out"
                 style={{ transform: `translateX(-${currentPromoSlide * 100}%)` }}
               >
                 {promoCards.map((offer) => (
@@ -161,44 +170,39 @@ export default function PromotionalOffers() {
                       }
                       className="group relative cursor-pointer"
                     >
-                      <div className="relative overflow-hidden rounded-[1.5rem] bg-[#f7f8fb] border border-[rgba(18,20,26,0.06)] group-hover:shadow-[0_28px_60px_rgba(18,20,26,0.1)] transition-all duration-500">
-                        <div className="relative w-full">
-                          <img
-                            src={getFullImageUrl(offer.image_url)}
-                            alt={offer.title}
-                            crossOrigin="anonymous"
-                            className="w-full h-auto object-contain"
-                          />
-                        </div>
+                      <div className="relative w-full aspect-[2/1] overflow-hidden bg-[#16181f]">
+                        <img
+                          src={getFullImageUrl(offer.image_url)}
+                          alt={offer.title}
+                          crossOrigin="anonymous"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        />
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/50 via-transparent to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/80 via-[#16181f]/20 to-transparent pointer-events-none" />
 
-                        <div className="absolute top-4 right-4 pointer-events-none">
-                          <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(18,20,26,0.06)]">
-                            <div className="flex items-center gap-1.5">
-                              <Gift size={12} className="text-[#ff5000]" />
-                              <span className="text-[10px] font-bold text-[#16181f] uppercase tracking-wider">
-                                Exclusive
+                        {/* Top Badge */}
+                        <div className="absolute top-6 right-6 pointer-events-none">
+                          <div className="px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/20 shadow-md">
+                            <div className="flex items-center gap-2">
+                              <Gift size={14} className="text-[#ff5000]" />
+                              <span className="text-xs font-bold text-[#16181f] uppercase tracking-wider">
+                                Special Offer
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end pointer-events-none">
+                        {/* Card Content Overlay */}
+                        <div className="absolute inset-0 p-8 md:p-14 flex flex-col justify-end pointer-events-none">
                           <div className="max-w-2xl pointer-events-auto">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md mb-4">
-                              <Tag size={12} className="text-[#ff5000]" />
-                              <span className="text-[10px] font-bold text-[#16181f] uppercase tracking-wider">
-                                Limited Offer
-                              </span>
-                            </div>
+                            {offer.title && (
+                              <h3 className="font-display text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight drop-shadow-md">
+                                {offer.title}
+                              </h3>
+                            )}
 
-                            <h3 className="font-display text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight drop-shadow-sm">
-                              {offer.title}
-                            </h3>
-
-                            <button className="group/btn inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#16181f] font-semibold text-sm hover:bg-[#ff5000] hover:text-white transition-all duration-300">
-                              Claim Offer
+                            <button className="group/btn inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#ff5000] text-white font-bold text-sm shadow-lg hover:bg-white hover:text-[#16181f] transition-all duration-300">
+                              <span>Claim Offer Now</span>
                               <ArrowRight
                                 size={16}
                                 className="group-hover/btn:translate-x-1 transition-transform"
@@ -211,55 +215,61 @@ export default function PromotionalOffers() {
                   </div>
                 ))}
               </div>
-
-              {promoCards.length > 1 && (
-                <>
-                  <button
-                    onClick={goToPrevPromo}
-                    className="absolute top-1/2 left-4 -translate-y-1/2 p-3 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(18,20,26,0.08)] text-[#16181f] hover:bg-[#16181f] hover:text-white transition-all duration-300 shadow-lg"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    onClick={goToNextPromo}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 p-3 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(18,20,26,0.08)] text-[#16181f] hover:bg-[#16181f] hover:text-white transition-all duration-300 shadow-lg"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </>
-              )}
-
-              {promoCards.length > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-6">
-                  {promoCards.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentPromoSlide(index)}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        index === currentPromoSlide
-                          ? 'bg-[#ff5000] w-10'
-                          : 'bg-[#d4d7de] w-2 hover:bg-[#9aa0ab]'
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
+
+            {/* Navigation Arrows */}
+            {promoCards.length > 1 && (
+              <>
+                <button
+                  onClick={goToPrevPromo}
+                  className="absolute top-1/2 left-4 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(22,24,31,0.1)] text-[#16181f] flex items-center justify-center hover:bg-[#ff5000] hover:text-white transition-all duration-300 shadow-xl z-10"
+                  aria-label="Previous Offer"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  onClick={goToNextPromo}
+                  className="absolute top-1/2 right-4 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(22,24,31,0.1)] text-[#16181f] flex items-center justify-center hover:bg-[#ff5000] hover:text-white transition-all duration-300 shadow-xl z-10"
+                  aria-label="Next Offer"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              </>
+            )}
+
+            {/* Pagination Dots */}
+            {promoCards.length > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6">
+                {promoCards.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPromoSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                    className={`h-2 rounded-full transition-all duration-500 ${
+                      index === currentPromoSlide
+                        ? 'bg-[#ff5000] w-10'
+                        : 'bg-[#d4d7de] w-2.5 hover:bg-[#9aa0ab]'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
+        {/* Carousel Banners Section (16:9 Ratio) */}
         {carouselBanners.length > 0 && (
-          <div className="relative animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+          <div className="relative">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-1.5 h-6 bg-[#ff5000] rounded-full" />
-              <h3 className="font-display text-xl md:text-2xl font-bold text-[#16181f] tracking-tight">
-                Featured banners
+              <div className="w-2 h-7 bg-[#ff5000] rounded-full" />
+              <h3 className="font-display text-xl md:text-3xl font-extrabold text-[#16181f] tracking-tight">
+                Featured Highlights
               </h3>
             </div>
 
-            <div className="overflow-hidden rounded-[1.5rem]">
+            <div className="overflow-hidden rounded-[2rem] shadow-[0_20px_50px_rgba(22,24,31,0.06)] border border-[rgba(22,24,31,0.08)] bg-white">
               <div
-                className="flex transition-transform duration-700"
+                className="flex transition-transform duration-700 ease-out"
                 style={{ transform: `translateX(-${currentCarouselSlide * 100}%)` }}
               >
                 {carouselBanners.map((banner) => (
@@ -270,19 +280,23 @@ export default function PromotionalOffers() {
                       }
                       className="group relative cursor-pointer"
                     >
-                      <div className="relative overflow-hidden rounded-[1.5rem] border border-[rgba(18,20,26,0.06)] bg-[#f7f8fb] group-hover:shadow-[0_28px_60px_rgba(18,20,26,0.1)] transition-all duration-500">
-                        <div className="relative w-full max-w-4xl mx-auto overflow-hidden">
-                          <img
-                            src={getFullImageUrl(banner.image_url)}
-                            alt={banner.title}
-                            crossOrigin="anonymous"
-                            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                          />
-                        </div>
+                      <div className="relative w-full aspect-[16/9] overflow-hidden bg-[#16181f]">
+                        <img
+                          src={getFullImageUrl(banner.image_url)}
+                          alt={banner.title}
+                          crossOrigin="anonymous"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                        />
 
                         {banner.title && (
-                          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#16181f]/50 to-transparent">
-                            <h4 className="font-display text-xl font-bold text-white drop-shadow-sm">
+                          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 bg-gradient-to-t from-[#16181f]/80 via-[#16181f]/30 to-transparent">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md mb-2">
+                              <Tag size={12} className="text-[#ff5000]" />
+                              <span className="text-[10px] font-bold text-white uppercase tracking-wider">
+                                Featured
+                              </span>
+                            </div>
+                            <h4 className="font-display text-xl md:text-3xl font-bold text-white leading-snug drop-shadow-md">
                               {banner.title}
                             </h4>
                           </div>
@@ -292,40 +306,45 @@ export default function PromotionalOffers() {
                   </div>
                 ))}
               </div>
-
-              {carouselBanners.length > 1 && (
-                <>
-                  <button
-                    onClick={goToPrevCarousel}
-                    className="absolute top-[calc(50%+20px)] left-4 -translate-y-1/2 p-3 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(18,20,26,0.08)] text-[#16181f] hover:bg-[#16181f] hover:text-white transition-all duration-300 shadow-lg"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    onClick={goToNextCarousel}
-                    className="absolute top-[calc(50%+20px)] right-4 -translate-y-1/2 p-3 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(18,20,26,0.08)] text-[#16181f] hover:bg-[#16181f] hover:text-white transition-all duration-300 shadow-lg"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </>
-              )}
-
-              {carouselBanners.length > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-6">
-                  {carouselBanners.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentCarouselSlide(index)}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        index === currentCarouselSlide
-                          ? 'bg-[#ff5000] w-10'
-                          : 'bg-[#d4d7de] w-2 hover:bg-[#9aa0ab]'
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
+
+            {/* Navigation Arrows */}
+            {carouselBanners.length > 1 && (
+              <>
+                <button
+                  onClick={goToPrevCarousel}
+                  className="absolute top-1/2 left-4 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(22,24,31,0.1)] text-[#16181f] flex items-center justify-center hover:bg-[#ff5000] hover:text-white transition-all duration-300 shadow-xl z-10"
+                  aria-label="Previous Highlight"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  onClick={goToNextCarousel}
+                  className="absolute top-1/2 right-4 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-[rgba(22,24,31,0.1)] text-[#16181f] flex items-center justify-center hover:bg-[#ff5000] hover:text-white transition-all duration-300 shadow-xl z-10"
+                  aria-label="Next Highlight"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              </>
+            )}
+
+            {/* Pagination Dots */}
+            {carouselBanners.length > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6">
+                {carouselBanners.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentCarouselSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                    className={`h-2 rounded-full transition-all duration-500 ${
+                      index === currentCarouselSlide
+                        ? 'bg-[#ff5000] w-10'
+                        : 'bg-[#d4d7de] w-2.5 hover:bg-[#9aa0ab]'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
