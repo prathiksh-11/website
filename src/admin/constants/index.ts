@@ -77,6 +77,7 @@ const FULL_ADMIN_PERMS = [
   'transactions',
   'coupons',
   'notifications',
+  'offers',
   'settings',
   'profile',
 ] as const;
@@ -95,6 +96,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'transactions',
     'coupons',
     'notifications',
+    'offers',
     'profile',
   ],
   Trainer: ['dashboard', 'sessions', 'customers', 'profile'],
@@ -105,6 +107,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'sessions',
     'events',
     'coupons',
+    'offers',
     'profile',
   ],
 };
