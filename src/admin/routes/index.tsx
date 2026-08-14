@@ -57,6 +57,9 @@ const Settings = lazy(() =>
 const Profile = lazy(() =>
   import('@/pages/profile/Profile').then((m) => ({ default: m.Profile })),
 );
+const MyActivity = lazy(() =>
+  import('@/pages/activity/MyActivity').then((m) => ({ default: m.MyActivity })),
+);
 const NotFound = lazy(() =>
   import('@/pages/errors/NotFound').then((m) => ({ default: m.NotFound })),
 );
@@ -81,6 +84,7 @@ export const AppRouter = () =>
           element: <DashboardLayout />,
           children: [
             { path: '/dashboard', element: withSuspense(<Dashboard />) },
+            { path: '/my-activity', element: withSuspense(<MyActivity />) },
             {
               element: <ProtectedRoute permission="customers" />,
               children: [{ path: '/customers', element: withSuspense(<CustomerList />) }],
@@ -164,5 +168,6 @@ export const AppRouter = () =>
       ],
     },
     { path: '/', element: <Navigate to="/dashboard" replace /> },
+    { path: '/dashbaord', element: <Navigate to="/dashboard" replace /> },
     { path: '*', element: withSuspense(<NotFound />) },
   ]);

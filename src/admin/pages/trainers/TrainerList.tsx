@@ -21,12 +21,9 @@ import {
   Tooltip,
 } from 'antd';
 import {
-  Activity,
   BarChart3,
   Calendar,
-  CheckCircle2,
   Clock,
-  DollarSign,
   Dumbbell,
   Mail,
   MapPin,
@@ -35,11 +32,10 @@ import {
   ShieldCheck,
   TrendingUp,
   UserCheck,
-  Users,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { StatusBadge, PageSkeleton, confirmDelete } from '@/components/common';
-import { PAGE_SIZE_OPTIONS, TRAINER_TYPE_OPTIONS, trainerTypeLabel } from '@/constants';
+import { PAGE_SIZE_OPTIONS, TRAINER_TYPE_OPTIONS, trainerTypeLabel, trainerTypeTagColor } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import {
   useTrainerDetails,
@@ -168,7 +164,8 @@ export const TrainerList = () => {
     setFormOpen(false);
   };
 
-  if (loadingAll && (!allTrainers || allTrainers.length === 0)) {
+  const allTrainerCount = Array.isArray(allTrainers) ? allTrainers.length : 0;
+  if (loadingAll && allTrainerCount === 0) {
     return <PageSkeleton variant="list" />;
   }
 
@@ -282,7 +279,7 @@ export const TrainerList = () => {
               width: 150,
               render: (type: Trainer['trainerType']) => (
                 <Tag
-                  color={type === 'pt_trainer' ? 'orange' : 'blue'}
+                  color={trainerTypeTagColor(type)}
                   style={{ borderRadius: 8, fontWeight: 600 }}
                 >
                   {trainerTypeLabel(type)}
@@ -417,7 +414,7 @@ export const TrainerList = () => {
                     <h3 className="emp-detail__name">{trainer.name}</h3>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
                       <StatusBadge status={trainer.status} />
-                      <Tag color="orange" style={{ borderRadius: 8, fontWeight: 600 }}>
+                      <Tag color={trainerTypeTagColor(trainer.trainerType)} style={{ borderRadius: 8, fontWeight: 600 }}>
                         {trainerTypeLabel(trainer.trainerType)}
                       </Tag>
                       <Tag style={{ borderRadius: 8, fontWeight: 600 }}>ID #{trainer.id}</Tag>
@@ -807,11 +804,11 @@ export const TrainerList = () => {
           </Form.Item>
           <Form.Item
             name="trainerType"
-            label="Trainer type"
-            rules={[{ required: true, message: 'Select trainer type' }]}
+            label="Staff type"
+            rules={[{ required: true, message: 'Select staff type' }]}
           >
             <Select
-              placeholder="Select type"
+              placeholder="Select staff type"
               options={TRAINER_TYPE_OPTIONS}
             />
           </Form.Item>

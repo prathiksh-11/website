@@ -15,6 +15,7 @@ import type {
   TrainerHistorySummary,
   TrainerStartedSession,
 } from '@/types';
+import { normalizeTrainerType } from '@/constants';
 
 const asString = (value: unknown, fallback = '') =>
   value == null ? fallback : String(value);
@@ -175,21 +176,10 @@ export const mapBackendTrainer = (raw: Record<string, unknown>): Trainer => {
   const roleName = asString(raw.role_name ?? raw.roleName);
   const description = asString(raw.description);
 
-  const rawType = asString(raw.type ?? raw.trainerType).toLowerCase();
-  const descLower = description.toLowerCase();
-  const trainerType =
-    rawType === 'pt_trainer' || rawType === 'pt trainer'
-      ? ('pt_trainer' as const)
-      : rawType === 'general_trainer' || rawType === 'general trainer'
-        ? ('general_trainer' as const)
-        : descLower.includes('personal trainer') ||
-            descLower.includes('pt trainer') ||
-            /\bpt\b/.test(descLower)
-          ? ('pt_trainer' as const)
-          : descLower.includes('general trainer') ||
-              descLower.includes('genaral trainer')
-            ? ('general_trainer' as const)
-            : undefined;
+  const trainerType = normalizeTrainerType(
+    asString(raw.type ?? raw.trainerType),
+    description,
+  );
 
   const branchIdsFromRows = branchRows
     .map((b) => {

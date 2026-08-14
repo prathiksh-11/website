@@ -112,4 +112,30 @@ export const authApi = {
     }
     return mapBackendProfile(data.data);
   },
+
+  updateProfile: async (payload: {
+    name?: string;
+    lastName?: string;
+    password?: string;
+  }): Promise<User> => {
+    if (USE_MOCK) {
+      await delay(200);
+      const current = await authApi.me();
+      const next: User = {
+        ...current,
+        name: [payload.name, payload.lastName].filter(Boolean).join(' ') || current.name,
+        lastName: payload.lastName ?? current.lastName,
+      };
+      localStorage.setItem('gym_admin_user', JSON.stringify(next));
+      return next;
+    }
+
+    const body: Record<string, string> = {};
+    if (payload.name?.trim()) body.name = payload.name.trim();
+    if (payload.lastName != null) body.last_name = payload.lastName.trim();
+    if (payload.password) body.password = payload.password;
+
+    await apiClient.put(ENDPOINTS.AUTH.UPDATE_PROFILE, body);
+    return authApi.me();
+  },
 };

@@ -109,18 +109,25 @@ export const AdminOffers = () => {
 
   const getFullImageUrl = useCallback((relativePath: string) => {
     if (!relativePath) return '';
+
+    const withoutApiUploads = (url: string) =>
+      url.replace(/\/api\/uploads\//i, '/uploads/');
+
     if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
-      return relativePath;
+      return withoutApiUploads(relativePath);
     }
 
-    let baseUrl =
-      import.meta.env.VITE_IMAGE_BASE_URL ||
-      import.meta.env.VITE_API_BASE_URL ||
-      'http://localhost:5000';
+    const imageBase = import.meta.env.VITE_IMAGE_BASE_URL;
+    const apiBase =
+      import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    const origin = (imageBase || apiBase)
+      .replace(/\/+$/, '')
+      .replace(/\/api$/i, '');
+    const cleanPath = relativePath
+      .replace(/^\/+/, '')
+      .replace(/^api\/uploads\//i, 'uploads/');
 
-    baseUrl = baseUrl.replace(/\/+$/, '');
-    const cleanPath = relativePath.replace(/^\/+/, '');
-    return `${baseUrl}/${cleanPath}`;
+    return `${origin}/${cleanPath}`;
   }, []);
 
   // Fetch banners on mount

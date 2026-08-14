@@ -1,20 +1,53 @@
 import { Avatar, Card, Col, Form, Input, Row, Typography, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import { AppButton, PageHeader } from '@/components/common';
+import { authApi } from '@/api/auth.api';
 import { useAuthStore } from '@/store/auth.store';
 
 export const Profile = () => {
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const [form] = Form.useForm();
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const profile = await authApi.me();
+        if (cancelled) return;
+        setUser(profile);
+        form.setFieldsValue({
+          name: profile.name,
+          phone: profile.phone,
+        });
+      } catch {
+        /* keep persisted user */
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [form, setUser]);
 
   const onSave = async () => {
     const values = await form.validateFields();
-    if (!user) return;
-    const next = { ...user, ...values };
-    setUser(next);
-    localStorage.setItem('gym_admin_user', JSON.stringify(next));
-    message.success('Profile updated');
+    setSaving(true);
+    try {
+      const next = await authApi.updateProfile({ name: values.name });
+      setUser(next);
+      message.success('Profile updated');
+    } catch (error) {
+      const text =
+        error && typeof error === 'object' && 'message' in error
+          ? String((error as { message?: string }).message)
+          : 'Could not update profile';
+      message.error(text);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -42,20 +75,16 @@ export const Profile = () => {
               layout="vertical"
               initialValues={{
                 name: user?.name,
-                email: user?.email,
                 phone: user?.phone,
               }}
             >
               <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="email" label="Email" rules={[{ required: true, type: 'email' }]}>
+              <Form.Item name="phone" label="Phone">
                 <Input disabled />
               </Form.Item>
-              <Form.Item name="phone" label="Phone">
-                <Input />
-              </Form.Item>
-              <AppButton type="primary" onClick={() => void onSave()}>
+              <AppButton type="primary" loading={saving} onClick={() => void onSave()}>
                 Save profile
               </AppButton>
             </Form>

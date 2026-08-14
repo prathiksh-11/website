@@ -15,6 +15,8 @@ import './index.css';
 const ADMIN_PREFIXES = [
   '/login',
   '/dashboard',
+  '/my-activity',
+  '/dashbaord',
   '/customers',
   '/trainers',
   '/branches',

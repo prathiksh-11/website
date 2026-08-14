@@ -8,7 +8,7 @@ import { filterBySearch, paginate } from '@/utils/query';
 const TRAINERS_QUERY_KEY = ['trainers', 'all'] as const;
 
 export const useTrainersAll = () =>
-  useQuery({
+  useQuery<Trainer[]>({
     queryKey: TRAINERS_QUERY_KEY,
     queryFn: () => trainerService.fetchAll(),
     staleTime: 60_000,
