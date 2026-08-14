@@ -32,6 +32,7 @@ import { THEME_TOKENS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useAuthStore } from '@/store/auth.store';
+import { getDefaultBranchFilter } from '@/store/settings.store';
 import { formatCurrency, formatDate, formatDateTime } from '@/utils/format';
 
 import sessionImg1 from '../../../assets/AKSHAYANAGAR/akshayanagar_img1.jpeg';
@@ -212,9 +213,12 @@ export const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const [branchId, setBranchId] = useState<string | undefined>(() => {
     try {
-      return sessionStorage.getItem(DASHBOARD_BRANCH_KEY) || undefined;
+      return (
+        sessionStorage.getItem(DASHBOARD_BRANCH_KEY) ||
+        getDefaultBranchFilter()
+      );
     } catch {
-      return undefined;
+      return getDefaultBranchFilter();
     }
   });
 

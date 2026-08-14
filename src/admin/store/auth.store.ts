@@ -65,7 +65,12 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      setUser: (user) => set({ user }),
+      setUser: (user) => {
+        if (user) {
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+        }
+        set({ user });
+      },
     }),
     {
       name: 'gym-admin-auth',

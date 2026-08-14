@@ -9,6 +9,10 @@ import {
   getNotificationSocket,
 } from '@/lib/socket';
 import { useAuthStore } from '@/store/auth.store';
+import {
+  allowsNotificationType,
+  useSettingsStore,
+} from '@/store/settings.store';
 import type { SendNotificationPayload } from '@/types';
 import { showPushToast } from '@/utils/push-toast';
 import {
@@ -126,6 +130,7 @@ export const useNotificationMutations = () => {
 /** Register web FCM token + listen for foreground pushes while logged in. */
 export const useFcmRegistration = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const pushEnabled = useSettingsStore((s) => s.pushEnabled);
   const queryClient = useQueryClient();
   const { notification } = App.useApp();
 
@@ -136,6 +141,15 @@ export const useFcmRegistration = () => {
     let cancelled = false;
 
     const run = async () => {
+      if (!pushEnabled) {
+        try {
+          await notificationApi.updateFcmToken('');
+        } catch (error) {
+          console.error('[FCM] Failed to clear token on backend:', error);
+        }
+        return;
+      }
+
       console.log('[FCM] useFcmRegistration — fetching token for logged-in user');
       const token = await requestFcmToken();
       if (cancelled) return;
@@ -167,6 +181,10 @@ export const useFcmRegistration = () => {
           payload.data?.type ||
           payload.data?.notification_type ||
           undefined;
+
+        if (!allowsNotificationType(type ? String(type) : undefined)) {
+          return;
+        }
 
         showPushToast(notification, {
           title: String(title),
@@ -201,5 +219,5 @@ export const useFcmRegistration = () => {
       cancelled = true;
       unsubscribe?.();
     };
-  }, [isAuthenticated, notification, queryClient]);
+  }, [isAuthenticated, notification, queryClient, pushEnabled]);
 };

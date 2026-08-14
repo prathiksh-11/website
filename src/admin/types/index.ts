@@ -8,17 +8,23 @@ export type UserRole =
 export type Status = 'active' | 'inactive' | 'pending' | 'expired' | 'cancelled';
 
 /** Stored in users.type */
-export type TrainerType = 'general_trainer' | 'pt_trainer';
+export type TrainerType =
+  | 'general_trainer'
+  | 'pt_trainer'
+  | 'membership_coordinator'
+  | 'receptionist';
 
 export interface User {
   id: string;
   name: string;
+  lastName?: string;
   email?: string;
   role: UserRole;
   roleId?: number;
   avatar?: string;
   branchId?: string;
   phone?: string;
+  showActivityDashboard?: boolean;
 }
 
 export interface AuthResponse {
@@ -71,6 +77,31 @@ export interface PaginatedRequest {
   branchId?: string;
   startDate?: string;
   endDate?: string;
+}
+
+export type ActivitySessionStatus =
+  | 'online'
+  | 'active_today'
+  | 'this_week'
+  | 'inactive';
+
+export interface UserActivitySession {
+  id: string;
+  userId: string;
+  name: string;
+  mobile?: string;
+  lastActive: string;
+  status: ActivitySessionStatus;
+}
+
+export interface UserActivityListParams extends PaginatedRequest {}
+
+export interface UserActivityListResult {
+  items: UserActivitySession[];
+  total: number;
+  page: number;
+  pageSize: number;
+  scope?: 'all' | 'self';
 }
 
 export interface PaginatedResponse<T> {
@@ -166,7 +197,7 @@ export interface Trainer {
   roleName?: string;
   gender?: string;
   description?: string;
-  /** general_trainer | pt_trainer — stored as users.type */
+  /** Staff type stored as users.type */
   trainerType?: TrainerType;
 }
 

@@ -8,7 +8,6 @@ import {
   InputNumber,
   Select,
   Table,
-  Tag,
   Tooltip,
   message,
 } from 'antd';
@@ -19,7 +18,6 @@ import {
   Clock3,
   Copy,
   MapPin,
-  Sparkles,
   Ticket,
   UserCheck,
   Users,
@@ -43,12 +41,11 @@ const shortBranch = (name: string) =>
     .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
     .trim() || name;
 
-const statusColor = (status: string) => {
-  if (status === 'active') return 'success';
-  if (status === 'used') return 'processing';
-  if (status === 'expired') return 'error';
-  if (status === 'inactive') return 'default';
-  return 'default';
+const statusClass = (status: string) => {
+  if (status === 'active') return 'coupon-status coupon-status--active';
+  if (status === 'used') return 'coupon-status coupon-status--used';
+  if (status === 'expired') return 'coupon-status coupon-status--expired';
+  return 'coupon-status';
 };
 
 const statusLabel = (status: string) => {
@@ -171,9 +168,7 @@ export const CouponList = () => {
       key: 'price',
       width: 110,
       render: (value: number) => (
-        <Tag color="orange" style={{ borderRadius: 8, fontWeight: 700, fontSize: '0.88rem' }}>
-          {formatCurrency(value)}
-        </Tag>
+        <span className="coupon-value">{formatCurrency(value)}</span>
       ),
     },
     {
@@ -183,16 +178,16 @@ export const CouponList = () => {
       render: (_, row) => {
         const remainingStr = formatRemaining(row, now);
         if (remainingStr === 'Expired') {
-          return <Tag color="error" style={{ borderRadius: 8 }}>Expired</Tag>;
+          return <span className="coupon-status coupon-status--expired">Expired</span>;
         }
         if (remainingStr === '—') {
-          return <span style={{ color: '#94a3b8' }}>—</span>;
+          return <span className="coupon-muted">—</span>;
         }
         return (
-          <Tag color="gold" style={{ borderRadius: 8, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-            <Clock3 size={12} />
-            <span>{remainingStr}</span>
-          </Tag>
+          <span className="coupon-remain">
+            <Clock3 size={13} />
+            {remainingStr}
+          </span>
         );
       },
     },
@@ -203,8 +198,8 @@ export const CouponList = () => {
       width: 160,
       ellipsis: true,
       render: (value?: string) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Users size={14} style={{ color: '#64748b' }} />
+        <div className="coupon-meta">
+          <Users size={14} />
           <span>{value || 'System'}</span>
         </div>
       ),
@@ -216,12 +211,12 @@ export const CouponList = () => {
       ellipsis: true,
       render: (_, row) =>
         row.usedByName ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <UserCheck size={14} style={{ color: '#10b981' }} />
-            <span style={{ fontWeight: 600, color: '#0f172a' }}>{row.usedByName}</span>
+          <div className="coupon-meta coupon-meta--used">
+            <UserCheck size={14} />
+            <span>{row.usedByName}</span>
           </div>
         ) : (
-          <span style={{ color: '#94a3b8' }}>Unused</span>
+          <span className="coupon-muted">Unused</span>
         ),
     },
     {
@@ -243,9 +238,7 @@ export const CouponList = () => {
       key: 'status',
       width: 110,
       render: (value: string) => (
-        <Tag bordered={false} color={statusColor(value)} className="coupon__tag">
-          {statusLabel(value)}
-        </Tag>
+        <span className={statusClass(value)}>{statusLabel(value)}</span>
       ),
     },
     {
@@ -257,7 +250,7 @@ export const CouponList = () => {
         <Tooltip title="View Coupon Details">
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: '#ff5000' }} />}
+            icon={<EyeOutlined />}
             onClick={(e) => {
               e.stopPropagation();
               setSelected(row);
@@ -287,10 +280,10 @@ export const CouponList = () => {
         </div>
         <div className="coupon__hero-actions">
           <div className="coupon__hero-meta">
-            <Ticket size={20} style={{ color: '#ff5000' }} />
+            <Ticket size={18} />
             <div>
               <strong>{summary?.total ?? 0}</strong>
-              <span>Total Created</span>
+              <span>Issued</span>
             </div>
           </div>
           <Button type="primary" size="large" icon={<PlusOutlined />} onClick={openCreate}>
@@ -302,26 +295,24 @@ export const CouponList = () => {
       {/* Stats Cards Section */}
       <section className="coupon__stats" aria-label="Coupon stats">
         <article className="coupon-stat">
-          <span>Total Coupons</span>
+          <span>Total</span>
           <strong>{summary?.total ?? '—'}</strong>
         </article>
-        <article className="coupon-stat" style={{ borderLeft: '4px solid #10b981' }}>
-          <span>Active (1-Hr)</span>
-          <strong style={{ color: '#10b981' }}>{summary?.active ?? '—'}</strong>
+        <article className="coupon-stat">
+          <span>Active</span>
+          <strong>{summary?.active ?? '—'}</strong>
         </article>
-        <article className="coupon-stat" style={{ borderLeft: '4px solid #8b5cf6' }}>
+        <article className="coupon-stat">
           <span>Redeemed</span>
-          <strong style={{ color: '#8b5cf6' }}>{summary?.used ?? '—'}</strong>
+          <strong>{summary?.used ?? '—'}</strong>
         </article>
-        <article className="coupon-stat" style={{ borderLeft: '4px solid #ef4444' }}>
+        <article className="coupon-stat">
           <span>Expired</span>
-          <strong style={{ color: '#ef4444' }}>{summary?.expired ?? '—'}</strong>
+          <strong>{summary?.expired ?? '—'}</strong>
         </article>
-        <article className="coupon-stat" style={{ borderLeft: '4px solid #ff5000' }}>
-          <span>Total Value</span>
-          <strong style={{ color: '#ff5000' }}>
-            {summary ? formatCurrency(summary.totalValue) : '—'}
-          </strong>
+        <article className="coupon-stat">
+          <span>Value</span>
+          <strong>{summary ? formatCurrency(summary.totalValue) : '—'}</strong>
         </article>
       </section>
 
@@ -396,15 +387,10 @@ export const CouponList = () => {
 
       {/* Coupon Details Sidebar Drawer */}
       <Drawer
-        title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Sparkles size={18} style={{ color: '#ff5000' }} />
-            <span style={{ fontWeight: 700 }}>Coupon Ticket Voucher</span>
-          </div>
-        }
+        title="Coupon"
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
-        width={500}
+        width={460}
         destroyOnClose
         className="coupon-drawer"
       >
@@ -422,13 +408,9 @@ export const CouponList = () => {
                     {selected.couponName || 'Untitled coupon'}
                   </div>
                 </div>
-                <Tag
-                  bordered={false}
-                  color={statusColor(selected.status)}
-                  style={{ borderRadius: 999, fontWeight: 700, padding: '4px 12px', fontSize: '0.82rem' }}
-                >
+                <span className={statusClass(selected.status)}>
                   {statusLabel(selected.status)}
-                </Tag>
+                </span>
               </div>
 
               {/* Coupon Code Ticket Stub */}
@@ -436,10 +418,9 @@ export const CouponList = () => {
                 <span className="coupon-voucher__code">{selected.couponCode}</span>
                 <Button
                   size="small"
-                  type="primary"
                   icon={<Copy size={13} />}
                   onClick={() => void copyCode(selected.couponCode)}
-                  style={{ borderRadius: 8, background: 'rgba(255,255,255,0.25)', borderColor: 'transparent' }}
+                  style={{ borderRadius: 8 }}
                 >
                   Copy Code
                 </Button>
@@ -449,8 +430,8 @@ export const CouponList = () => {
             {/* Creation Info Card */}
             <div className="coupon-detail__card">
               <div className="coupon-detail__card-title">
-                <Users size={16} style={{ color: '#ff5000' }} />
-                <span>Creation & Issuer Details</span>
+                <Users size={15} />
+                <span>Issued</span>
               </div>
               <div className="coupon-detail__grid">
                 <div className="coupon-detail__grid-item">
@@ -471,8 +452,8 @@ export const CouponList = () => {
             {/* Customer Usage Card */}
             <div className="coupon-detail__card">
               <div className="coupon-detail__card-title">
-                <UserCheck size={16} style={{ color: '#ff5000' }} />
-                <span>Redemption & Usage Status</span>
+                <UserCheck size={15} />
+                <span>Redemption</span>
               </div>
               <div className="coupon-detail__grid">
                 <div className="coupon-detail__grid-item">
@@ -499,8 +480,8 @@ export const CouponList = () => {
             {/* Branch & Expiry Card */}
             <div className="coupon-detail__card">
               <div className="coupon-detail__card-title">
-                <Clock3 size={16} style={{ color: '#ff5000' }} />
-                <span>Branch Assignment & Expiration</span>
+                <Clock3 size={15} />
+                <span>Branch & expiry</span>
               </div>
               <div className="coupon-detail__grid">
                 <div className="coupon-detail__grid-item">
@@ -509,7 +490,7 @@ export const CouponList = () => {
                 </div>
                 <div className="coupon-detail__grid-item">
                   <span className="coupon-detail__grid-label">Time Remaining</span>
-                  <span className="coupon-detail__grid-value" style={{ color: '#ff5000' }}>
+                  <span className="coupon-detail__grid-value">
                     {formatRemaining(selected, now)}
                   </span>
                 </div>
@@ -527,15 +508,10 @@ export const CouponList = () => {
 
       {/* Add Coupon Modal Form */}
       <Drawer
-        title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Ticket size={18} style={{ color: '#ff5000' }} />
-            <span style={{ fontWeight: 700 }}>Issue New Coupon</span>
-          </div>
-        }
+        title="Issue coupon"
         open={createOpen}
         onClose={() => setCreateOpen(false)}
-        width={440}
+        width={420}
         destroyOnClose
         extra={
           <Button
@@ -570,15 +546,16 @@ export const CouponList = () => {
           </Form.Item>
 
           {/* Preset Buttons */}
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', marginTop: '-0.5rem' }}>
+          <div className="coupon-presets">
             {[100, 250, 500, 1000].map((amount) => (
-              <Button
+              <button
                 key={amount}
-                size="small"
+                type="button"
+                className="coupon-preset"
                 onClick={() => form.setFieldsValue({ price: amount })}
               >
                 ₹{amount}
-              </Button>
+              </button>
             ))}
           </div>
 

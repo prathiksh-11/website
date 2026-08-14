@@ -1,5 +1,6 @@
 import { Modal } from 'antd';
 import {
+  Activity,
   CalendarDays,
   ClipboardList,
   CreditCard,
@@ -44,6 +45,12 @@ const MENU_SECTIONS: NavSection[] = [
         label: 'Dashboard',
         permission: 'dashboard',
         icon: <LayoutDashboard {...iconProps} />,
+      },
+      {
+        key: '/my-activity',
+        label: 'Recently Active',
+        permission: 'dashboard',
+        icon: <Activity {...iconProps} />,
       },
       {
         key: '/reports',
@@ -153,9 +160,14 @@ export const AppSidebar = () => {
     () =>
       MENU_SECTIONS.map((sec) => ({
         ...sec,
-        items: sec.items.filter((item) => canAccess(item.permission)),
+        items: sec.items.filter((item) => {
+          if (item.key === '/my-activity') {
+            return Boolean(user?.showActivityDashboard);
+          }
+          return canAccess(item.permission);
+        }),
       })).filter((sec) => sec.items.length > 0),
-    [canAccess],
+    [canAccess, user?.showActivityDashboard],
   );
 
   const allItems = useMemo(

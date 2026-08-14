@@ -1,14 +1,16 @@
 import { useMemo, useState } from 'react';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { getDefaultBranchFilter } from '@/store/settings.store';
 import type { PaginatedRequest } from '@/types';
 
 export const useTableParams = (initial?: Partial<PaginatedRequest>) => {
-  const [params, setParams] = useState<PaginatedRequest>({
+  const [params, setParams] = useState<PaginatedRequest>(() => ({
     page: 1,
     pageSize: DEFAULT_PAGE_SIZE,
     search: '',
+    branchId: getDefaultBranchFilter(),
     ...initial,
-  });
+  }));
 
   const handlers = useMemo(
     () => ({

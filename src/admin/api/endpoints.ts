@@ -3,6 +3,8 @@ export const ENDPOINTS = {
     LOGIN: '/auth/login',
     LOGOUT: '/auth/logout',
     ME: '/auth/get-profile',
+    UPDATE_PROFILE: '/auth/update-profile',
+    SET_PASSWORD: '/auth/set-password',
     REFRESH: '/auth/refresh',
     FCM_TOKEN: '/auth/fcm-token',
   },
@@ -80,5 +82,9 @@ export const ENDPOINTS = {
   },
   SETTINGS: {
     ROOT: '/settings',
+  },
+  ACTIVITY: {
+    MY_ACTIVITY: '/my-activity',
+    HEARTBEAT: '/activity-heartbeat',
   },
 } as const;

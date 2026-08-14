@@ -6,14 +6,82 @@ export const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 export const TRAINER_TYPE_OPTIONS: { value: TrainerType; label: string }[] = [
   { value: 'general_trainer', label: 'General Trainer' },
   { value: 'pt_trainer', label: 'PT Trainer' },
+  { value: 'membership_coordinator', label: 'Membership Coordinator' },
+  { value: 'receptionist', label: 'Receptionist' },
 ];
+
+const TRAINER_TYPE_ALIASES: Record<string, TrainerType> = {
+  general_trainer: 'general_trainer',
+  general: 'general_trainer',
+  genral: 'general_trainer',
+  genaral: 'general_trainer',
+  genaral_trainer: 'general_trainer',
+  pt_trainer: 'pt_trainer',
+  pt: 'pt_trainer',
+  pt_triner: 'pt_trainer',
+  personal_trainer: 'pt_trainer',
+  membership_coordinator: 'membership_coordinator',
+  membership_corider: 'membership_coordinator',
+  coordinator: 'membership_coordinator',
+  receptionist: 'receptionist',
+  recept: 'receptionist',
+  reception: 'receptionist',
+};
+
+export const normalizeTrainerType = (
+  type?: string | null,
+  description?: string | null,
+): TrainerType | undefined => {
+  const key = String(type || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+  if (TRAINER_TYPE_ALIASES[key]) return TRAINER_TYPE_ALIASES[key];
+
+  const d = String(description || '').toLowerCase();
+  if (
+    d.includes('membership') ||
+    d.includes('coordinator') ||
+    d.includes('corider')
+  ) {
+    return 'membership_coordinator';
+  }
+  if (d.includes('reception') || d.includes('recept')) {
+    return 'receptionist';
+  }
+  if (
+    d.includes('personal trainer') ||
+    d.includes('pt trainer') ||
+    /\bpt\b/.test(d)
+  ) {
+    return 'pt_trainer';
+  }
+  if (d.includes('general trainer') || d.includes('genaral trainer')) {
+    return 'general_trainer';
+  }
+  return undefined;
+};
 
 export const trainerTypeLabel = (type?: TrainerType | string | null) => {
   if (!type) return '—';
+  const normalized = normalizeTrainerType(type) ?? type;
   return (
-    TRAINER_TYPE_OPTIONS.find((o) => o.value === type)?.label ??
-    String(type).replace(/_/g, ' ')
+    TRAINER_TYPE_OPTIONS.find((o) => o.value === normalized)?.label ??
+    String(normalized).replace(/_/g, ' ')
   );
+};
+
+export const trainerTypeTagColor = (type?: TrainerType | string | null) => {
+  switch (normalizeTrainerType(type) ?? type) {
+    case 'pt_trainer':
+      return 'orange';
+    case 'membership_coordinator':
+      return 'purple';
+    case 'receptionist':
+      return 'green';
+    default:
+      return 'blue';
+  }
 };
 
 export const STORAGE_KEYS = {

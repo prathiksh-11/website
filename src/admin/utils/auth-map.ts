@@ -11,6 +11,7 @@ interface BackendUser {
   role_id?: number | null;
   role_name?: string | null;
   branch_id?: number[] | number | string | null;
+  show_activity_dashboard?: boolean;
 }
 
 interface BackendProfile {
@@ -18,9 +19,11 @@ interface BackendProfile {
   name?: string;
   last_name?: string;
   mobile?: string;
+  email?: string;
   image?: string;
   role?: { id?: number; name?: string } | null;
   branch?: { id?: number; name?: string } | null;
+  show_activity_dashboard?: boolean;
 }
 
 const ROLE_NAME_MAP: Record<string, UserRole> = {
@@ -83,12 +86,14 @@ export const mapBackendUser = (raw: BackendUser): User => {
   return {
     id: String(raw.id),
     name: fullName || 'Admin User',
+    lastName: raw.last_name,
     email: raw.email,
     role,
     roleId: raw.role_id != null ? Number(raw.role_id) : undefined,
     phone: raw.mobile,
     avatar: raw.image || undefined,
     branchId: pickBranchId(raw.branch_id),
+    showActivityDashboard: Boolean(raw.show_activity_dashboard),
   };
 };
 
@@ -106,11 +111,14 @@ export const mapBackendProfile = (raw: BackendProfile): User => {
   return {
     id: String(raw.id),
     name: fullName || 'Admin User',
+    lastName: raw.last_name,
+    email: raw.email,
     role,
     roleId: raw.role?.id != null ? Number(raw.role.id) : undefined,
     phone: raw.mobile,
     avatar: raw.image || undefined,
     branchId: raw.branch?.id != null ? String(raw.branch.id) : undefined,
+    showActivityDashboard: Boolean(raw.show_activity_dashboard),
   };
 };
 
