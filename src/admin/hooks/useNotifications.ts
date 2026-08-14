@@ -24,7 +24,7 @@ export const useNotifications = (enabled = true) =>
     queryKey: LIST_KEY,
     queryFn: () => notificationApi.list(),
     enabled,
-    refetchInterval: 60_000,
+    refetchOnWindowFocus: false,
   });
 
 export const useUnreadNotificationCount = (enabled = true) =>
@@ -32,8 +32,7 @@ export const useUnreadNotificationCount = (enabled = true) =>
     queryKey: UNREAD_KEY,
     queryFn: () => notificationApi.unreadCount(),
     enabled,
-    refetchInterval: 15_000,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
 /** Live unread badge via Socket.IO `notification_count_{userId}`. */
@@ -63,7 +62,6 @@ export const useNotificationRealtime = () => {
       const count = Number(payload?.unread_count ?? 0);
       queryClient.setQueryData(UNREAD_KEY, count);
       void queryClient.invalidateQueries({ queryKey: LIST_KEY });
-      void queryClient.invalidateQueries({ queryKey: UNREAD_KEY });
     };
 
     const onConnect = () => {
