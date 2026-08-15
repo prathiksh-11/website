@@ -142,6 +142,9 @@ export interface CustomerSessionPlanDetail {
   price: string | number;
   purchased_on: string;
   status: string;
+  is_partial?: boolean;
+  amount_pending?: number | string;
+  amount_paid?: number | string;
 }
 
 export interface CustomerAttendanceHistoryItem {
@@ -401,6 +404,8 @@ export interface DashboardSummary {
   nonPtClients: number;
   /** Revenue attributed to PT customers */
   ptCustomerRevenue: number;
+  /** Pending balance due from partial payments */
+  totalPendingAmount?: number;
 }
 
 export interface ChartPoint {

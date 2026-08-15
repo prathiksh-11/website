@@ -5,7 +5,6 @@ import {
   Phone,
   Mail,
   Clock,
-  CheckCircle,
   Loader,
   MapPin,
   MessageCircle,
@@ -14,8 +13,20 @@ import {
 import Navbar from './Navbar';
 import Footer from './Footer';
 import BackToTop from './BackToTop';
+import CelebrationSuccessScreen from './CelebrationSuccessScreen';
 
 type Status = 'idle' | 'loading' | 'success';
+
+const WHATSAPP_NUMBER = '919148974009';
+
+const goals = [
+  'Weight Loss',
+  'Muscle Gain',
+  'Body Toning',
+  'General Fitness',
+  'Strength Training',
+  'Other',
+];
 
 const startOptions = [
   {
@@ -51,10 +62,8 @@ const startOptions = [
 export default function Contact() {
   const [form, setForm] = useState({
     name: '',
-    email: '',
     phone: '',
-    help: '',
-    message: '',
+    goal: '',
   });
   const [status, setStatus] = useState<Status>('idle');
 
@@ -66,12 +75,22 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name.trim() || !form.phone.trim() || !form.goal) return;
+
     setStatus('loading');
-    await new Promise((r) => setTimeout(r, 1400));
+    await new Promise((r) => setTimeout(r, 600));
+
+    const message = `Hi, I'd like to get in touch.\n\nName: ${form.name.trim()}\nPhone: ${form.phone.trim()}\nGoal: ${form.goal}`;
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+
     setStatus('success');
     setTimeout(() => {
       setStatus('idle');
-      setForm({ name: '', email: '', phone: '', help: '', message: '' });
+      setForm({ name: '', phone: '', goal: '' });
     }, 4000);
   };
 
@@ -192,12 +211,31 @@ export default function Contact() {
             <div className="lg:col-span-3">
               <div className="rounded-[1.75rem] border border-[rgba(22,24,31,0.06)] bg-[#f7f8fb] p-8 md:p-10">
                 {status === 'success' ? (
-                  <div className="text-center py-16">
-                    <div className="w-16 h-16 rounded-full bg-[#fff0e8] flex items-center justify-center mx-auto mb-6">
-                      <CheckCircle size={28} className="text-[#ff5000]" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-[#16181f] mb-3">Message received!</h3>
-                    <p className="text-[#6f7685] text-sm">Our team will get back to you soon.</p>
+                  <div className="overflow-hidden rounded-2xl -m-4 sm:-m-6">
+                    <CelebrationSuccessScreen
+                      isFullPage={false}
+                      headline="Inquiry Confirmed!"
+                      subheadline="Your message has been received with highest priority. Our elite coaching staff will reach out to you shortly."
+                      passCode={`GO-INQ-${Math.floor(1000 + Math.random() * 9000)}`}
+                      badgeText="Priority Request • Verified & Logged"
+                      details={[
+                        { label: 'Athlete Name', value: form.name || 'Game On Athlete' },
+                        { label: 'Fitness Goal', value: form.goal || 'General Fitness' },
+                        { label: 'Contact Number', value: form.phone || '+91' },
+                        { label: 'Response Priority', value: 'Within 2 Working Hours' },
+                      ]}
+                      primaryAction={{
+                        label: 'Explore All Clubs',
+                        href: '/locations',
+                      }}
+                      secondaryAction={{
+                        label: 'Send Another Message',
+                        onClick: () => {
+                          setStatus('idle');
+                          setForm({ name: '', phone: '', goal: '' });
+                        },
+                      }}
+                    />
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
@@ -205,94 +243,74 @@ export default function Contact() {
                       <h3 className="font-display text-xl font-bold text-[#16181f] mb-1">
                         Send us a message
                       </h3>
-                      <p className="text-xs text-[#6f7685]">
-                        Tell us how we can help you begin.
-                      </p>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={form.name}
-                          onChange={handleChange}
-                          required
-                          placeholder="Your name"
-                          className="input-premium w-full rounded-xl px-4 py-3 text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">
-                          Mobile Number *
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={form.phone}
-                          onChange={handleChange}
-                          required
-                          placeholder="+91"
-                          className="input-premium w-full rounded-xl px-4 py-3 text-sm"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={form.email}
-                          onChange={handleChange}
-                          placeholder="you@email.com"
-                          className="input-premium w-full rounded-xl px-4 py-3 text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">
-                          How can we help you?
-                        </label>
-                        <select
-                          name="help"
-                          value={form.help}
-                          onChange={handleChange}
-                          className="input-premium w-full rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer"
-                        >
-                          <option value="">Select an option</option>
-                          <option value="join">Ready to join</option>
-                          <option value="branch">Choosing a branch</option>
-                          <option value="tour">Book a tour</option>
-                          <option value="career">Careers</option>
-                          <option value="other">Something else</option>
-                        </select>
-                      </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2">
-                        Message
+                      <label
+                        htmlFor="contact-name"
+                        className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2"
+                      >
+                        Name *
                       </label>
-                      <textarea
-                        name="message"
-                        value={form.message}
+                      <input
+                        id="contact-name"
+                        type="text"
+                        name="name"
+                        value={form.name}
                         onChange={handleChange}
-                        rows={4}
-                        placeholder="Share a little about your goals..."
-                        className="input-premium w-full rounded-xl px-4 py-3 text-sm resize-none"
+                        required
+                        placeholder="Your full name"
+                        className="input-premium w-full rounded-xl px-4 py-3 text-sm"
                       />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="contact-phone"
+                        className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2"
+                      >
+                        Phone *
+                      </label>
+                      <input
+                        id="contact-phone"
+                        type="tel"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        required
+                        placeholder="+91 98765 43210"
+                        className="input-premium w-full rounded-xl px-4 py-3 text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="contact-goal"
+                        className="block text-xs font-medium text-[#6f7685] uppercase tracking-wider mb-2"
+                      >
+                        Goal *
+                      </label>
+                      <select
+                        id="contact-goal"
+                        name="goal"
+                        value={form.goal}
+                        onChange={handleChange}
+                        required
+                        className="input-premium w-full rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer"
+                      >
+                        <option value="">Select your fitness goal</option>
+                        {goals.map((goal) => (
+                          <option key={goal} value={goal}>
+                            {goal}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <button
                       type="submit"
                       disabled={status === 'loading'}
-                      className="btn-premium-primary w-full font-semibold py-4 rounded-xl text-sm tracking-wider uppercase flex items-center justify-center gap-3 disabled:opacity-70"
+                      className="btn-premium-primary w-full font-semibold py-4 rounded-xl text-sm tracking-wide flex items-center justify-center gap-3 disabled:opacity-70"
                     >
                       {status === 'loading' ? (
                         <>

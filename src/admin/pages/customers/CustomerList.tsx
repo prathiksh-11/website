@@ -527,88 +527,106 @@ export const CustomerList = () => {
                       <span>PT Session Packages</span>
                     </div>
                     <Tag color="orange" style={{ borderRadius: 8, fontWeight: 600 }}>
-                      {(customerDetails.session_plans?.length || 1)} Active Package
+                      {(customerDetails.session_plans?.length || 1)}{' '}
+                      {(customerDetails.session_plans?.length || 1) === 1
+                        ? 'Active Package'
+                        : 'Active Packages'}
                     </Tag>
                   </div>
 
-                  {(
-                    customerDetails.session_plans ||
-                    (customerDetails.session_plan ? [customerDetails.session_plan] : [])
-                  ).map((sp, idx) => {
-                    const used = sp.used_sessions || 0;
-                    const total = sp.total_sessions || 1;
-                    const percent = Math.min(100, Math.round((used / total) * 100));
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '0.75rem',
-                          paddingBottom: idx > 0 ? '0.75rem' : 0,
-                          borderTop: idx > 0 ? '1px solid #f1f5f9' : undefined,
-                          paddingTop: idx > 0 ? '0.75rem' : 0,
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <div>
-                            <strong style={{ fontSize: '0.95rem', color: '#16181f' }}>
-                              {sp.plan_name}
-                            </strong>
-                            <span
-                              style={{ display: 'block', fontSize: '0.75rem', color: '#6f7685' }}
-                            >
-                              Purchased on {formatDate(sp.purchased_on)}
-                            </span>
-                          </div>
-                          <StatusBadge status={sp.status} />
-                        </div>
+                  <div className="cust-detail__packages-list">
+                    {(
+                      customerDetails.session_plans ||
+                      (customerDetails.session_plan ? [customerDetails.session_plan] : [])
+                    ).map((sp, idx) => {
+                      const used = sp.used_sessions || 0;
+                      const total = sp.total_sessions || 1;
+                      const left = Math.max(0, total - used);
+                      const percent = Math.min(100, Math.round((used / total) * 100));
+                      const isPartial =
+                        Boolean(sp.is_partial) ||
+                        Number(sp.amount_pending ?? 0) > 0;
 
-                        <div>
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              fontSize: '0.8rem',
-                              fontWeight: 600,
-                              marginBottom: 4,
-                            }}
-                          >
-                            <span>Session Progress</span>
-                            <span style={{ color: '#ff5000' }}>
-                              {used} of {total} sessions used ({total - used} left)
-                            </span>
+                      return (
+                        <div key={idx} className="cust-detail__package-card">
+                          <div className="cust-detail__package-head">
+                            <div className="cust-detail__package-title-wrap">
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                <span className="cust-detail__package-num">
+                                  Package #{idx + 1}
+                                </span>
+                                {isPartial && Number(sp.amount_pending) > 0 ? (
+                                  <Tag
+                                    color="warning"
+                                    style={{
+                                      borderRadius: 6,
+                                      fontWeight: 600,
+                                      margin: 0,
+                                      fontSize: '0.68rem',
+                                      lineHeight: '18px',
+                                    }}
+                                  >
+                                    Partial Paid
+                                  </Tag>
+                                ) : null}
+                              </div>
+                              <strong className="cust-detail__package-name">
+                                {sp.plan_name}
+                              </strong>
+                              <span className="cust-detail__package-date">
+                                <Calendar size={12} />
+                                Purchased on {formatDate(sp.purchased_on)}
+                              </span>
+                            </div>
+                            <StatusBadge status={sp.status} />
                           </div>
-                          <Progress
-                            percent={percent}
-                            strokeColor={{ '0%': '#ff5000', '100%': '#e04800' }}
-                            status="active"
-                          />
-                        </div>
 
-                        <div className="cust-detail__keyvals">
-                          <div className="cust-detail__keyval">
-                            <div className="cust-detail__keyval-label">Price</div>
-                            <div className="cust-detail__keyval-value">
-                              {formatCurrency(Number(sp.price) || 0)}
+                          <div className="cust-detail__progress-box">
+                            <div className="cust-detail__progress-top">
+                              <span className="cust-detail__progress-label">Session Progress</span>
+                              <span className="cust-detail__progress-val">
+                                <strong>{used}</strong> of {total} used (
+                                <span style={{ color: left > 0 ? '#ff5000' : '#16a34a' }}>
+                                  {left} left
+                                </span>
+                                )
+                              </span>
+                            </div>
+                            <Progress
+                              percent={percent}
+                              strokeColor={{ '0%': '#ff5000', '100%': '#e04800' }}
+                              status="active"
+                            />
+                          </div>
+
+                          <div className="cust-detail__keyvals">
+                            <div className="cust-detail__keyval">
+                              <div className="cust-detail__keyval-label">Price</div>
+                              <div className="cust-detail__keyval-value">
+                                {formatCurrency(Number(sp.price) || 0)}
+                              </div>
+                            </div>
+                            <div className="cust-detail__keyval">
+                              <div className="cust-detail__keyval-label">
+                                {isPartial && Number(sp.amount_pending) > 0
+                                  ? 'Payment Status'
+                                  : 'Purchased On'}
+                              </div>
+                              <div className="cust-detail__keyval-value">
+                                {isPartial && Number(sp.amount_pending) > 0 ? (
+                                  <span style={{ color: '#ea580c' }}>
+                                    {formatCurrency(Number(sp.amount_paid) || 0)} paid · {formatCurrency(Number(sp.amount_pending) || 0)} due
+                                  </span>
+                                ) : (
+                                  formatDate(sp.purchased_on)
+                                )}
+                              </div>
                             </div>
                           </div>
-                          <div className="cust-detail__keyval">
-                            <div className="cust-detail__keyval-label">Purchased On</div>
-                            <div className="cust-detail__keyval-value">
-                              {formatDate(sp.purchased_on)}
-                            </div>
-                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

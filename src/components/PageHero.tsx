@@ -120,7 +120,7 @@ export default function PageHero({
                   <img
                     src={image}
                     alt="Game On Fitness app"
-                    className="block w-full h-full object-contain object-top bg-[#0a0a0b]"
+                    className="block w-full h-full object-cover object-top bg-[#0a0a0b]"
                     loading="eager"
                   />
                   <div className="app-shine" />

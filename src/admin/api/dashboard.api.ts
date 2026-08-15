@@ -8,6 +8,7 @@ import type {
 } from '@/types';
 import { apiClient } from './axios';
 import { ENDPOINTS } from './endpoints';
+import { transactionApi } from './transaction.api';
 
 interface BackendDashboardPayload {
   total_clients?: number;
@@ -18,6 +19,7 @@ interface BackendDashboardPayload {
   total_revenue_pt?: number;
   total_revenue_subscriptions?: number;
   total_revenue_events?: number;
+  total_pending_amount?: number;
   latest_session?: Record<string, unknown> | null;
   latest_event?: Record<string, unknown> | null;
   user?: {
@@ -126,6 +128,7 @@ export const mapBackendDashboard = (
     ptPurchaseAmount: ptRevenue,
     nonPtClients: Math.max(totalClients - ptCustomers, 0),
     ptCustomerRevenue: ptRevenue,
+    totalPendingAmount: Number(payload?.total_pending_amount ?? 0),
   };
 
   const base = emptyDashboard(summary);
@@ -143,15 +146,36 @@ export const dashboardApi = {
       return structuredClone(MOCK_DASHBOARD);
     }
 
-    const { data } = await apiClient.get<BackendDashboardResponse>(
-      ENDPOINTS.DASHBOARD.ROOT,
-      {
+    const [dashRes, txRes] = await Promise.allSettled([
+      apiClient.get<BackendDashboardResponse>(ENDPOINTS.DASHBOARD.ROOT, {
         params: branchId ? { branch_id: Number(branchId) } : undefined,
-      },
-    );
+      }),
+      transactionApi.list({ pageSize: 50, branchId }),
+    ]);
 
-    // Backend: { success, data: { total_clients, ... } }
-    const payload = data?.data ?? (data as unknown as BackendDashboardPayload);
-    return mapBackendDashboard(payload);
+    const payload =
+      dashRes.status === 'fulfilled'
+        ? dashRes.value.data?.data ??
+          (dashRes.value.data as unknown as BackendDashboardPayload)
+        : null;
+
+    let computedPending = Number(payload?.total_pending_amount ?? 0);
+
+    if (txRes.status === 'fulfilled' && txRes.value?.items) {
+      const txPendingSum = txRes.value.items.reduce((sum, tx) => {
+        if (tx.amountPending && tx.amountPending > 0) {
+          return sum + Number(tx.amountPending);
+        }
+        return sum;
+      }, 0);
+
+      if (txPendingSum > 0 || computedPending === 0) {
+        computedPending = Math.max(computedPending, txPendingSum);
+      }
+    }
+
+    const mapped = mapBackendDashboard(payload);
+    mapped.summary.totalPendingAmount = computedPending;
+    return mapped;
   },
 };
