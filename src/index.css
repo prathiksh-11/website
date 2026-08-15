@@ -12,13 +12,13 @@
   --color-muted: #6f7685;
   --color-border: rgba(22, 24, 31, 0.08);
   --color-accent: #16181f;
-  --color-rose: #ff5000;
-  --color-rose-deep: #e04800;
-  --color-blush: #fff0e8;
+  --color-rose: #ff7033;
+  --color-rose-deep: #ff5714;
+  --color-blush: #fff4ed;
   --color-mist: #e4ecf6;
   --shadow-soft: 0 18px 50px rgba(26, 23, 20, 0.07);
   --shadow-lift: 0 30px 70px rgba(26, 23, 20, 0.12);
-  --shadow-glow: 0 20px 60px rgba(255, 80, 0, 0.18);
+  --shadow-glow: 0 20px 60px rgba(255, 112, 51, 0.22);
 }
 
 * {
@@ -614,7 +614,7 @@ h4,
 .btn-glow-gold:hover {
   transform: translateY(-3px);
   box-shadow: 0 20px 44px rgba(26, 23, 20, 0.28), var(--shadow-glow);
-  background: linear-gradient(135deg, #ff5000 0%, #cc4000 100%);
+  background: linear-gradient(135deg, #ff7a3d 0%, #ff5e1a 100%);
 }
 
 .btn-premium-primary:hover::after,
@@ -841,8 +841,8 @@ h4,
 }
 
 .nav-cta {
-  background: linear-gradient(135deg, #ff5000 0%, #e04800 100%);
-  box-shadow: 0 10px 28px rgba(255, 80, 0, 0.35);
+  background: linear-gradient(135deg, #ff7a3d 0%, #ff5e1a 100%);
+  box-shadow: 0 10px 26px rgba(255, 112, 51, 0.32);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
@@ -859,8 +859,8 @@ h4,
 
 .nav-cta:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 16px 36px rgba(255, 80, 0, 0.45);
-  background: linear-gradient(135deg, #ff6a26 0%, #ff5000 100%);
+  box-shadow: 0 16px 34px rgba(255, 112, 51, 0.42);
+  background: linear-gradient(135deg, #ff8c56 0%, #ff6e2e 100%);
 }
 
 .nav-cta:hover::before {
@@ -972,14 +972,13 @@ h4,
 }
 
 @keyframes heroCtaGlow {
-
   0%,
   100% {
-    box-shadow: 0 14px 40px rgba(255, 80, 0, 0.35);
+    box-shadow: 0 14px 36px rgba(255, 112, 51, 0.32);
   }
 
   50% {
-    box-shadow: 0 18px 52px rgba(255, 80, 0, 0.55);
+    box-shadow: 0 18px 48px rgba(255, 112, 51, 0.48);
   }
 }
 
@@ -1002,7 +1001,7 @@ h4,
 
 .hero-spark {
   background: rgba(255, 255, 255, 0.75);
-  box-shadow: 0 0 10px rgba(255, 80, 0, 0.55);
+  box-shadow: 0 0 10px rgba(255, 112, 51, 0.55);
   animation: heroSparkFloat ease-in-out infinite;
 }
 
@@ -1011,15 +1010,16 @@ h4,
 }
 
 .hero-cta-primary {
-  background: linear-gradient(135deg, #ff5000 0%, #e04800 100%);
-  box-shadow: 0 14px 40px rgba(255, 80, 0, 0.4);
+  background: linear-gradient(135deg, #ff7a3d 0%, #ff5e1a 100%);
+  box-shadow: 0 14px 38px rgba(255, 112, 51, 0.35);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
   animation: heroCtaGlow 3s ease-in-out infinite;
 }
 
 .hero-cta-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 20px 50px rgba(255, 80, 0, 0.55);
+  background: linear-gradient(135deg, #ff8c56 0%, #ff6e2e 100%);
+  box-shadow: 0 20px 48px rgba(255, 112, 51, 0.48);
 }
 
 .hero-cta-secondary {

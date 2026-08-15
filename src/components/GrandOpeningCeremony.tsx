@@ -469,7 +469,7 @@ export default function GrandOpeningCeremony() {
                       />
                       <button
                         type="submit"
-                        className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#ff5000] to-[#e04800] hover:from-[#ff6a1a] hover:to-[#ff5000] text-white text-sm font-black tracking-wide shadow-[0_10px_28px_rgba(255,80,0,0.5)] hover:shadow-[0_14px_36px_rgba(255,80,0,0.7)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer shrink-0"
+                        className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] hover:from-[#ff8c56] hover:to-[#ff6e2e] text-white text-sm font-black tracking-wide shadow-[0_10px_28px_rgba(255,112,51,0.45)] hover:shadow-[0_14px_36px_rgba(255,112,51,0.65)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer shrink-0"
                       >
                         <span>Claim VIP Pass</span>
                         <Send size={15} />
@@ -539,7 +539,7 @@ export default function GrandOpeningCeremony() {
               <button
                 type="button"
                 onClick={handleOpenCurtains}
-                className="relative z-10 group inline-flex items-center gap-3 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-gradient-to-r from-[#ff5000] via-[#ff6a1a] to-[#ff5000] hover:from-[#e04800] hover:to-[#ff5000] text-white font-display font-black text-sm sm:text-base tracking-wide shadow-[0_15px_45px_rgba(255,80,0,0.65)] hover:shadow-[0_20px_65px_rgba(255,80,0,0.9)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+                className="relative z-10 group inline-flex items-center gap-3 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-gradient-to-r from-[#ff7a3d] via-[#ff8c56] to-[#ff7a3d] hover:from-[#ff6e2e] hover:to-[#ff7a3d] text-white font-display font-black text-sm sm:text-base tracking-wide shadow-[0_15px_45px_rgba(255,112,51,0.55)] hover:shadow-[0_20px_65px_rgba(255,112,51,0.75)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
               >
                 <Scissors size={20} className="fill-white group-hover:rotate-45 transition-transform" />
                 <span>CUT RIBBON & DRAW CURTAINS</span>

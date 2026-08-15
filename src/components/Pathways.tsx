@@ -227,8 +227,8 @@ export default function Pathways() {
                 onClick={() => setActiveFilter(tab.id)}
                 className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                   activeFilter === tab.id
-                    ? 'bg-[#ff5000] text-white shadow-[0_8px_24px_rgba(255,80,0,0.35)] scale-105'
-                    : 'bg-white text-[#6f7685] border border-[rgba(22,24,31,0.08)] hover:border-[#ff5000]/40 hover:text-[#16181f]'
+                    ? 'bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] text-white shadow-[0_8px_24px_rgba(255,112,51,0.35)] scale-105'
+                    : 'bg-white text-[#6f7685] border border-[rgba(22,24,31,0.08)] hover:border-[#ff7033]/40 hover:text-[#16181f]'
                 }`}
               >
                 {tab.label}
@@ -250,7 +250,7 @@ export default function Pathways() {
               <article
                 key={path.id}
                 onClick={() => setSelectedPathway(path)}
-                className="group relative rounded-[2rem] overflow-hidden min-h-[520px] sm:min-h-[560px] flex flex-col justify-between p-6 sm:p-7 bg-[#16181f] border border-white/10 shadow-[0_20px_50px_rgba(22,24,31,0.1)] hover:shadow-[0_30px_70px_rgba(255,80,0,0.25)] hover:border-[#ff5000]/50 hover:-translate-y-2 transition-all duration-500 cursor-pointer"
+                className="group relative rounded-[2rem] overflow-hidden min-h-[520px] sm:min-h-[560px] flex flex-col justify-between p-6 sm:p-7 bg-[#16181f] border border-white/10 shadow-[0_20px_50px_rgba(22,24,31,0.1)] hover:shadow-[0_30px_70px_rgba(255,112,51,0.25)] hover:border-[#ff7033]/50 hover:-translate-y-2 transition-all duration-500 cursor-pointer"
               >
                 {/* Full Bleed Athletic Background Photography */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
@@ -268,30 +268,30 @@ export default function Pathways() {
                 {/* Top Row: Index Badge & Icon */}
                 <div className="relative z-10 flex items-center justify-between gap-3">
                   <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-xs font-black tracking-widest uppercase shadow-md">
-                    <span className="text-[#ff5000]">{path.number}</span>
+                    <span className="text-[#ff7a3d]">{path.number}</span>
                     <span className="w-1 h-1 rounded-full bg-white/40" />
                     <span>{path.category}</span>
                   </span>
 
-                  <div className="w-10 h-10 rounded-full bg-[#ff5000] text-white flex items-center justify-center shadow-[0_0_15px_rgba(255,80,0,0.5)] group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-full bg-[#ff7033] text-white flex items-center justify-center shadow-[0_0_15px_rgba(255,112,51,0.5)] group-hover:scale-110 transition-transform">
                     <Icon size={18} />
                   </div>
                 </div>
 
                 {/* Center / Goal Chip */}
                 <div className="relative z-10 my-auto py-6">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ff5000]/20 border border-[#ff5000]/50 text-[#ff8c42] text-xs font-bold shadow-sm backdrop-blur-md">
-                    <Sparkles size={13} className="text-[#ff5000] fill-[#ff5000]" />
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ff7033]/15 border border-[#ff7033]/40 text-[#ff8c56] text-xs font-bold shadow-sm backdrop-blur-md">
+                    <Sparkles size={13} className="text-[#ff7033] fill-[#ff7033]" />
                     <span>{path.goal}</span>
                   </div>
                 </div>
 
                 {/* Bottom Content Area */}
                 <div className="relative z-10 pt-4">
-                  <h3 className="font-display text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight group-hover:text-[#ff5000] transition-colors duration-300 mb-1">
+                  <h3 className="font-display text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight group-hover:text-[#ff7a3d] transition-colors duration-300 mb-1">
                     {path.title}
                   </h3>
-                  <p className="text-xs sm:text-sm font-semibold text-[#ff7a38] mb-3">
+                  <p className="text-xs sm:text-sm font-semibold text-[#ff8c56] mb-3">
                     {path.subtitle}
                   </p>
 
@@ -306,7 +306,7 @@ export default function Pathways() {
                         key={pIdx}
                         className="flex items-center gap-2 text-[11px] sm:text-xs font-medium text-gray-200"
                       >
-                        <CheckCircle2 size={13} className="text-[#ff5000] shrink-0" />
+                        <CheckCircle2 size={13} className="text-[#ff7033] shrink-0" />
                         <span className="truncate">{pillar}</span>
                       </div>
                     ))}
@@ -317,7 +317,7 @@ export default function Pathways() {
                     <span className="text-xs font-bold text-gray-400 group-hover:text-white transition-colors">
                       View Blueprint
                     </span>
-                    <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#ff5000] text-white text-xs font-bold uppercase tracking-wider shadow-[0_4px_15px_rgba(255,80,0,0.4)] group-hover:gap-2.5 transition-all">
+                    <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#ff7033] text-white text-xs font-bold uppercase tracking-wider shadow-[0_4px_15px_rgba(255,112,51,0.4)] group-hover:bg-[#ff8044] group-hover:gap-2.5 transition-all">
                       <span>Explore</span>
                       <ArrowRight size={13} />
                     </span>
@@ -431,7 +431,7 @@ export default function Pathways() {
               <button
                 type="button"
                 onClick={() => handleStartPathway(selectedPathway)}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#ff5000] hover:bg-[#e04800] text-white font-bold text-sm shadow-[0_10px_25px_rgba(255,80,0,0.45)] transition-all cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] hover:from-[#ff8c56] hover:to-[#ff6e2e] text-white font-bold text-sm shadow-[0_10px_25px_rgba(255,112,51,0.35)] transition-all cursor-pointer"
               >
                 <span>Start {selectedPathway.title} Pathway</span>
                 <ArrowRight size={16} />
