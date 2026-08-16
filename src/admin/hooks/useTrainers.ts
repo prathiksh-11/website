@@ -4,8 +4,44 @@ import { useMemo } from 'react';
 import { trainerService } from '@/services/trainer.service';
 import type { PaginatedRequest, Trainer } from '@/types';
 import { filterBySearch, paginate } from '@/utils/query';
+import { resolveTrainerType } from '@/constants';
 
 const TRAINERS_QUERY_KEY = ['trainers', 'all'] as const;
+
+export const filterTrainers = (
+  trainers: Trainer[],
+  params: PaginatedRequest = {},
+  branchNameById?: Record<string, string>,
+): Trainer[] => {
+  let filtered = filterBySearch(
+    trainers as unknown as Record<string, unknown>[],
+    params.search,
+    ['name', 'phone', 'specialization', 'branchName', 'roleName', 'description'],
+  ) as unknown as Trainer[];
+
+  if (params.status) {
+    filtered = filtered.filter((t) => t.status === params.status);
+  }
+
+  if (params.branchId) {
+    const branchName = branchNameById?.[params.branchId];
+    filtered = filtered.filter((t) => {
+      if (t.branchId && t.branchId === params.branchId) return true;
+      if (!branchName) return false;
+      return t.branchNames.some(
+        (n) => n.toLowerCase() === branchName.toLowerCase(),
+      );
+    });
+  }
+
+  if (params.trainerType) {
+    filtered = filtered.filter(
+      (t) => resolveTrainerType(t) === params.trainerType,
+    );
+  }
+
+  return filtered;
+};
 
 export const useTrainersAll = () =>
   useQuery<Trainer[]>({
@@ -21,28 +57,7 @@ export const useTrainers = (
   const query = useTrainersAll();
 
   const page = useMemo(() => {
-    const all = query.data ?? [];
-    let filtered = filterBySearch(
-      all as unknown as Record<string, unknown>[],
-      params.search,
-      ['name', 'phone', 'specialization', 'branchName', 'roleName', 'description'],
-    ) as unknown as Trainer[];
-
-    if (params.status) {
-      filtered = filtered.filter((t) => t.status === params.status);
-    }
-
-    if (params.branchId) {
-      const branchName = branchNameById?.[params.branchId];
-      filtered = filtered.filter((t) => {
-        if (t.branchId && t.branchId === params.branchId) return true;
-        if (!branchName) return false;
-        return t.branchNames.some(
-          (n) => n.toLowerCase() === branchName.toLowerCase(),
-        );
-      });
-    }
-
+    const filtered = filterTrainers(query.data ?? [], params, branchNameById);
     return paginate(filtered, {
       ...params,
       pageSize: params.pageSize ?? 12,
