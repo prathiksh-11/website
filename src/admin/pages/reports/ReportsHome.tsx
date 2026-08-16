@@ -1,16 +1,17 @@
 import {
   FileExcelOutlined,
-  FilePdfOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, DatePicker, Empty, Progress, Select } from 'antd';
+import { Button, DatePicker, Empty, Progress, Select, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import dayjs, { type Dayjs } from 'dayjs';
 import {
   Activity,
   AlertCircle,
+  ArrowDownRight,
+  ArrowUpRight,
   Building2,
   CircleDollarSign,
-  Clock3,
   Dumbbell,
   Hourglass,
   TrendingUp,
@@ -20,48 +21,54 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import {
-  Area,
-  AreaChart,
+  Legend,
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
-  Pie,
-  PieChart,
-  PolarAngleAxis,
-  RadialBar,
-  RadialBarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { PageSkeleton } from '@/components/common';
-import { THEME_TOKENS } from '@/constants';
+import { normalizeTrainerType, THEME_TOKENS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useGymReport, useReportExport } from '@/hooks/useReports';
-import { useTrainers } from '@/hooks/useTrainers';
+import { useTrainers, useTrainersAll } from '@/hooks/useTrainers';
 import type {
+  Branch,
   GymReport,
   ReportBranch,
   ReportDateFilter,
   ReportQuery,
   ReportTrainer,
+  Trainer,
+  TrainerType,
 } from '@/types';
 import { formatCurrency } from '@/utils/format';
+import { emptyGymReport } from '@/utils/report-map';
 
 const { RangePicker } = DatePicker;
 
+const EMPTY_REPORT_TOTALS = emptyGymReport().totals;
+
 const ACCENT = THEME_TOKENS.colorPrimary;
 const MUTED = '#9aa0ab';
-const PIE_COLORS = ['#ff8a4c', '#ffb088', '#c4b5a5', '#e8ecf2'];
 
 type ReportTab = 'branch' | 'attendance' | 'revenue';
 
 const TABS: Array<{ key: ReportTab; label: string; hint: string }> = [
-  { key: 'branch', label: 'Branch summary', hint: 'Sessions & location health' },
+  { key: 'branch', label: 'Branch summary', hint: '' },
   { key: 'attendance', label: 'Trainer attendance', hint: 'Presence & working hours' },
-  { key: 'revenue', label: 'Revenue', hint: 'Paid, pending, partial & due' },
+  { key: 'revenue', label: 'Revenue', hint: 'Monthly or custom comparison' },
+];
+
+type RevenueCompareMode = 'monthly' | 'custom';
+
+const REVENUE_MODES: Array<{ value: RevenueCompareMode; label: string }> = [
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 const PERIODS: Array<{ value: ReportDateFilter; label: string }> = [
@@ -97,6 +104,62 @@ const moneyTick = (v: number) =>
     : v >= 1000
       ? `${Math.round(v / 1000)}k`
       : String(v);
+
+const getMonthRange = (month: Dayjs) => {
+  const start = month.startOf('month');
+  const now = dayjs();
+  const end = month.isSame(now, 'month') ? now : month.endOf('month');
+
+  return {
+    start: start.format('YYYY-MM-DD'),
+    end: end.format('YYYY-MM-DD'),
+    label: month.format('MMMM YYYY'),
+  };
+};
+
+const getDefaultRevenueMonths = () => {
+  const now = dayjs();
+  return {
+    primary: now.startOf('month'),
+    compare: now.subtract(1, 'month').startOf('month'),
+  };
+};
+
+const getDefaultRevenueCustomRanges = (): {
+  primary: [Dayjs, Dayjs];
+  compare: [Dayjs, Dayjs];
+} => {
+  const now = dayjs();
+  const lastMonth = now.subtract(1, 'month');
+  return {
+    primary: [now.startOf('month'), now.endOf('day')],
+    compare: [lastMonth.startOf('month'), lastMonth.endOf('month')],
+  };
+};
+
+const getCustomRange = (range: [Dayjs, Dayjs]) => ({
+  start: range[0].format('YYYY-MM-DD'),
+  end: range[1].format('YYYY-MM-DD'),
+  label: `${range[0].format('DD MMM YYYY')} – ${range[1].format('DD MMM YYYY')}`,
+});
+
+const calcRevenueChange = (current: number, previous: number) => {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return Number((((current - previous) / previous) * 100).toFixed(1));
+};
+
+const ChangeBadge = ({ value }: { value: number }) => {
+  const up = value >= 0;
+  const Icon = up ? ArrowUpRight : ArrowDownRight;
+
+  return (
+    <span className={`rpt-rev-change ${up ? 'rpt-rev-change--up' : 'rpt-rev-change--down'}`}>
+      <Icon size={14} />
+      {up ? '+' : ''}
+      {value}%
+    </span>
+  );
+};
 
 const MoneyHealthCards = ({ totals }: { totals: GymReport['totals'] }) => (
   <section className="rpt__money" aria-label="Payment health">
@@ -214,137 +277,375 @@ const OverviewCards = ({ totals }: { totals: GymReport['totals'] }) => (
   </>
 );
 
-const BranchSummaryTab = ({
+const BranchOverviewCards = ({
   branches,
   totals,
+  branchMeta,
+  allTrainers,
+  branchId,
 }: {
   branches: ReportBranch[];
   totals: GymReport['totals'];
+  branchMeta: Branch[];
+  allTrainers: Trainer[];
+  branchId?: string;
 }) => {
-  const sessionBars = branches.map((b) => ({
-    name: shortBranch(b.name),
-    purchased: b.highlights.sessionsPurchased,
-    completed: b.highlights.sessionsCompleted,
-    remaining: b.highlights.sessionsRemaining,
-  }));
+  const reportTotals = totals ?? EMPTY_REPORT_TOTALS;
 
-  const utilBars = branches
-    .map((b) => ({
-      name: shortBranch(b.name),
-      value: b.highlights.sessionUtilization,
-      fill: ACCENT,
-    }))
-    .sort((a, b) => b.value - a.value);
+  const managerByBranchId = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const branch of branchMeta) {
+      map[branch.id] = branch.managerName || '—';
+    }
+    return map;
+  }, [branchMeta]);
+
+  const aggregates = useMemo(() => {
+    const staff = emptyStaffCounts();
+
+    for (const branch of branches) {
+      const counts = countBranchStaff(allTrainers, branch.id, branch.name);
+      staff.general_trainer += counts.general_trainer;
+      staff.pt_trainer += counts.pt_trainer;
+      staff.membership_coordinator += counts.membership_coordinator;
+      staff.receptionist += counts.receptionist;
+      staff.total += counts.total;
+    }
+
+    return {
+      generalTrainer: staff.general_trainer,
+      ptTrainer: staff.pt_trainer,
+      mc: staff.membership_coordinator,
+      reci: staff.receptionist,
+      totalEmployees: staff.total,
+      totalClients: reportTotals.totalCustomers,
+      ptClients: reportTotals.ptClients,
+      membershipClients: reportTotals.subscriberClients,
+      subscriptionRevenue: reportTotals.subscriberRevenue,
+      eventRevenue: reportTotals.eventRevenue,
+      ptRevenue: reportTotals.ptRevenue,
+      ptCollected: reportTotals.paidAmount,
+      pendingAmount: reportTotals.pendingAmount,
+      totalRevenueAll:
+        reportTotals.totalRevenue +
+        reportTotals.pendingAmount +
+        reportTotals.amountDue,
+    };
+  }, [allTrainers, branches, reportTotals]);
+
+  const branchNameLabel =
+    branchId && branches.length === 1
+      ? shortBranch(branches[0].name)
+      : `${reportTotals.branchCount} branches`;
+
+  const managerLabel =
+    branchId && branches.length === 1
+      ? (managerByBranchId[branches[0].id] ?? '—')
+      : '—';
+
+  const cards: Array<{
+    key: string;
+    label: string;
+    value: string;
+    icon: typeof Building2;
+    hero?: boolean;
+    wide?: boolean;
+  }> = [
+    {
+      key: 'branch',
+      label: 'Total branches',
+      value: branchNameLabel,
+      icon: Building2,
+      hero: true,
+    },
+    {
+      key: 'manager',
+      label: 'Manager',
+      value: managerLabel,
+      icon: UserCheck,
+    },
+    {
+      key: 'general',
+      label: 'General trainer',
+      value: String(aggregates.generalTrainer),
+      icon: Dumbbell,
+    },
+    {
+      key: 'pt-trainer',
+      label: 'PT trainer',
+      value: String(aggregates.ptTrainer),
+      icon: Dumbbell,
+    },
+    {
+      key: 'mc',
+      label: 'Membership Coordinator',
+      value: String(aggregates.mc),
+      icon: Users,
+    },
+    {
+      key: 'reci',
+      label: 'Receptionist',
+      value: String(aggregates.reci),
+      icon: Users,
+    },
+    {
+      key: 'clients',
+      label: 'Total clients',
+      value: String(aggregates.totalClients),
+      icon: Users,
+    },
+    {
+      key: 'pt-clients',
+      label: 'PT/clients',
+      value: String(aggregates.ptClients),
+      icon: UserCheck,
+    },
+    {
+      key: 'pt-revenue',
+      label: 'PT/revenue',
+      value: formatCurrency(aggregates.ptRevenue),
+      icon: Dumbbell,
+    },
+    {
+      key: 'membership',
+      label: 'Membership client',
+      value: String(aggregates.membershipClients),
+      icon: Users,
+    },
+    {
+      key: 'sub-revenue',
+      label: 'Membership Revenue',
+      value: formatCurrency(aggregates.subscriptionRevenue),
+      icon: CircleDollarSign,
+    },
+    {
+      key: 'employees',
+      label: 'Total employees',
+      value: String(aggregates.totalEmployees),
+      icon: Activity,
+    },
+    {
+      key: 'total-revenue',
+      label: 'Total revenue',
+      value: formatCurrency(aggregates.totalRevenueAll),
+      icon: CircleDollarSign,
+      hero: true,
+      wide: true,
+    },
+  ];
+
+  return (
+    <section className="rpt__overview rpt__overview--branch" aria-label="Branch summary">
+      {cards.map((card) => {
+        const Icon = card.icon;
+        return (
+          <article
+            key={card.key}
+            className={[
+              'rpt-stat',
+              card.hero ? 'rpt-stat--hero' : '',
+              card.wide ? 'rpt-stat--wide' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            <div className="rpt-stat__icon">
+              <Icon size={18} />
+            </div>
+            <div className="rpt-stat__body">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+  );
+};
+
+type BranchStaffCounts = Record<TrainerType, number> & { total: number };
+
+const emptyStaffCounts = (): BranchStaffCounts => ({
+  general_trainer: 0,
+  pt_trainer: 0,
+  membership_coordinator: 0,
+  receptionist: 0,
+  admin: 0,
+  manager: 0,
+  total: 0,
+});
+
+const trainerBelongsToBranch = (
+  trainer: Trainer,
+  branchId: string,
+  branchName: string,
+) => {
+  if (trainer.branchId && trainer.branchId === branchId) return true;
+  return trainer.branchNames.some(
+    (name) => name.toLowerCase() === branchName.toLowerCase(),
+  );
+};
+
+const countBranchStaff = (
+  trainers: Trainer[],
+  branchId: string,
+  branchName: string,
+): BranchStaffCounts => {
+  const counts = emptyStaffCounts();
+
+  for (const trainer of trainers) {
+    if (!trainerBelongsToBranch(trainer, branchId, branchName)) continue;
+    const type =
+      normalizeTrainerType(trainer.trainerType, trainer.description) ??
+      'general_trainer';
+    counts[type] += 1;
+    counts.total += 1;
+  }
+
+  return counts;
+};
+
+type BranchTableRow = {
+  key: string;
+  branchName: string;
+  manager: string;
+  generalTrainer: number;
+  ptTrainer: number;
+  mc: number;
+  reci: number;
+  totalClients: number;
+  ptClients: number;
+  membershipClients: number;
+  subscriptionRevenue: number;
+  eventRevenue: number;
+  ptRevenue: number;
+  ptCollected: number;
+  pendingAmount: number;
+  totalRevenueAll: number;
+  totalEmployees: number;
+};
+
+const BranchSummaryTab = ({
+  branches,
+  branchMeta,
+  allTrainers,
+}: {
+  branches: ReportBranch[];
+  branchMeta: Branch[];
+  allTrainers: Trainer[];
+}) => {
+  const managerByBranchId = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const branch of branchMeta) {
+      map[branch.id] = branch.managerName || '—';
+    }
+    return map;
+  }, [branchMeta]);
+
+  const rows = useMemo<BranchTableRow[]>(
+    () =>
+      branches.map((branch) => {
+        const staff = countBranchStaff(allTrainers, branch.id, branch.name);
+        const { summary } = branch;
+
+        return {
+          key: branch.id,
+          branchName: branch.name,
+          manager: managerByBranchId[branch.id] ?? '—',
+          generalTrainer: staff.general_trainer,
+          ptTrainer: staff.pt_trainer,
+          mc: staff.membership_coordinator,
+          reci: staff.receptionist,
+          totalClients: summary.totalCustomers,
+          ptClients: summary.ptClients,
+          membershipClients: summary.subscriberClients,
+          subscriptionRevenue: summary.subscriberRevenue,
+          eventRevenue: summary.eventRevenue,
+          ptRevenue: summary.ptRevenue,
+          ptCollected: summary.paidAmount,
+          pendingAmount: summary.pendingAmount,
+          totalRevenueAll:
+            summary.totalRevenue +
+            summary.pendingAmount +
+            summary.amountDue,
+          totalEmployees: staff.total,
+        };
+      }),
+    [allTrainers, branches, managerByBranchId],
+  );
+
+  const columns: ColumnsType<BranchTableRow> = [
+    {
+      title: 'Branch name',
+      dataIndex: 'branchName',
+      fixed: 'left',
+      width: 200,
+      render: (name: string) => (
+        <div className="rpt-branch-table__name">
+          <strong title={name}>{shortBranch(name)}</strong>
+          <small title={name}>{name}</small>
+        </div>
+      ),
+    },
+    { title: 'Manager', dataIndex: 'manager', width: 140 },
+    { title: 'General trainer', dataIndex: 'generalTrainer', width: 120, align: 'center' },
+    { title: 'PT trainer', dataIndex: 'ptTrainer', width: 100, align: 'center' },
+    { title: 'Membership Coordinator', dataIndex: 'Membership Coordinator', width: 70, align: 'center' },
+    { title: 'Receptionist', dataIndex: 'Receptionist', width: 70, align: 'center' },
+    { title: 'Total clients', dataIndex: 'totalClients', width: 100, align: 'center' },
+    { title: 'PT/clients', dataIndex: 'ptClients', width: 100, align: 'center' },
+    {
+      title: 'Membership client',
+      dataIndex: 'membershipClients',
+      width: 130,
+      align: 'center',
+    },
+    {
+      title: 'Membership Revenue',
+      dataIndex: 'subscriptionRevenue',
+      width: 140,
+      align: 'right',
+      render: (value: number) => formatCurrency(value),
+    },
+    {
+      title: 'Total /event',
+      dataIndex: 'eventRevenue',
+      width: 120,
+      align: 'right',
+      render: (value: number) => formatCurrency(value),
+    },
+    {
+      title: 'PT/revenue',
+      dataIndex: 'ptRevenue',
+      width: 120,
+      align: 'right',
+      render: (value: number) => formatCurrency(value),
+    },
+  
+    {
+      title: 'Pending',
+      dataIndex: 'pendingAmount',
+      width: 120,
+      align: 'right',
+      render: (value: number) => formatCurrency(value),
+    },
+    {
+      title: 'Total revenue (all include)',
+      dataIndex: 'totalRevenueAll',
+      width: 170,
+      align: 'right',
+      render: (value: number) => formatCurrency(value),
+    },
+    {
+      title: 'Total no of employees',
+      dataIndex: 'totalEmployees',
+      width: 150,
+      align: 'center',
+    },
+  ];
 
   return (
     <div className="rpt-tab">
-      <section className="rpt__kpis rpt__kpis--4">
-        <article className="rpt-kpi">
-          <span>
-            <Building2 size={16} /> Branches
-          </span>
-          <strong>{totals.branchCount}</strong>
-        </article>
-        <article className="rpt-kpi">
-          <span>
-            <Dumbbell size={16} /> Active trainers
-          </span>
-          <strong>{totals.activeTrainers}</strong>
-        </article>
-        <article className="rpt-kpi">
-          <span>
-            <Activity size={16} /> Sessions
-          </span>
-          <strong>
-            {totals.sessionsCompleted}
-            <em>/{totals.sessionsPurchased}</em>
-          </strong>
-          <small>{totals.sessionsRemaining} remaining</small>
-        </article>
-        <article className="rpt-kpi">
-          <span>
-            <TrendingUp size={16} /> Utilization
-          </span>
-          <strong>{totals.sessionUtilization}%</strong>
-        </article>
-      </section>
-
-      <section className="rpt__charts rpt__charts--2">
-        <article className="rpt-card">
-          <header>
-            <h2>Sessions by branch</h2>
-            <p>Purchased vs completed</p>
-          </header>
-          {sessionBars.length ? (
-            <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={sessionBars}>
-                  <CartesianGrid
-                    strokeDasharray="3 6"
-                    vertical={false}
-                    stroke="rgba(28,25,23,0.08)"
-                  />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Bar dataKey="purchased" fill="#c4b5a5" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="completed" fill={ACCENT} radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          )}
-        </article>
-
-        <article className="rpt-card">
-          <header>
-            <h2>Utilization rank</h2>
-            <p>Completion % by location</p>
-          </header>
-          {utilBars.length ? (
-            <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={utilBars} layout="vertical" margin={{ left: 4 }}>
-                  <XAxis type="number" domain={[0, 100]} hide />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    width={90}
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={tooltipStyle}
-                    formatter={(v) => [`${v}%`, 'Utilization']}
-                  />
-                  <Bar dataKey="value" radius={[0, 8, 8, 0]}>
-                    {utilBars.map((entry, i) => (
-                      <Cell
-                        key={entry.name}
-                        fill={i === 0 ? ACCENT : i < 3 ? '#ff8a4c' : '#d6cfc6'}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          )}
-        </article>
-      </section>
-
       <section className="rpt__panel">
         <div className="rpt__panel-head">
           <div>
@@ -357,6 +658,14 @@ const BranchSummaryTab = ({
             const util = Math.min(100, b.highlights.sessionUtilization);
             const totalCustomers = b.summary.totalCustomers;
             const ptCustomers = b.summary.ptClients;
+            const pendingTotal =
+              b.summary.pendingAmount + b.summary.partialPaidAmount;
+            const pendingHint =
+              b.summary.pendingCount > 0
+                ? `${b.summary.pendingCount} awaiting approval`
+                : b.summary.partialPaidCount > 0
+                  ? `${b.summary.partialPaidCount} installment payments`
+                  : 'No pending payments';
             return (
               <article key={b.id} className="rpt-branch">
                 <header className="rpt-branch__head">
@@ -402,21 +711,21 @@ const BranchSummaryTab = ({
                   </li>
                 </ul>
 
-                <div className="rpt-branch__section-label">Payment Status</div>
-                <ul className="rpt-branch__money">
-                  <li className="rpt-branch__money--pending">
-                    <span>Pending</span>
-                    <strong title={formatCurrency(b.summary.pendingAmount)}>{formatCurrency(b.summary.pendingAmount)}</strong>
-                  </li>
-                  <li className="rpt-branch__money--partial">
-                    <span>Partial</span>
-                    <strong title={formatCurrency(b.summary.partialPaidAmount)}>{formatCurrency(b.summary.partialPaidAmount)}</strong>
-                  </li>
-                  <li className="rpt-branch__money--due">
-                    <span>Due</span>
-                    <strong title={formatCurrency(b.summary.amountDue)}>{formatCurrency(b.summary.amountDue)}</strong>
-                  </li>
-                </ul>
+                <div className="rpt-branch__hero-metric rpt-branch__hero-metric--pending">
+                  <div className="rpt-branch__hero-metric-icon">
+                    <Hourglass size={18} />
+                  </div>
+                  <div className="rpt-branch__hero-metric-body">
+                    <span className="rpt-branch__hero-label">Pending amount</span>
+                    <strong className="rpt-branch__hero-value">
+                      {formatCurrency(pendingTotal)}
+                    </strong>
+                    <small className="rpt-branch__hero-hint">{pendingHint}</small>
+                  </div>
+                  <span className="rpt-branch__hero-tag rpt-branch__hero-tag--pending">
+                    Pending
+                  </span>
+                </div>
 
                 <div className="rpt-branch__section-label">Customers & Staff</div>
                 <div className="rpt-branch__people">
@@ -443,27 +752,7 @@ const BranchSummaryTab = ({
                   </div>
                 </div>
 
-                <footer className="rpt-branch__foot">
-                  <div className="rpt-branch__foot-meta">
-                    <div>
-                      <span>Completed / Purchased</span>
-                      <strong>
-                        {b.highlights.sessionsCompleted} / {b.highlights.sessionsPurchased}
-                      </strong>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span>Remaining</span>
-                      <strong>{b.highlights.sessionsRemaining}</strong>
-                    </div>
-                  </div>
-                  <Progress
-                    percent={util}
-                    showInfo={false}
-                    strokeColor="#ff5000"
-                    trailColor="#f1f3f7"
-                    size={6}
-                  />
-                </footer>
+        
               </article>
             );
           })}
@@ -472,6 +761,8 @@ const BranchSummaryTab = ({
           )}
         </div>
       </section>
+
+     
     </div>
   );
 };
@@ -488,170 +779,15 @@ const AttendanceTab = ({
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
-  const avgAttendance = trainers.length
-    ? Number(
-        (
-          trainers.reduce((s, t) => s + t.attendance.attendancePercentage, 0) /
-          trainers.length
-        ).toFixed(1),
-      )
-    : 0;
-
-  const presentTrainers = trainers.filter(
-    (t) => t.attendance.attendancePercentage >= 75,
-  ).length;
-
-  const attendanceChart = [...trainers]
-    .sort(
-      (a, b) =>
-        b.attendance.attendancePercentage - a.attendance.attendancePercentage,
-    )
-    .slice(0, 10)
-    .map((t) => ({
-      name: t.name.split(' ')[0] || t.name,
-      value: t.attendance.attendancePercentage,
-      present: t.attendance.presentDays,
-      total: t.attendance.totalDays,
-    }));
-
-  const radial = [
-    {
-      name: 'Attendance',
-      value: avgAttendance,
-      fill: '#ff8a4c',
-    },
-  ];
-
   const pageItems = trainers.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="rpt-tab">
-      <section className="rpt__overview rpt__overview--4" aria-label="Attendance overview">
-        <article className="rpt-stat">
-          <div className="rpt-stat__icon">
-            <Users size={18} />
-          </div>
-          <div>
-            <span>Trainers</span>
-            <strong>{trainers.length}</strong>
-          </div>
-        </article>
-        <article className="rpt-stat rpt-stat--hero">
-          <div className="rpt-stat__icon">
-            <UserCheck size={18} />
-          </div>
-          <div>
-            <span>Avg attendance</span>
-            <strong>{avgAttendance}%</strong>
-          </div>
-        </article>
-        <article className="rpt-stat">
-          <div className="rpt-stat__icon">
-            <TrendingUp size={18} />
-          </div>
-          <div>
-            <span>Strong (≥75%)</span>
-            <strong>{presentTrainers}</strong>
-          </div>
-        </article>
-        <article className="rpt-stat">
-          <div className="rpt-stat__icon">
-            <Clock3 size={18} />
-          </div>
-          <div>
-            <span>Needs attention</span>
-            <strong>{Math.max(trainers.length - presentTrainers, 0)}</strong>
-          </div>
-        </article>
-      </section>
-
-      <section className="rpt__charts rpt__charts--2">
-        <article className="rpt-card">
-          <header>
-            <h2>Average attendance</h2>
-            <p>Across trainers in this filter</p>
-          </header>
-          <div className="rpt-radial">
-            <ResponsiveContainer width="100%" height={220}>
-              <RadialBarChart
-                innerRadius="68%"
-                outerRadius="100%"
-                data={radial}
-                startAngle={90}
-                endAngle={-270}
-              >
-                <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-                <RadialBar dataKey="value" cornerRadius={12} background />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v) => `${v}%`} />
-              </RadialBarChart>
-            </ResponsiveContainer>
-            <div className="rpt-radial__label">
-              <strong>{avgAttendance}%</strong>
-              <span>average</span>
-            </div>
-          </div>
-        </article>
-
-        <article className="rpt-card">
-          <header>
-            <h2>Attendance leaders</h2>
-            <p>Top 10 presence rates</p>
-          </header>
-          {attendanceChart.length ? (
-            <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={220}>
-                <AreaChart data={attendanceChart}>
-                  <defs>
-                    <linearGradient id="rptAtt" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#ff8a4c" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="#ff8a4c" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid
-                    strokeDasharray="3 6"
-                    vertical={false}
-                    stroke="rgba(255,80,0,0.08)"
-                  />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    domain={[0, 100]}
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={tooltipStyle}
-                    formatter={(v, _n, item) => [
-                      `${v}%`,
-                      `${item.payload.present}/${item.payload.total} days`,
-                    ]}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#ff8a4c"
-                    fill="url(#rptAtt)"
-                    strokeWidth={2.5}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          )}
-        </article>
-      </section>
-
       <section className="rpt__panel">
         <div className="rpt__panel-head">
           <div>
             <h2>Trainer attendance</h2>
-            <p>Presence, hours, sessions, and completion at a glance</p>
+            <p>Presence and working hours at a glance</p>
           </div>
           <div className="rpt__search">
             <SearchOutlined />
@@ -699,34 +835,14 @@ const AttendanceTab = ({
                       </div>
                     </header>
 
-                    <div className="rpt-att-card__hero">
-                      <span>Present days</span>
-                      <strong>{t.attendance.attendanceDisplay}</strong>
-                    </div>
-
-                    <ul className="rpt-att-card__stats">
-                      <li>
+                    <div className="rpt-att-card__body">
+                      <div className="rpt-att-card__stat">
+                        <span>Present days</span>
+                        <strong>{t.attendance.attendanceDisplay}</strong>
+                      </div>
+                      <div className="rpt-att-card__stat">
                         <span>Hours</span>
                         <strong>{t.workingHours || '00:00'}</strong>
-                      </li>
-                      <li>
-                        <span>Sessions</span>
-                        <strong>{t.sessionsDisplay}</strong>
-                      </li>
-                      <li>
-                        <span>Done</span>
-                        <strong>{t.completionPercentage}%</strong>
-                      </li>
-                    </ul>
-
-                    <div className="rpt-att-card__meta">
-                      <div>
-                        <span>PT clients</span>
-                        <strong>{t.ptClients}</strong>
-                      </div>
-                      <div>
-                        <span>PT revenue</span>
-                        <strong>{formatCurrency(t.totalRevenue)}</strong>
                       </div>
                     </div>
 
@@ -776,116 +892,157 @@ const AttendanceTab = ({
 };
 
 const RevenueTab = ({
-  branches,
-  totals,
-  trainers,
+  primaryMonth,
+  compareMonth,
+  monthLabels,
 }: {
-  branches: ReportBranch[];
-  totals: GymReport['totals'];
-  trainers: ReportTrainer[];
+  primaryMonth: GymReport['totals'];
+  compareMonth: GymReport['totals'];
+  monthLabels: { primary: string; compare: string };
 }) => {
-  const revenueMix = [
-    { name: 'Subscriptions', value: totals.subscriberRevenue },
-    { name: 'PT', value: totals.ptRevenue },
-    { name: 'Events', value: totals.eventRevenue },
+  const totalChange = calcRevenueChange(
+    primaryMonth.totalRevenue,
+    compareMonth.totalRevenue,
+  );
+  const ptChange = calcRevenueChange(
+    primaryMonth.ptRevenue,
+    compareMonth.ptRevenue,
+  );
+  const subChange = calcRevenueChange(
+    primaryMonth.subscriberRevenue,
+    compareMonth.subscriberRevenue,
+  );
+
+  const streamComparison = [
+    {
+      name: 'Subscriptions',
+      compare: compareMonth.subscriberRevenue,
+      primary: primaryMonth.subscriberRevenue,
+      change: subChange,
+      primaryClients: primaryMonth.subscriberClients,
+      compareClients: compareMonth.subscriberClients,
+      color: '#ffb088',
+    },
+    {
+      name: 'PT',
+      compare: compareMonth.ptRevenue,
+      primary: primaryMonth.ptRevenue,
+      change: ptChange,
+      primaryClients: primaryMonth.ptClients,
+      compareClients: compareMonth.ptClients,
+      color: '#ff8a4c',
+    },
   ];
 
-  const paymentMix = [
-    { name: 'Paid', value: totals.paidAmount },
-    { name: 'Pending', value: totals.pendingAmount },
-    { name: 'Amount due', value: totals.amountDue },
-  ].filter((item) => item.value > 0);
+  const totalComparison = [
+    {
+      name: monthLabels.compare,
+      total: compareMonth.totalRevenue,
+      fill: '#d5d9e0',
+    },
+    {
+      name: monthLabels.primary,
+      total: primaryMonth.totalRevenue,
+      fill: '#ff8a4c',
+    },
+  ];
 
-  const branchRevenue = branches.map((b) => ({
-    id: b.id,
-    name: shortBranch(b.name),
-    fullName: b.name,
-    subscriptions: b.summary.subscriberRevenue,
-    pt: b.summary.ptRevenue,
-    events: b.summary.eventRevenue,
-    total: b.summary.totalRevenue,
-    paid: b.summary.paidAmount,
-    pending: b.summary.pendingAmount,
-    partialPaid: b.summary.partialPaidAmount,
-    amountDue: b.summary.amountDue,
-    packageAmount: b.summary.packageAmount,
-    customers: b.summary.totalCustomers,
-    trainers: b.highlights.activeTrainers,
-    pendingCount: b.summary.pendingCount,
-    partialOpenCount: b.summary.partialOpenCount,
-  }));
-
-  const maxTotal = Math.max(...branchRevenue.map((b) => b.total), 1);
-
-  const topTrainers = [...trainers]
-    .sort((a, b) => b.totalRevenue - a.totalRevenue)
-    .slice(0, 8)
-    .map((t) => ({
-      name: t.name.split(' ')[0] || t.name,
-      revenue: t.totalRevenue,
-      utilized: t.utilizedRevenue,
-      completion: t.completionPercentage,
-    }));
+  const hasData =
+    primaryMonth.totalRevenue > 0 ||
+    compareMonth.totalRevenue > 0 ||
+    primaryMonth.ptRevenue > 0 ||
+    compareMonth.ptRevenue > 0 ||
+    primaryMonth.subscriberRevenue > 0 ||
+    compareMonth.subscriberRevenue > 0;
 
   return (
-    <div className="rpt-tab">
-      <MoneyHealthCards totals={totals} />
-
-      <section className="rpt__overview rpt__overview--4" aria-label="Revenue streams">
-        <article className="rpt-stat rpt-stat--hero">
-          <div className="rpt-stat__icon">
+    <div className="rpt-tab rpt-tab--revenue">
+      <section className="rpt-rev-compare__summary" aria-label="Monthly revenue summary">
+        <article className="rpt-rev-compare__card rpt-rev-compare__card--hero">
+          <div className="rpt-rev-compare__card-icon">
             <CircleDollarSign size={18} />
           </div>
           <div>
-            <span>Total paid revenue</span>
-            <strong>{formatCurrency(totals.totalRevenue)}</strong>
-            <small>
-              Package booked {formatCurrency(totals.packageAmount)}
-            </small>
+            <span>{monthLabels.primary}</span>
+            <strong>{formatCurrency(primaryMonth.totalRevenue)}</strong>
+            <small>Selected month total</small>
           </div>
         </article>
-        <article className="rpt-stat">
-          <div className="rpt-stat__icon">
-            <Users size={18} />
+        <article className="rpt-rev-compare__card">
+          <div className="rpt-rev-compare__card-icon">
+            <Wallet size={18} />
           </div>
           <div>
-            <span>Subscriptions</span>
-            <strong>{formatCurrency(totals.subscriberRevenue)}</strong>
-            <small>{totals.subscriberClients} clients</small>
+            <span>{monthLabels.compare}</span>
+            <strong>{formatCurrency(compareMonth.totalRevenue)}</strong>
+            <small>Comparison month total</small>
           </div>
         </article>
-        <article className="rpt-stat">
-          <div className="rpt-stat__icon">
-            <Dumbbell size={18} />
-          </div>
-          <div>
-            <span>PT revenue</span>
-            <strong>{formatCurrency(totals.ptRevenue)}</strong>
-            <small>{totals.ptClients} clients</small>
-          </div>
-        </article>
-        <article className="rpt-stat">
-          <div className="rpt-stat__icon">
+        <article className="rpt-rev-compare__card">
+          <div className="rpt-rev-compare__card-icon">
             <TrendingUp size={18} />
           </div>
           <div>
-            <span>Events</span>
-            <strong>{formatCurrency(totals.eventRevenue)}</strong>
-            <small>{totals.eventClients} clients</small>
+            <span>Change</span>
+            <strong>
+              <ChangeBadge value={totalChange} />
+            </strong>
+            <small>
+              {monthLabels.primary} vs {monthLabels.compare}
+            </small>
           </div>
         </article>
       </section>
 
-      <section className="rpt__charts">
-        <article className="rpt-card rpt-card--wide">
-          <header>
-            <h2>Revenue by branch</h2>
-            <p>Subscriptions, PT, and events stacked</p>
-          </header>
-          {branchRevenue.length ? (
+      <section className="rpt-rev-compare__streams" aria-label="Revenue streams">
+        {streamComparison.map((stream) => (
+          <article key={stream.name} className="rpt-rev-compare__stream">
+            <header>
+              <div
+                className="rpt-rev-compare__stream-icon"
+                style={{ background: `${stream.color}22`, color: stream.color }}
+              >
+                {stream.name === 'PT' ? (
+                  <Dumbbell size={18} />
+                ) : (
+                  <Users size={18} />
+                )}
+              </div>
+              <div>
+                <h3>{stream.name}</h3>
+                <p>
+                  {stream.primaryClients} clients in {monthLabels.primary} ·{' '}
+                  {stream.compareClients} in {monthLabels.compare}
+                </p>
+              </div>
+              <ChangeBadge value={stream.change} />
+            </header>
+            <div className="rpt-rev-compare__stream-values">
+              <div>
+                <span>{monthLabels.compare}</span>
+                <strong>{formatCurrency(stream.compare)}</strong>
+              </div>
+              <div>
+                <span>{monthLabels.primary}</span>
+                <strong>{formatCurrency(stream.primary)}</strong>
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      {hasData ? (
+        <section className="rpt__charts rpt-rev-compare__charts">
+          <article className="rpt-card rpt-card--wide">
+            <header>
+              <h2>PT vs Subscriptions</h2>
+              <p>
+                {monthLabels.compare} compared with {monthLabels.primary}
+              </p>
+            </header>
             <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={branchRevenue}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={streamComparison} barGap={8} barCategoryGap="24%">
                   <CartesianGrid
                     strokeDasharray="3 6"
                     vertical={false}
@@ -893,7 +1050,7 @@ const RevenueTab = ({
                   />
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: MUTED, fontSize: 11 }}
+                    tick={{ fill: MUTED, fontSize: 12 }}
                     axisLine={false}
                     tickLine={false}
                   />
@@ -907,202 +1064,89 @@ const RevenueTab = ({
                     contentStyle={tooltipStyle}
                     formatter={(value) => formatCurrency(Number(value))}
                   />
-                  <Bar dataKey="subscriptions" stackId="r" fill="#ffb088" />
-                  <Bar dataKey="pt" stackId="r" fill="#ff8a4c" />
+                  <Legend
+                    verticalAlign="top"
+                    height={36}
+                    iconType="circle"
+                    formatter={(value) => (
+                      <span style={{ color: MUTED, fontSize: 12 }}>{value}</span>
+                    )}
+                  />
                   <Bar
-                    dataKey="events"
-                    stackId="r"
-                    fill="#c4b5a5"
-                    radius={[6, 6, 0, 0]}
+                    dataKey="compare"
+                    name={monthLabels.compare}
+                    fill="#d5d9e0"
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={56}
+                  />
+                  <Bar
+                    dataKey="primary"
+                    name={monthLabels.primary}
+                    fill="#ff8a4c"
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={56}
                   />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          )}
-        </article>
+          </article>
 
-        <article className="rpt-card">
-          <header>
-            <h2>Collection status</h2>
-            <p>Paid vs pending vs still due</p>
-          </header>
-          <div className="rpt-card__chart rpt-card__chart--pie">
-            {paymentMix.length ? (
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie
-                    data={paymentMix}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={58}
-                    outerRadius={84}
-                    paddingAngle={3}
-                  >
-                    {paymentMix.map((_, i) => (
-                      <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={tooltipStyle}
-                    formatter={(value) => formatCurrency(Number(value))}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-            )}
-            <ul className="rpt-legend">
-              {paymentMix.map((item, i) => (
-                <li key={item.name}>
-                  <i style={{ background: PIE_COLORS[i] }} />
-                  <span>{item.name}</span>
-                  <strong>{formatCurrency(item.value)}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </article>
-
-        <article className="rpt-card">
-          <header>
-            <h2>Revenue mix</h2>
-            <p>Share of each paid stream</p>
-          </header>
-          <div className="rpt-card__chart rpt-card__chart--pie">
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={revenueMix}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={58}
-                  outerRadius={84}
-                  paddingAngle={3}
-                >
-                  {revenueMix.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={tooltipStyle}
-                  formatter={(value) => formatCurrency(Number(value))}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <ul className="rpt-legend">
-              {revenueMix.map((item, i) => (
-                <li key={item.name}>
-                  <i style={{ background: PIE_COLORS[i] }} />
-                  <span>{item.name}</span>
-                  <strong>{formatCurrency(item.value)}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </article>
-
-        <article className="rpt-card">
-          <header>
-            <h2>Top trainers</h2>
-            <p>Highest PT revenue</p>
-          </header>
-          {topTrainers.length ? (
+          <article className="rpt-card">
+            <header>
+              <h2>Total revenue</h2>
+              <p>Overall collection comparison</p>
+            </header>
             <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={topTrainers} layout="vertical">
-                  <XAxis type="number" hide />
-                  <YAxis
-                    type="category"
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={totalComparison} barCategoryGap="30%">
+                  <CartesianGrid
+                    strokeDasharray="3 6"
+                    vertical={false}
+                    stroke="rgba(22,24,31,0.06)"
+                  />
+                  <XAxis
                     dataKey="name"
-                    width={72}
                     tick={{ fill: MUTED, fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
+                    interval={0}
+                    angle={-12}
+                    textAnchor="end"
+                    height={56}
+                  />
+                  <YAxis
+                    tick={{ fill: MUTED, fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={moneyTick}
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
                     formatter={(value) => formatCurrency(Number(value))}
                   />
-                  <Bar dataKey="revenue" fill="#ff8a4c" radius={[0, 8, 8, 0]} />
+                  <Bar dataKey="total" radius={[8, 8, 0, 0]} maxBarSize={72}>
+                    {totalComparison.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          )}
-        </article>
-      </section>
-
-      <section className="rpt__panel">
-        <div className="rpt__panel-head">
-          <div>
-            <h2>Branch money breakdown</h2>
-            <p>Paid, pending, partially paid, and amount still due</p>
-          </div>
-        </div>
-
-        {branchRevenue.length ? (
-          <div className="rpt__rev-list">
-            <div className="rpt__rev-head rpt__rev-head--money" aria-hidden>
-              <span>Branch</span>
-              <span>Paid</span>
-              <span>Pending</span>
-              <span>Partial</span>
-              <span>Due</span>
-              <span>Total</span>
+            <div className="rpt-rev-compare__totals">
+              <div>
+                <span>{monthLabels.compare}</span>
+                <strong>{formatCurrency(compareMonth.totalRevenue)}</strong>
+              </div>
+              <div>
+                <span>{monthLabels.primary}</span>
+                <strong>{formatCurrency(primaryMonth.totalRevenue)}</strong>
+              </div>
             </div>
-            {branchRevenue.map((row) => {
-              const share = Math.round((row.total / maxTotal) * 100);
-              return (
-                <article key={row.id} className="rpt-rev-row rpt-rev-row--money">
-                  <div className="rpt-rev-row__branch">
-                    <div className="rpt-rev-row__icon">
-                      <Building2 size={16} />
-                    </div>
-                    <div>
-                      <strong>{row.name}</strong>
-                      <small>
-                        {row.customers} customers · {row.trainers} trainers
-                        {row.pendingCount
-                          ? ` · ${row.pendingCount} pending`
-                          : ''}
-                        {row.partialOpenCount
-                          ? ` · ${row.partialOpenCount} open partial`
-                          : ''}
-                      </small>
-                    </div>
-                  </div>
-                  <div className="rpt-rev-row__cell">
-                    <span>Paid</span>
-                    <strong>{formatCurrency(row.paid)}</strong>
-                  </div>
-                  <div className="rpt-rev-row__cell">
-                    <span>Pending</span>
-                    <strong>{formatCurrency(row.pending)}</strong>
-                  </div>
-                  <div className="rpt-rev-row__cell">
-                    <span>Partial</span>
-                    <strong>{formatCurrency(row.partialPaid)}</strong>
-                  </div>
-                  <div className="rpt-rev-row__cell">
-                    <span>Due</span>
-                    <strong>{formatCurrency(row.amountDue)}</strong>
-                  </div>
-                  <div className="rpt-rev-row__total">
-                    <span>Total revenue</span>
-                    <strong>{formatCurrency(row.total)}</strong>
-                    <i style={{ width: `${share}%` }} />
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <Empty description="No revenue data" />
-        )}
-      </section>
+          </article>
+        </section>
+      ) : (
+        <Empty description="No revenue data for these months" />
+      )}
     </div>
   );
 };
@@ -1114,6 +1158,21 @@ export const ReportsHome = () => {
   const [branchId, setBranchId] = useState<string | undefined>();
   const [trainerId, setTrainerId] = useState<string | undefined>();
   const [trainerSearch, setTrainerSearch] = useState('');
+  const defaultRevenueMonths = useMemo(() => getDefaultRevenueMonths(), []);
+  const defaultRevenueRanges = useMemo(() => getDefaultRevenueCustomRanges(), []);
+  const [revenueMode, setRevenueMode] = useState<RevenueCompareMode>('monthly');
+  const [revenuePrimaryMonth, setRevenuePrimaryMonth] = useState(
+    defaultRevenueMonths.primary,
+  );
+  const [revenueCompareMonth, setRevenueCompareMonth] = useState(
+    defaultRevenueMonths.compare,
+  );
+  const [revenuePrimaryRange, setRevenuePrimaryRange] = useState<
+    [Dayjs, Dayjs] | null
+  >(defaultRevenueRanges.primary);
+  const [revenueCompareRange, setRevenueCompareRange] = useState<
+    [Dayjs, Dayjs] | null
+  >(defaultRevenueRanges.compare);
 
   const query: ReportQuery = useMemo(
     () => ({
@@ -1146,11 +1205,70 @@ export const ReportsHome = () => {
     { page: 1, pageSize: 200, branchId },
     branchNameById,
   );
+  const { data: allTrainers = [] } = useTrainersAll();
 
-  const { data, isLoading, isFetching } = useGymReport(query, enabled);
-  const { excel, pdf } = useReportExport(query);
+  const primaryPeriodRange = useMemo(() => {
+    if (revenueMode === 'monthly') {
+      return getMonthRange(revenuePrimaryMonth);
+    }
+    if (!revenuePrimaryRange?.[0] || !revenuePrimaryRange?.[1]) return null;
+    return getCustomRange(revenuePrimaryRange);
+  }, [revenueMode, revenuePrimaryMonth, revenuePrimaryRange]);
 
-  const totals = data?.totals;
+  const comparePeriodRange = useMemo(() => {
+    if (revenueMode === 'monthly') {
+      return getMonthRange(revenueCompareMonth);
+    }
+    if (!revenueCompareRange?.[0] || !revenueCompareRange?.[1]) return null;
+    return getCustomRange(revenueCompareRange);
+  }, [revenueMode, revenueCompareMonth, revenueCompareRange]);
+
+  const primaryMonthReportQuery = useMemo<ReportQuery | null>(() => {
+    if (!primaryPeriodRange) return null;
+    return {
+      filter: 'custom',
+      startDate: primaryPeriodRange.start,
+      endDate: primaryPeriodRange.end,
+      branchId,
+      trainerId,
+    };
+  }, [primaryPeriodRange, branchId, trainerId]);
+
+  const compareMonthReportQuery = useMemo<ReportQuery | null>(() => {
+    if (!comparePeriodRange) return null;
+    return {
+      filter: 'custom',
+      startDate: comparePeriodRange.start,
+      endDate: comparePeriodRange.end,
+      branchId,
+      trainerId,
+    };
+  }, [comparePeriodRange, branchId, trainerId]);
+
+  const revenueReady =
+    revenueMode === 'monthly' ||
+    Boolean(
+      revenuePrimaryRange?.[0] &&
+        revenuePrimaryRange?.[1] &&
+        revenueCompareRange?.[0] &&
+        revenueCompareRange?.[1],
+    );
+
+  const revenueTabActive =
+    tab === 'revenue' && revenueReady && Boolean(primaryMonthReportQuery && compareMonthReportQuery);
+
+  const { data, isLoading, isFetching } = useGymReport(query, enabled && tab !== 'revenue');
+  const { data: primaryMonthReport, isLoading: loadingPrimaryMonth } = useGymReport(
+    primaryMonthReportQuery ?? { filter: 'monthly' },
+    revenueTabActive && Boolean(primaryMonthReportQuery),
+  );
+  const { data: compareMonthReport, isLoading: loadingCompareMonth } = useGymReport(
+    compareMonthReportQuery ?? { filter: 'monthly' },
+    revenueTabActive && Boolean(compareMonthReportQuery),
+  );
+  const { excel } = useReportExport(query);
+
+  const totals = data?.totals ?? EMPTY_REPORT_TOTALS;
   const branches = data?.branches ?? [];
 
   const trainerRows = useMemo(() => {
@@ -1165,42 +1283,46 @@ export const ReportsHome = () => {
     );
   }, [branches, trainerSearch]);
 
+  const revenueLoading = loadingPrimaryMonth || loadingCompareMonth;
+  const pageLoading =
+    tab === 'revenue' ? revenueLoading : isLoading || !data;
+  const showReports =
+    tab === 'revenue' ? revenueReady : enabled;
+  const isRefreshing =
+    tab === 'revenue' ? revenueLoading : isFetching;
+
   const activeTab = TABS.find((t) => t.key === tab)!;
+  const primaryMonthTotals = primaryMonthReport?.totals ?? EMPTY_REPORT_TOTALS;
+  const compareMonthTotals = compareMonthReport?.totals ?? EMPTY_REPORT_TOTALS;
 
   const excelLabel =
-    tab === 'attendance'
-      ? 'Attendance Excel'
-      : tab === 'revenue'
-        ? 'Revenue Excel'
-        : 'Branch Excel';
+    tab === 'attendance' ? 'Trainer Attendance Excel' : 'Branch Summary Excel';
+
+  const showExcelExport = tab === 'branch' || tab === 'attendance';
 
   return (
     <div className="rpt">
       <header className="rpt__hero">
         <div>
-          <p className="rpt__kicker">Analytics</p>
           <h1>Reports</h1>
           <p className="rpt__sub">{activeTab.hint}</p>
         </div>
         <div className="rpt__hero-actions">
-          {isFetching ? <span className="rpt__live">Updating…</span> : null}
-          <Button
-            icon={<FileExcelOutlined />}
-            loading={excel.isPending}
-            disabled={!enabled}
-            onClick={() => excel.mutate(tab)}
-          >
-            {excelLabel}
-          </Button>
-          <Button
-            type="primary"
-            icon={<FilePdfOutlined />}
-            loading={pdf.isPending}
-            disabled={!enabled}
-            onClick={() => pdf.mutate()}
-          >
-            PDF
-          </Button>
+          {isRefreshing ? <span className="rpt__live">Updating…</span> : null}
+          {showExcelExport ? (
+            <Button
+              icon={<FileExcelOutlined />}
+              loading={excel.isPending}
+              disabled={!showReports}
+              onClick={() => {
+                if (tab === 'branch' || tab === 'attendance') {
+                  excel.mutate(tab);
+                }
+              }}
+            >
+              {excelLabel}
+            </Button>
+          ) : null}
         </div>
       </header>
 
@@ -1221,23 +1343,110 @@ export const ReportsHome = () => {
       </nav>
 
       <section className="rpt__filters">
-        <div className="rpt__periods" role="tablist" aria-label="Date range">
-          {PERIODS.map((p) => (
-            <button
-              key={p.value}
-              type="button"
-              className={
-                filter === p.value ? 'rpt__period rpt__period--on' : 'rpt__period'
-              }
-              onClick={() => setFilter(p.value)}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+        {tab !== 'revenue' ? (
+          <div className="rpt__periods" role="tablist" aria-label="Date range">
+            {PERIODS.map((p) => (
+              <button
+                key={p.value}
+                type="button"
+                className={
+                  filter === p.value ? 'rpt__period rpt__period--on' : 'rpt__period'
+                }
+                onClick={() => setFilter(p.value)}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="rpt__revenue-filters">
+            <div className="rpt__periods" role="tablist" aria-label="Revenue compare mode">
+              {REVENUE_MODES.map((mode) => (
+                <button
+                  key={mode.value}
+                  type="button"
+                  className={
+                    revenueMode === mode.value
+                      ? 'rpt__period rpt__period--on'
+                      : 'rpt__period'
+                  }
+                  onClick={() => setRevenueMode(mode.value)}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+
+            {revenueMode === 'monthly' ? (
+              <div className="rpt__revenue-months">
+                <label className="rpt__revenue-month">
+                  <span>Compare month</span>
+                  <DatePicker
+                    picker="month"
+                    size="large"
+                    allowClear={false}
+                    value={revenuePrimaryMonth}
+                    onChange={(value) =>
+                      value && setRevenuePrimaryMonth(value.startOf('month'))
+                    }
+                    disabledDate={(date) => date.isAfter(dayjs(), 'month')}
+                    format="MMMM YYYY"
+                  />
+                </label>
+                <span className="rpt__revenue-vs">vs</span>
+                <label className="rpt__revenue-month">
+                  <span>With month</span>
+                  <DatePicker
+                    picker="month"
+                    size="large"
+                    allowClear={false}
+                    value={revenueCompareMonth}
+                    onChange={(value) =>
+                      value && setRevenueCompareMonth(value.startOf('month'))
+                    }
+                    disabledDate={(date) => date.isAfter(dayjs(), 'month')}
+                    format="MMMM YYYY"
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="rpt__revenue-ranges">
+                <label className="rpt__revenue-range">
+                  <span>Compare period</span>
+                  <RangePicker
+                    size="large"
+                    value={revenuePrimaryRange}
+                    onChange={(value) =>
+                      setRevenuePrimaryRange(
+                        value && value[0] && value[1] ? [value[0], value[1]] : null,
+                      )
+                    }
+                    disabledDate={(date) => date.isAfter(dayjs(), 'day')}
+                    format="DD MMM YYYY"
+                  />
+                </label>
+                <span className="rpt__revenue-vs">vs</span>
+                <label className="rpt__revenue-range">
+                  <span>With period</span>
+                  <RangePicker
+                    size="large"
+                    value={revenueCompareRange}
+                    onChange={(value) =>
+                      setRevenueCompareRange(
+                        value && value[0] && value[1] ? [value[0], value[1]] : null,
+                      )
+                    }
+                    disabledDate={(date) => date.isAfter(dayjs(), 'day')}
+                    format="DD MMM YYYY"
+                  />
+                </label>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="rpt__controls">
-          {filter === 'custom' && (
+          {filter === 'custom' && tab !== 'revenue' && (
             <RangePicker
               size="large"
               value={range}
@@ -1283,15 +1492,33 @@ export const ReportsHome = () => {
         </div>
       </section>
 
-      {!enabled ? (
-        <Empty description="Pick a custom date range to load reports" />
-      ) : isLoading || !totals ? (
+      {!showReports ? (
+        <Empty
+          description={
+            tab === 'revenue'
+              ? 'Pick compare and with date ranges'
+              : 'Pick a custom date range to load reports'
+          }
+        />
+      ) : pageLoading ? (
         <PageSkeleton variant="report" />
       ) : (
         <>
-          <OverviewCards totals={totals} />
           {tab === 'branch' ? (
-            <BranchSummaryTab branches={branches} totals={totals} />
+            <BranchOverviewCards
+              branches={branches}
+              totals={totals}
+              branchMeta={branchesData?.data ?? []}
+              allTrainers={allTrainers}
+              branchId={branchId}
+            />
+          ) : null}
+          {tab === 'branch' ? (
+            <BranchSummaryTab
+              branches={branches}
+              branchMeta={branchesData?.data ?? []}
+              allTrainers={allTrainers}
+            />
           ) : tab === 'attendance' ? (
             <AttendanceTab
               trainers={trainerRows}
@@ -1300,9 +1527,12 @@ export const ReportsHome = () => {
             />
           ) : (
             <RevenueTab
-              branches={branches}
-              totals={totals}
-              trainers={trainerRows}
+              primaryMonth={primaryMonthTotals}
+              compareMonth={compareMonthTotals}
+              monthLabels={{
+                primary: primaryPeriodRange?.label ?? 'Compare period',
+                compare: comparePeriodRange?.label ?? 'With period',
+              }}
             />
           )}
         </>

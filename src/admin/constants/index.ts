@@ -8,6 +8,8 @@ export const TRAINER_TYPE_OPTIONS: { value: TrainerType; label: string }[] = [
   { value: 'pt_trainer', label: 'PT Trainer' },
   { value: 'membership_coordinator', label: 'Membership Coordinator' },
   { value: 'receptionist', label: 'Receptionist' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'manager', label: 'Manager' },
 ];
 
 const TRAINER_TYPE_ALIASES: Record<string, TrainerType> = {
@@ -26,6 +28,10 @@ const TRAINER_TYPE_ALIASES: Record<string, TrainerType> = {
   receptionist: 'receptionist',
   recept: 'receptionist',
   reception: 'receptionist',
+  admin: 'admin',
+  administrator: 'admin',
+  manager: 'manager',
+  branch_manager: 'manager',
 };
 
 export const normalizeTrainerType = (
@@ -48,6 +54,12 @@ export const normalizeTrainerType = (
   }
   if (d.includes('reception') || d.includes('recept')) {
     return 'receptionist';
+  }
+  if (d.includes('branch manager') || (d.includes('manager') && !d.includes('membership'))) {
+    return 'manager';
+  }
+  if (d.includes('admin')) {
+    return 'admin';
   }
   if (
     d.includes('personal trainer') ||
@@ -79,6 +91,10 @@ export const trainerTypeTagColor = (type?: TrainerType | string | null) => {
       return 'purple';
     case 'receptionist':
       return 'green';
+    case 'admin':
+      return 'geekblue';
+    case 'manager':
+      return 'gold';
     default:
       return 'blue';
   }
