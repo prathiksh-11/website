@@ -77,6 +77,7 @@ export interface PaginatedRequest {
   sortOrder?: 'asc' | 'desc';
   status?: string;
   branchId?: string;
+  trainerType?: string;
   startDate?: string;
   endDate?: string;
 }

@@ -43,13 +43,14 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { StatusBadge, PageSkeleton, confirmDelete } from '@/components/common';
-import { PAGE_SIZE_OPTIONS, TRAINER_TYPE_OPTIONS, trainerTypeLabel, trainerTypeTagColor } from '@/constants';
+import { PAGE_SIZE_OPTIONS, TRAINER_TYPE_OPTIONS, resolveTrainerType, trainerTypeLabel, trainerTypeTagColor } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import {
   useTrainerDetails,
   useTrainerMutations,
   useTrainers,
   useTrainersAll,
+  filterTrainers,
 } from '@/hooks/useTrainers';
 import { trainerService } from '@/services/trainer.service';
 import { useAuthStore } from '@/store/auth.store';
@@ -73,7 +74,7 @@ const initials = (name: string) =>
 
 export const TrainerList = () => {
   const user = useAuthStore((s) => s.user);
-  const { params, setSearch, setBranchId, setPage } = useTableParams({
+  const { params, setSearch, setBranchId, setTrainerType, setPage } = useTableParams({
     pageSize: 12,
   });
   const { data: branchesData } = useBranches({ page: 1, pageSize: 200 });
@@ -185,12 +186,12 @@ export const TrainerList = () => {
   };
 
   const stats = useMemo(() => {
-    const list = allTrainers ?? [];
+    const list = filterTrainers(allTrainers ?? [], params, branchNameById);
     const branches = new Set(
       list.flatMap((t) => t.branchNames).filter(Boolean),
     ).size;
     return { total: list.length, branches };
-  }, [allTrainers]);
+  }, [allTrainers, params, branchNameById]);
 
   const selectedListItem = useMemo(
     () => (allTrainers ?? []).find((t) => t.id === selectedId) ?? null,
@@ -292,11 +293,11 @@ export const TrainerList = () => {
       <section className="emp__stats" aria-label="Trainer stats">
         <article className="emp-stat">
           <span>Total staff</span>
-          <strong>{loadingAll ? '—' : stats.total}</strong>
+          <strong>{isLoading ? '—' : stats.total}</strong>
         </article>
         <article className="emp-stat">
           <span>Branches covered</span>
-          <strong>{loadingAll ? '—' : stats.branches}</strong>
+          <strong>{isLoading ? '—' : stats.branches}</strong>
         </article>
       </section>
 
@@ -326,6 +327,18 @@ export const TrainerList = () => {
               label: shortBranch(b.name),
             }))}
             style={{ width: 170 }}
+          />
+          <Select
+            allowClear
+            showSearch
+            optionFilterProp="label"
+            size="large"
+            placeholder="Type"
+            className="emp__filter"
+            value={params.trainerType}
+            onChange={setTrainerType}
+            options={TRAINER_TYPE_OPTIONS}
+            style={{ width: 200 }}
           />
           <Button
             size="large"
@@ -381,7 +394,7 @@ export const TrainerList = () => {
                   <div>
                     <strong>{record.name}</strong>
                     <small>
-                      {trainerTypeLabel(record.trainerType)}
+                      {trainerTypeLabel(resolveTrainerType(record))}
                       {record.gender ? ` · ${record.gender}` : ''}
                     </small>
                   </div>
@@ -392,14 +405,17 @@ export const TrainerList = () => {
               title: 'Type',
               dataIndex: 'trainerType',
               width: 150,
-              render: (type: Trainer['trainerType']) => (
-                <Tag
-                  color={trainerTypeTagColor(type)}
-                  style={{ borderRadius: 8, fontWeight: 600 }}
-                >
-                  {trainerTypeLabel(type)}
-                </Tag>
-              ),
+              render: (_, record) => {
+                const type = resolveTrainerType(record);
+                return (
+                  <Tag
+                    color={trainerTypeTagColor(type)}
+                    style={{ borderRadius: 8, fontWeight: 600 }}
+                  >
+                    {trainerTypeLabel(type)}
+                  </Tag>
+                );
+              },
             },
             {
               title: 'Mobile',

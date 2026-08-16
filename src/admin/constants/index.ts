@@ -74,6 +74,26 @@ export const normalizeTrainerType = (
   return undefined;
 };
 
+/** Effective type for display/filter — uses type, description, then role_name */
+export const resolveTrainerType = (
+  trainer: {
+    trainerType?: TrainerType | string | null;
+    description?: string | null;
+    roleName?: string | null;
+  },
+): TrainerType | undefined => {
+  const fromFields = normalizeTrainerType(trainer.trainerType, trainer.description);
+  if (fromFields) return fromFields;
+
+  const role = String(trainer.roleName || '')
+    .trim()
+    .toLowerCase();
+  if (role === 'admin') return 'admin';
+  if (role === 'manager') return 'manager';
+
+  return undefined;
+};
+
 export const trainerTypeLabel = (type?: TrainerType | string | null) => {
   if (!type) return '—';
   const normalized = normalizeTrainerType(type) ?? type;
