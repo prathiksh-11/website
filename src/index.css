@@ -1213,6 +1213,85 @@ h4,
   animation: ringSpin 28s linear infinite;
 }
 
+@keyframes testimonialFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.testimonial-card-float {
+  animation: testimonialFloat 5.4s ease-in-out infinite;
+}
+
+.testimonial-card-float:nth-child(2n) {
+  animation-delay: -1.8s;
+}
+
+.testimonial-card-float:nth-child(3n) {
+  animation-delay: -3.4s;
+}
+
+@keyframes testimonialOrbDrift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, -28px) scale(1.08);
+  }
+}
+
+.testimonial-orb {
+  animation: testimonialOrbDrift 14s ease-in-out infinite;
+}
+
+.testimonial-orb-delay {
+  animation: testimonialOrbDrift 18s ease-in-out infinite reverse;
+}
+
+@keyframes quoteWiggle {
+  0%,
+  100% {
+    transform: rotate(-8deg) scale(1);
+    opacity: 0.18;
+  }
+  50% {
+    transform: rotate(8deg) scale(1.12);
+    opacity: 0.32;
+  }
+}
+
+.testimonial-quote-mark {
+  animation: quoteWiggle 6s ease-in-out infinite;
+}
+
+.testimonial-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonial-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.testimonial-shine:hover::after {
+  animation: vipBorderSweep 1.1s ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
   .marquee-track-reverse,
@@ -1220,7 +1299,12 @@ h4,
   .whatsapp-ping,
   .section-float-line,
   .about-ring,
-  .filter-active {
+  .filter-active,
+  .testimonial-card-float,
+  .testimonial-orb,
+  .testimonial-orb-delay,
+  .testimonial-quote-mark,
+  .testimonial-shine::after {
     animation: none !important;
   }
 
@@ -1233,68 +1317,67 @@ h4,
    CINEMATIC GRAND OPENING & THEATRE CURTAIN CEREMONY
    ======================================================== */
 
-/* Realistic Velvet Drapery Texture (Royal Crimson & Ruby with Fiery Orange Sheen) */
+/* Silk drapery — peach, rose, champagne (no black) */
 .theatre-curtain-fabric-left {
-  background: 
+  background:
     repeating-linear-gradient(
       90deg,
-      #1f0208 0px,
-      #380410 12px,
-      #660a1d 24px,
-      #9f1239 36px,
-      #be123c 48px,
-      #4c0515 60px,
-      #1f0208 72px
+      #ffb089 0px,
+      #ff8a5c 14px,
+      #ff6b3d 28px,
+      #ff9a6e 42px,
+      #ffc4a3 56px,
+      #ff7a4a 70px,
+      #ffb089 84px
     );
-  box-shadow: 
-    inset -30px 0 50px rgba(0, 0, 0, 0.95),
-    inset 0 25px 40px rgba(0, 0, 0, 0.8),
-    inset 0 -25px 40px rgba(0, 0, 0, 0.9),
-    20px 0 50px rgba(255, 80, 0, 0.25);
+  box-shadow:
+    inset -28px 0 42px rgba(255, 80, 0, 0.18),
+    inset 0 20px 36px rgba(255, 196, 163, 0.45),
+    inset 0 -20px 36px rgba(255, 107, 61, 0.22),
+    18px 0 40px rgba(255, 112, 51, 0.22);
 }
 
 .theatre-curtain-fabric-right {
-  background: 
+  background:
     repeating-linear-gradient(
       90deg,
-      #1f0208 0px,
-      #4c0515 12px,
-      #be123c 24px,
-      #9f1239 36px,
-      #660a1d 48px,
-      #380410 60px,
-      #1f0208 72px
+      #ffb089 0px,
+      #ff7a4a 14px,
+      #ffc4a3 28px,
+      #ff9a6e 42px,
+      #ff6b3d 56px,
+      #ff8a5c 70px,
+      #ffb089 84px
     );
-  box-shadow: 
-    inset 30px 0 50px rgba(0, 0, 0, 0.95),
-    inset 0 25px 40px rgba(0, 0, 0, 0.8),
-    inset 0 -25px 40px rgba(0, 0, 0, 0.9),
-    -20px 0 50px rgba(255, 80, 0, 0.25);
+  box-shadow:
+    inset 28px 0 42px rgba(255, 80, 0, 0.18),
+    inset 0 20px 36px rgba(255, 196, 163, 0.45),
+    inset 0 -20px 36px rgba(255, 107, 61, 0.22),
+    -18px 0 40px rgba(255, 112, 51, 0.22);
 }
 
-/* Fiery Orange & Gold Bullion Fringe & Trim */
 .curtain-gold-trim {
   background: linear-gradient(
     90deg,
-    #c2410c 0%,
-    #ff5000 25%,
-    #ffe2cc 50%,
-    #ff5000 75%,
-    #c2410c 100%
+    #e8b86d 0%,
+    #f5d9a6 25%,
+    #fff6e8 50%,
+    #f5d9a6 75%,
+    #e8b86d 100%
   );
-  box-shadow: 0 0 15px rgba(255, 80, 0, 0.8);
+  box-shadow: 0 0 14px rgba(232, 184, 109, 0.7);
 }
 
 .curtain-gold-fringe {
   background: repeating-linear-gradient(
     90deg,
-    #9a3412 0px,
-    #ff5000 3px,
-    #ea580c 6px,
-    #fed7aa 9px,
-    #9a3412 12px
+    #d4a056 0px,
+    #f5d9a6 4px,
+    #fff6e8 7px,
+    #e8b86d 10px,
+    #d4a056 14px
   );
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 4px 12px rgba(232, 184, 109, 0.45);
 }
 
 /* Volumetric Grand Opening Rays */
@@ -1343,11 +1426,11 @@ h4,
 .launch-text-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    #ffb088 35%,
-    #ffffff 50%,
-    #ff7a38 65%,
-    rgba(255, 255, 255, 0.95) 100%
+    #c45a28 0%,
+    #ff7033 35%,
+    #e8b86d 50%,
+    #ff5714 65%,
+    #c45a28 100%
   );
   background-size: 250% auto;
   -webkit-background-clip: text;
@@ -1417,7 +1500,7 @@ h4,
 
 /* Gym Image Stage Rim Lighting */
 .stage-image-glow {
-  box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 80, 0, 0.3);
+  box-shadow: 0 24px 60px -12px rgba(255, 112, 51, 0.28), 0 0 40px rgba(255, 176, 137, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {

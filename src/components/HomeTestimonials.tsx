@@ -133,80 +133,72 @@ function TestimonialCard({ item }: { item: Testimonial }) {
   if (!item) return null;
 
   return (
-    <div className="w-[340px] sm:w-[390px] md:w-[430px] shrink-0 rounded-[2rem] border border-[rgba(22,24,31,0.07)] bg-white/95 backdrop-blur-sm p-7 sm:p-8 shadow-[0_16px_45px_rgba(22,24,31,0.05)] hover:border-[#ff5000]/30 hover:shadow-[0_24px_60px_rgba(255,80,0,0.12)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group">
-      <div>
-        <div className="flex items-start justify-between gap-4 mb-5">
-          <div className="flex items-center gap-3.5">
-            <div className="relative">
-              <img
-                src={item.photo}
-                alt={item.name}
-                className="w-14 h-14 rounded-full object-cover border-2 border-[#fff0e8] group-hover:border-[#ff5000]/40 transition-colors duration-300"
-                loading="lazy"
-              />
-              <span
-                className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#16a34a] text-white flex items-center justify-center border-2 border-white shadow-sm"
-                title="Verified Member"
-              >
-                <CheckCircle2 size={12} strokeWidth={3} />
-              </span>
-            </div>
-            <div>
-              <p className="font-display font-bold text-[#16181f] text-base leading-tight">
-                {item.name}
-              </p>
-              <p className="text-xs text-[#6f7685] font-medium mt-0.5">{item.role}</p>
-              <p className="text-[11px] text-[#ff5000] font-semibold flex items-center gap-1 mt-1">
-                <MapPin size={11} />
-                {item.branch}
-              </p>
-            </div>
-          </div>
+    <article className="testimonial-card-float testimonial-shine group w-[320px] sm:w-[380px] md:w-[420px] shrink-0 rounded-[2rem] overflow-hidden bg-gradient-to-b from-white to-[#fff4ed] border border-[#ffd7c0] shadow-[0_20px_50px_rgba(255,112,51,0.14)] hover:shadow-[0_28px_70px_rgba(255,80,0,0.22)] hover:border-[#ffb089] transition-shadow duration-300 flex flex-col">
+      <div className="relative h-44 sm:h-48 overflow-hidden">
+        <img
+          src={item.photo}
+          alt={item.name}
+          className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#5c3a2a]/75 via-[#5c3a2a]/15 to-transparent" />
 
-          <div className="flex flex-col items-end gap-1.5">
-            <div className="flex items-center gap-0.5">
-              {[...Array(5)].map((_, j) => (
-                <Star key={j} size={13} className="fill-[#ff5000] text-[#ff5000]" />
-              ))}
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#6f7685] flex items-center gap-1 bg-[#f7f8fb] px-2.5 py-0.5 rounded-full border border-[rgba(22,24,31,0.06)]">
-              <Clock size={10} className="text-[#ff5000]" />
-              {item.timeframe}
-            </span>
-          </div>
-        </div>
+        <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/92 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider text-[#c45a28] border border-white/80">
+          <Clock size={10} />
+          {item.timeframe}
+        </span>
+        <span className="absolute top-3 right-3 inline-flex items-center gap-0.5 px-2 py-1 rounded-full bg-white/92 backdrop-blur-md">
+          {[...Array(5)].map((_, j) => (
+            <Star key={j} size={11} className="fill-[#ff5000] text-[#ff5000]" />
+          ))}
+        </span>
 
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#fff0e8] to-[#ffe8de] border border-[#ff5000]/20 text-[#ff5000] text-xs font-bold tracking-tight shadow-sm">
-            <Flame size={13} className="text-[#ff5000] fill-[#ff5000]" />
-            <span>{item.result}</span>
+        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-3">
+          <div>
+            <p className="font-display font-bold text-white text-lg leading-tight drop-shadow-sm">
+              {item.name}
+            </p>
+            <p className="text-xs text-white/85 font-medium mt-0.5">{item.role}</p>
           </div>
-          <span className="text-[11px] font-semibold text-[#6f7685] bg-[#f7f8fb] px-2.5 py-1 rounded-full border border-[rgba(22,24,31,0.06)]">
-            {item.categoryLabel}
-          </span>
-        </div>
-
-        <div className="relative">
-          <Quote
-            size={24}
-            className="absolute -top-1.5 -left-1 text-[#ff5000]/10 -z-0 pointer-events-none"
-          />
-          <p className="relative z-10 text-[#474d5b] text-sm leading-relaxed italic">
-            &ldquo;{item.quote}&rdquo;
+          <p className="text-[11px] text-white font-semibold flex items-center gap-1 shrink-0 bg-[#ff5000]/90 px-2.5 py-1 rounded-full">
+            <MapPin size={11} />
+            {item.branch}
           </p>
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-[rgba(22,24,31,0.06)] flex items-center justify-between text-xs">
-        <span className="text-[#6f7685] font-medium flex items-center gap-1.5">
-          <Sparkles size={13} className="text-[#ff5000]" />
-          Key Metric Achieved
-        </span>
-        <span className="font-display font-bold text-[#e04800] bg-[#fff0e8] border border-[#ff5000]/15 px-3 py-0.5 rounded-full text-xs">
-          {item.metricValue}
-        </span>
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] text-white text-xs font-bold tracking-tight shadow-[0_8px_18px_rgba(255,80,0,0.28)]">
+            <Flame size={13} className="fill-white" />
+            <span>{item.result}</span>
+          </div>
+          <span className="text-[11px] font-semibold text-[#c45a28] bg-[#fff0e8] px-2.5 py-1 rounded-full border border-[#ffd7c0]">
+            {item.categoryLabel}
+          </span>
+        </div>
+
+        <div className="relative flex-1">
+          <Quote
+            size={42}
+            className="testimonial-quote-mark absolute -top-2 -left-1 text-[#ff5000] pointer-events-none"
+          />
+          <p className="relative z-10 text-[#5c3a2a] text-sm leading-relaxed italic pl-5">
+            &ldquo;{item.quote}&rdquo;
+          </p>
+        </div>
+
+        <div className="mt-5 pt-4 border-t border-[#ffeadc] flex items-center justify-between text-xs">
+          <span className="text-[#8a6a58] font-medium flex items-center gap-1.5">
+            <Sparkles size={13} className="text-[#ff5000]" />
+            Key metric
+          </span>
+          <span className="font-display font-bold text-white bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] px-3.5 py-1 rounded-full text-xs shadow-[0_6px_16px_rgba(255,80,0,0.28)]">
+            {item.metricValue}
+          </span>
+        </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -243,13 +235,12 @@ export default function HomeTestimonials() {
   return (
     <section
       id="testimonials"
-      className="relative py-24 md:py-32 overflow-hidden section-mist scroll-mt-28"
+      className="relative py-24 md:py-32 overflow-hidden scroll-mt-28 bg-gradient-to-b from-[#fff6ef] via-[#ffe8d6] to-[#fff4ed]"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full opacity-40 blur-[120px]"
-          style={{ background: 'radial-gradient(circle, rgba(255,80,0,0.1) 0%, transparent 70%)' }}
-        />
+        <div className="testimonial-orb absolute -top-10 -left-10 w-[420px] h-[420px] rounded-full bg-[#ffb089]/40 blur-[90px]" />
+        <div className="testimonial-orb-delay absolute top-1/3 -right-16 w-[380px] h-[380px] rounded-full bg-[#f5d9a6]/50 blur-[100px]" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[280px] rounded-full bg-white/50 blur-[80px]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative">
@@ -260,31 +251,31 @@ export default function HomeTestimonials() {
             </span>
           </div>
 
-          <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#16181f] mb-5">
+          <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-[1.08] text-[#5c3a2a] mb-5">
             Real members. Real{' '}
             <span className="italic text-[#ff5000]">transformations.</span>
           </h2>
 
-          <p className="text-[#6f7685] text-lg max-w-2xl mx-auto mb-8">
+          <p className="text-[#8a6a58] text-lg max-w-2xl mx-auto mb-8">
             Every fitness journey begins with a single step. See how our members across Bengaluru transformed their strength, health, and confidence.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[rgba(22,24,31,0.06)] shadow-sm text-xs font-semibold text-[#16181f]">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-[#ffd7c0] shadow-[0_8px_20px_rgba(255,176,137,0.2)] text-xs font-semibold text-[#5c3a2a]">
               <Trophy size={14} className="text-[#ff5000]" />
               <span>10,000+ Transformations</span>
             </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[rgba(22,24,31,0.06)] shadow-sm text-xs font-semibold text-[#16181f]">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-[#ffd7c0] shadow-[0_8px_20px_rgba(255,176,137,0.2)] text-xs font-semibold text-[#5c3a2a]">
               <Star size={14} className="text-[#ff5000] fill-[#ff5000]" />
               <span>4.9 / 5.0 Average Rating</span>
             </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[rgba(22,24,31,0.06)] shadow-sm text-xs font-semibold text-[#16181f]">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-[#ffd7c0] shadow-[0_8px_20px_rgba(255,176,137,0.2)] text-xs font-semibold text-[#5c3a2a]">
               <CheckCircle2 size={14} className="text-[#16a34a]" />
               <span>100% Verified Members</span>
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 max-w-4xl mx-auto pt-4 border-t border-[rgba(22,24,31,0.06)]">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 max-w-4xl mx-auto pt-4 border-t border-[#ffd7c0]">
             <div className="flex flex-wrap items-center justify-center gap-2 mx-auto sm:mx-0">
               {categories.map((cat) => (
                 <button
@@ -292,8 +283,8 @@ export default function HomeTestimonials() {
                   onClick={() => setActiveCategory(cat.id)}
                   className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer ${
                     activeCategory === cat.id
-                      ? 'bg-[#16181f] text-white shadow-md'
-                      : 'bg-white text-[#6f7685] hover:text-[#16181f] border border-[rgba(22,24,31,0.06)] hover:border-[#ff5000]/30 shadow-sm'
+                      ? 'bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] text-white shadow-[0_8px_18px_rgba(255,80,0,0.28)]'
+                      : 'bg-white/80 text-[#8a6a58] hover:text-[#ff5000] border border-[#ffd7c0] hover:border-[#ffb089] shadow-sm'
                   }`}
                 >
                   {cat.label}
@@ -304,7 +295,7 @@ export default function HomeTestimonials() {
             <div className="flex items-center gap-2.5 mx-auto sm:mx-0">
               <button
                 onClick={() => setIsPaused((prev) => !prev)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[rgba(22,24,31,0.08)] shadow-sm text-xs font-semibold text-[#3a3f4b] hover:text-[#ff5000] hover:border-[#ff5000]/40 transition-all duration-300 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/80 border border-[#ffd7c0] shadow-sm text-xs font-semibold text-[#5c3a2a] hover:text-[#ff5000] hover:border-[#ffb089] transition-all duration-300 cursor-pointer"
                 title={isPaused ? 'Resume Auto-scroll' : 'Pause Auto-scroll'}
               >
                 {isPaused ? <Play size={13} className="text-[#16a34a] fill-[#16a34a]" /> : <Pause size={13} className="text-[#ff5000]" />}
@@ -314,14 +305,14 @@ export default function HomeTestimonials() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => handleManualScroll('left')}
-                  className="w-8 h-8 rounded-full bg-white border border-[rgba(22,24,31,0.08)] shadow-sm flex items-center justify-center text-[#3a3f4b] hover:text-[#ff5000] hover:border-[#ff5000]/40 transition-all duration-200 cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-white/80 border border-[#ffd7c0] shadow-sm flex items-center justify-center text-[#5c3a2a] hover:text-[#ff5000] hover:border-[#ffb089] transition-all duration-200 cursor-pointer"
                   aria-label="Scroll left"
                 >
                   <ChevronLeft size={16} />
                 </button>
                 <button
                   onClick={() => handleManualScroll('right')}
-                  className="w-8 h-8 rounded-full bg-white border border-[rgba(22,24,31,0.08)] shadow-sm flex items-center justify-center text-[#3a3f4b] hover:text-[#ff5000] hover:border-[#ff5000]/40 transition-all duration-200 cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-white/80 border border-[#ffd7c0] shadow-sm flex items-center justify-center text-[#5c3a2a] hover:text-[#ff5000] hover:border-[#ffb089] transition-all duration-200 cursor-pointer"
                   aria-label="Scroll right"
                 >
                   <ChevronRight size={16} />
@@ -333,8 +324,8 @@ export default function HomeTestimonials() {
       </div>
 
       <div ref={contentRef} className={`relative reveal ${contentVisible ? 'visible' : ''}`}>
-        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 bg-gradient-to-r from-[#f7f8fb] via-[#f7f8fb]/80 to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 bg-gradient-to-l from-[#f7f8fb] via-[#f7f8fb]/80 to-transparent z-20 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 bg-gradient-to-r from-[#ffe8d6] via-[#ffe8d6]/80 to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 bg-gradient-to-l from-[#ffe8d6] via-[#ffe8d6]/80 to-transparent z-20 pointer-events-none" />
 
         <div className="overflow-hidden py-3" ref={scrollContainerRef}>
           <div
@@ -357,11 +348,11 @@ export default function HomeTestimonials() {
           className={`mt-14 md:mt-16 text-center reveal ${contentVisible ? 'visible' : ''}`}
           style={{ transitionDelay: '0.2s' }}
         >
-          <p className="font-display text-2xl md:text-4xl font-bold tracking-tight text-[#16181f]">
+          <p className="font-display text-2xl md:text-4xl font-bold tracking-tight text-[#5c3a2a]">
             Your story could be{' '}
             <span className="italic text-[#ff5000]">next.</span>
           </p>
-          <p className="text-[#6f7685] text-sm md:text-base mt-2 max-w-md mx-auto">
+          <p className="text-[#8a6a58] text-sm md:text-base mt-2 max-w-md mx-auto">
             Book a complimentary session with an elite coach at your nearest branch today.
           </p>
           <button
