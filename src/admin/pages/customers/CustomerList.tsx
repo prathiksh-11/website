@@ -849,7 +849,7 @@ export const CustomerList = () => {
         destroyOnClose
         centered
         styles={{
-          content: {
+          body: {
             borderRadius: 20,
             padding: '1.75rem',
           },
