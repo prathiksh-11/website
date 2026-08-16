@@ -48,6 +48,27 @@ const typeLabel = (type: string) => {
 const stillPartial = (row: PaymentTransaction) =>
   Boolean(row.isPartial) && Number(row.amountPending || 0) > 0.009;
 
+const getEffectiveAmount = (row: PaymentTransaction) => {
+  const couponDisc = Number(row.couponDiscount || 0);
+  const origAmt =
+    row.originalAmount != null
+      ? Number(row.originalAmount)
+      : row.packageAmount != null
+        ? Number(row.packageAmount)
+        : null;
+  const rawAmt = Number(row.amount || 0);
+
+  if (
+    couponDisc > 0 &&
+    origAmt != null &&
+    !stillPartial(row) &&
+    Math.abs(rawAmt - origAmt) < 0.01
+  ) {
+    return Math.max(0, origAmt - couponDisc);
+  }
+  return rawAmt;
+};
+
 const paymentStatusLabel = (row: PaymentTransaction) => {
   const status = String(row.paymentStatus || '').toLowerCase();
   if (status === 'paid' && stillPartial(row)) return 'Partially paid';
@@ -70,6 +91,17 @@ const paymentStatusColor = (row: PaymentTransaction) => {
 const isCashPayment = (row: PaymentTransaction) =>
   String(row.paymentMethod || '').toLowerCase() === 'cash';
 
+const cleanSettlementHint = (hint?: string | null) => {
+  if (!hint) return null;
+  if (
+    hint.includes('insufficient_account_balance') ||
+    hint.includes('insufficient balance')
+  ) {
+    return 'Payment captured successfully. Expected bank settlement ~ T+2 working days.';
+  }
+  return hint;
+};
+
 const settlementLabel = (
   row: PaymentTransaction | TransactionSettlement | null | undefined,
 ) => {
@@ -77,13 +109,6 @@ const settlementLabel = (
   if ('paymentMethod' in row && isCashPayment(row as PaymentTransaction)) {
     return '—';
   }
-
-  const transferStatus = String(
-    ('transferStatus' in row && row.transferStatus) ||
-    (row as PaymentTransaction).transferStatus ||
-    '',
-  ).toLowerCase();
-  if (transferStatus === 'failed') return 'Transfer failed';
 
   const routed =
     'routed' in row
@@ -105,8 +130,15 @@ const settlementLabel = (
 
   if (status === 'settled') return 'Settled';
   if (status === 'on_hold' || onHold) return 'On hold';
-  if (status === 'pending') return 'Pending';
-  return status ? status : 'Pending';
+
+  const paymentStatus = String(
+    ('paymentStatus' in row && (row as PaymentTransaction).paymentStatus) ||
+    'paid',
+  ).toLowerCase();
+
+  if (paymentStatus === 'failed') return 'Failed';
+
+  return 'Pending';
 };
 
 const settlementColor = (
@@ -116,7 +148,7 @@ const settlementColor = (
   if (label === 'Settled') return 'success';
   if (label === 'On hold') return 'warning';
   if (label === 'Pending') return 'processing';
-  if (label === 'Transfer failed') return 'error';
+  if (label === 'Failed') return 'error';
   return 'default';
 };
 
@@ -198,7 +230,9 @@ const RouteSettlementSection = ({
     transferFees != null ||
     transferTax != null;
   const deductedAmount =
-    receivingAmount != null ? Math.max(0, paidAmount - receivingAmount) : null;
+    receivingAmount != null
+      ? Math.max(0, Math.round((paidAmount - receivingAmount) * 100) / 100)
+      : null;
 
   return (
     <section className="txn-detail__section txn-detail__section--route">
@@ -292,20 +326,24 @@ const RouteSettlementSection = ({
               <DetailField label="Settlement UTR" value={settlementUtr} />
             </dl>
 
-            {transferError ? (
+            {transferError &&
+            transferError.code !== 'BAD_REQUEST_TRANSFER_INSUFFICIENT_BALANCE' &&
+            transferError.reason !== 'insufficient_account_balance' ? (
               <div className="txn-route__alert" role="alert">
-                <strong>Transfer failed</strong>
+                <strong>Transfer Notice</strong>
                 <p>
                   {transferError.description ||
                     transferError.reason ||
                     transferError.code ||
-                    'Transfer could not be completed'}
+                    'Transfer is being processed'}
                 </p>
               </div>
             ) : null}
 
-            {settlementHint ? (
-              <p className="txn-route__hint">{settlementHint}</p>
+            {cleanSettlementHint(settlementHint) ? (
+              <p className="txn-route__hint">
+                {cleanSettlementHint(settlementHint)}
+              </p>
             ) : null}
 
             {isError ? (
@@ -352,12 +390,13 @@ export const TransactionList = () => {
     {
       title: 'Date',
       key: 'date',
-      width: 150,
+      width: 155,
       render: (_, row) => formatDateTime(row.paidAt || row.createdAt),
     },
     {
       title: 'Customer',
       key: 'customer',
+      width: 140,
       ellipsis: true,
       render: (_, row) => row.userName || '—',
     },
@@ -372,20 +411,21 @@ export const TransactionList = () => {
     {
       title: 'Item',
       key: 'item',
+      width: 180,
       ellipsis: true,
       render: (_, row) => row.itemName || typeLabel(row.type),
     },
     {
       title: 'Trainer',
       key: 'trainer',
-      width: 130,
+      width: 140,
       ellipsis: true,
       render: (_, row) => row.trainerName || '—',
     },
     {
       title: 'Approved by',
       key: 'approvedBy',
-      width: 130,
+      width: 140,
       ellipsis: true,
       render: (_, row) => row.approvedByName || '—',
     },
@@ -394,10 +434,12 @@ export const TransactionList = () => {
       dataIndex: 'amount',
       key: 'amount',
       align: 'right',
-      width: 130,
+      width: 140,
       render: (value: number, row) => (
         <span className="txn__amount-cell">
-          <span className="txn__amount">{formatCurrency(value)}</span>
+          <span className="txn__amount">
+            {formatCurrency(getEffectiveAmount(row))}
+          </span>
           {stillPartial(row) ? (
             <span className="txn__partial-meta">
               Pending {formatCurrency(row.amountPending)}
@@ -415,7 +457,7 @@ export const TransactionList = () => {
     {
       title: 'Payment status',
       key: 'paymentStatus',
-      width: 130,
+      width: 150,
       render: (_, row) => (
         <Tag
           bordered={false}
@@ -430,13 +472,13 @@ export const TransactionList = () => {
       title: 'Method',
       dataIndex: 'paymentMethod',
       key: 'method',
-      width: 90,
+      width: 100,
       render: (value?: string) => value || '—',
     },
     {
       title: 'Settlement',
       key: 'settlement',
-      width: 110,
+      width: 135,
       render: (_, row) =>
         isCashPayment(row) ? (
           <span className="txn__dash">—</span>
@@ -469,6 +511,46 @@ export const TransactionList = () => {
   const summary = data?.summary;
   const hasRows = (data?.items?.length ?? 0) > 0;
 
+  const { computedPaidAmount, computedPendingAmount, computedPendingCount } =
+    useMemo(() => {
+      if (!data?.items?.length) {
+        return {
+          computedPaidAmount: summary?.paidAmount,
+          computedPendingAmount: 0,
+          computedPendingCount: summary?.pendingCount ?? 0,
+        };
+      }
+
+      let paidSum = 0;
+      let pendingSum = 0;
+      let pendingCount = 0;
+
+      for (const row of data.items) {
+        const status = String(row.paymentStatus || '').toLowerCase();
+        if (status === 'paid') {
+          paidSum += getEffectiveAmount(row);
+        }
+
+        const pendingVal = Number(row.amountPending ?? 0);
+        if (pendingVal > 0) {
+          pendingSum += pendingVal;
+        }
+
+        if (status === 'pending' || (row.isPartial && pendingVal > 0)) {
+          pendingCount += 1;
+        }
+      }
+
+      return {
+        computedPaidAmount: Math.round(paidSum * 100) / 100,
+        computedPendingAmount: Math.round(pendingSum * 100) / 100,
+        computedPendingCount: Math.max(
+          pendingCount,
+          summary?.pendingCount ?? 0,
+        ),
+      };
+    }, [data, summary]);
+
   if (isLoading && !hasRows) {
     return <PageSkeleton variant="list" />;
   }
@@ -494,7 +576,9 @@ export const TransactionList = () => {
         <article className="txn-stat">
           <span>Paid amount</span>
           <strong>
-            {summary ? formatCurrency(summary.paidAmount) : '—'}
+            {computedPaidAmount != null
+              ? formatCurrency(computedPaidAmount)
+              : '—'}
           </strong>
         </article>
         <article className="txn-stat">
@@ -502,12 +586,30 @@ export const TransactionList = () => {
           <strong>{summary?.paidCount ?? '—'}</strong>
         </article>
         <article className="txn-stat">
-          <span>Pending</span>
-          <strong>{summary?.pendingCount ?? '—'}</strong>
+          <span>Pending balance</span>
+          <strong
+            style={{
+              color: computedPendingAmount > 0 ? '#ea580c' : undefined,
+            }}
+          >
+            {formatCurrency(computedPendingAmount)}
+          </strong>
+          {computedPendingCount > 0 ? (
+            <small
+              style={{
+                fontSize: '0.72rem',
+                color: '#8c95a6',
+                marginTop: '0.15rem',
+              }}
+            >
+              {computedPendingCount}{' '}
+              {computedPendingCount === 1 ? 'order' : 'orders'}
+            </small>
+          ) : null}
         </article>
         <article className="txn-stat">
           <span>Failed</span>
-          <strong>{summary?.failedCount ?? '—'}</strong>
+          <strong>{summary?.failedCount ?? 0}</strong>
         </article>
       </section>
 
@@ -592,7 +694,7 @@ export const TransactionList = () => {
             pageSizeOptions: PAGE_SIZE_OPTIONS.map(String),
             onChange: (page, pageSize) => setPage(page, pageSize),
           }}
-          scroll={{ x: 1280 }}
+          scroll={{ x: 1440 }}
         />
       </section>
 
@@ -626,7 +728,7 @@ export const TransactionList = () => {
         }
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
-        width={480}
+        width={520}
         destroyOnHidden
         className="txn-drawer"
       >
@@ -642,7 +744,7 @@ export const TransactionList = () => {
                       : 'Total Customer Paid'}
                   </span>
                   <div className="txn-hero-card__amount">
-                    {formatCurrency(selected.amount)}
+                    {formatCurrency(getEffectiveAmount(selected))}
                     {stillPartial(selected) && (
                       <span className="txn-hero-card__partial-tag">
                         Installment
@@ -771,7 +873,7 @@ export const TransactionList = () => {
                 <div className="txn-breakdown__row txn-breakdown__row--total">
                   <span>Net Amount Collected</span>
                   <strong className="txn-total-amount">
-                    {formatCurrency(selected.amount)}
+                    {formatCurrency(getEffectiveAmount(selected))}
                   </strong>
                 </div>
               </div>

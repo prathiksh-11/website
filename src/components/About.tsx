@@ -4,6 +4,14 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import BackToTop from './BackToTop';
 import PageHero from './PageHero';
+import { IMAGES } from './image_constant';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
+
+const storyHighlights = [
+  { value: '10+', label: 'Years of Experience' },
+  { value: '10+', label: 'Clubs Across Bengaluru' },
+  { value: '15K+', label: 'Active Members' },
+];
 
 const beliefs = [
   {
@@ -24,6 +32,100 @@ const beliefs = [
   },
 ];
 
+function OurStorySection() {
+  const { ref: headRef, isVisible: headVisible } = useIntersectionObserver<HTMLDivElement>();
+  const { ref: bodyRef, isVisible: bodyVisible } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.15,
+  });
+
+  return (
+    <section className="py-24 md:py-32 atmosphere">
+      <div className="max-w-6xl mx-auto px-6">
+        <div
+          ref={headRef}
+          className={`text-center max-w-3xl mx-auto mb-14 reveal ${headVisible ? 'visible' : ''}`}
+        >
+          <div className="section-ornament justify-center mb-5">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
+              Our Story
+            </span>
+          </div>
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-5">
+            From our first tenant to{' '}
+            <span className="italic text-[#ff5000]">Bengaluru&apos;s fitness home.</span>
+          </h2>
+          <p className="text-[#6f7685] text-lg leading-relaxed">
+            Every great brand starts somewhere. Ours started with one club, one dream, and a
+            commitment to make fitness feel welcoming for everyone.
+          </p>
+        </div>
+
+        <div
+          ref={bodyRef}
+          className={`grid lg:grid-cols-2 gap-10 lg:gap-14 items-center reveal ${
+            bodyVisible ? 'visible' : ''
+          }`}
+        >
+          <div className="relative">
+            <div className="rounded-[2rem] overflow-hidden border border-[rgba(22,24,31,0.06)] shadow-[0_24px_60px_rgba(22,24,31,0.1)]">
+              <img
+                src={IMAGES.Arekere.img1}
+                alt="Game On Fitness — our first club at Arekere"
+                className="w-full h-[300px] md:h-[400px] object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div className="absolute -bottom-5 -right-3 md:right-6 px-6 py-4 rounded-2xl bg-white border border-[rgba(22,24,31,0.06)] shadow-[0_16px_40px_rgba(22,24,31,0.1)]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#ff5000] mb-1">
+                Our First Tenant
+              </p>
+              <p className="font-display text-lg font-bold text-[#16181f]">Arekere, Bengaluru</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[#6f7685] text-base md:text-lg leading-relaxed mb-5">
+              Game On Fitness began as the{' '}
+              <strong className="text-[#16181f] font-semibold">first tenant</strong> in our very
+              first location — a single club in Arekere with a simple belief: everyone deserves a
+              gym that feels premium, supportive, and built for real results.
+            </p>
+            <p className="text-[#6f7685] text-base md:text-lg leading-relaxed mb-5">
+              What started in one space has grown into{' '}
+              <strong className="text-[#16181f] font-semibold">10+ clubs across Bengaluru</strong>,
+              but the heart of who we are hasn&apos;t changed. We still greet every member by name.
+              We still push people to show up. We still celebrate every small win along the way.
+            </p>
+            <p className="text-[#6f7685] text-base md:text-lg leading-relaxed mb-8">
+              With{' '}
+              <strong className="text-[#16181f] font-semibold">over a decade of experience</strong>,
+              we&apos;ve helped thousands build strength, lose weight, gain confidence, and create
+              habits that last — through expert coaching, premium equipment, and a community that
+              never lets you quit on yourself.
+            </p>
+
+            <div className="grid grid-cols-3 gap-3 md:gap-4">
+              {storyHighlights.map((item) => (
+                <div
+                  key={item.label}
+                  className="text-center rounded-2xl bg-white border border-[rgba(22,24,31,0.06)] px-3 py-5 shadow-sm"
+                >
+                  <p className="font-display text-2xl md:text-3xl font-bold text-[#16181f]">
+                    {item.value}
+                  </p>
+                  <p className="mt-1 text-[10px] md:text-xs font-semibold uppercase tracking-[0.1em] text-[#6f7685] leading-snug">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function About() {
   return (
     <div className="min-h-screen gym-surface">
@@ -42,6 +144,8 @@ export default function About() {
         image="https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop"
         imagePosition="center center"
       />
+
+      <OurStorySection />
 
       <section className="py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">

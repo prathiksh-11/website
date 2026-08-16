@@ -41,7 +41,7 @@ export default function JoinCTA() {
               onClick={() =>
                 document.querySelector('#branches')?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-[#ff5000] to-[#e04800] shadow-[0_16px_40px_rgba(255, 80, 0,0.4)] hover:-translate-y-1 transition-all duration-300"
+              className="group inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] shadow-[0_16px_40px_rgba(255,112,51,0.35)] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             >
               Find Your Game On
               <ArrowRight

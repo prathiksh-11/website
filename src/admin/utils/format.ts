@@ -8,12 +8,20 @@ export const formatDate = (value?: string | null, pattern = 'DD MMM YYYY') => {
 export const formatDateTime = (value?: string | null) =>
   formatDate(value, 'DD MMM YYYY, hh:mm A');
 
-export const formatCurrency = (value: number, currency = 'INR') =>
-  new Intl.NumberFormat('en-IN', {
+export const formatCurrency = (
+  value?: number | string | null,
+  currency = 'INR',
+) => {
+  if (value == null || value === '') return '—';
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num)) return '—';
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency,
-    maximumFractionDigits: 0,
-  }).format(value);
+    minimumFractionDigits: Number.isInteger(num) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(num);
+};
 
 export const downloadBlob = (
   content: Blob | ArrayBuffer | string,

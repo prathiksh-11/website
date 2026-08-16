@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { USE_MOCK } from '@/constants';
 import { delay, MOCK_TRAINERS } from '@/mocks/data';
 import type {
@@ -10,6 +11,7 @@ import {
   mapBackendTrainer,
   mapBackendTrainerHistory,
 } from '@/utils/entity-map';
+import { downloadBlob } from '@/utils/format';
 import { filterBySearch, generateId, paginate } from '@/utils/query';
 import { apiClient } from './axios';
 import { ENDPOINTS } from './endpoints';
@@ -193,4 +195,128 @@ export const trainerApi = {
     }
     await apiClient.post(ENDPOINTS.TRAINERS.DELETE, { id: Number(id) });
   },
+
+  downloadSummaryReport: async (params: {
+    branchId?: number | string;
+    fromDate?: string;
+    toDate?: string;
+  }): Promise<void> => {
+    if (USE_MOCK) {
+      await delay(400);
+      downloadBlob(
+        'Mock Trainer Summary Excel Data',
+        `Trainer_Summary_Report_${Date.now()}.xlsx`,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      return;
+    }
+
+    const payload: Record<string, unknown> = {};
+    if (params.branchId != null && params.branchId !== '') {
+      payload.branch_id = Number(params.branchId);
+    }
+    if (params.fromDate) payload.from_date = params.fromDate;
+    if (params.toDate) payload.to_date = params.toDate;
+
+    let response;
+    try {
+      response = await apiClient.post<Blob>(
+        ENDPOINTS.TRAINERS.SUMMARY_EXCEL_REPORT,
+        payload,
+        { responseType: 'blob', timeout: 120_000 },
+      );
+    } catch (err: unknown) {
+      try {
+        response = await apiClient.post<Blob>(
+          '/api/trainer-summary-excel-report',
+          payload,
+          { responseType: 'blob', timeout: 120_000 },
+        );
+      } catch {
+        throw err;
+      }
+    }
+
+    if (response?.data?.type?.includes('application/json')) {
+      const text = await response.data.text();
+      try {
+        const parsed = JSON.parse(text);
+        throw { message: parsed.message || 'Failed to download report' };
+      } catch (e) {
+        if (typeof e === 'object' && e !== null && 'message' in e) throw e;
+        throw { message: 'Failed to download report' };
+      }
+    }
+
+    const stamp = dayjs().format('YYYY-MM-DD');
+    downloadBlob(
+      response.data,
+      `Trainer_Summary_Report_${stamp}.xlsx`,
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+  },
+
+  downloadDetailedReport: async (params: {
+    trainerId: number | string;
+    branchId?: number | string;
+    fromDate?: string;
+    toDate?: string;
+  }): Promise<void> => {
+    if (USE_MOCK) {
+      await delay(400);
+      downloadBlob(
+        'Mock Trainer Detailed Excel Data',
+        `Trainer_Detailed_Report_${params.trainerId}_${Date.now()}.xlsx`,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      return;
+    }
+
+    const payload: Record<string, unknown> = {
+      trainer_id: Number(params.trainerId),
+    };
+    if (params.branchId != null && params.branchId !== '') {
+      payload.branch_id = Number(params.branchId);
+    }
+    if (params.fromDate) payload.from_date = params.fromDate;
+    if (params.toDate) payload.to_date = params.toDate;
+
+    let response;
+    try {
+      response = await apiClient.post<Blob>(
+        ENDPOINTS.TRAINERS.DETAILED_EXCEL_REPORT,
+        payload,
+        { responseType: 'blob', timeout: 120_000 },
+      );
+    } catch (err: unknown) {
+      try {
+        response = await apiClient.post<Blob>(
+          '/api/trainer-excel-report',
+          payload,
+          { responseType: 'blob', timeout: 120_000 },
+        );
+      } catch {
+        throw err;
+      }
+    }
+
+    if (response?.data?.type?.includes('application/json')) {
+      const text = await response.data.text();
+      try {
+        const parsed = JSON.parse(text);
+        throw { message: parsed.message || 'Failed to download detailed report' };
+      } catch (e) {
+        if (typeof e === 'object' && e !== null && 'message' in e) throw e;
+        throw { message: 'Failed to download detailed report' };
+      }
+    }
+
+    const stamp = dayjs().format('YYYY-MM-DD');
+    downloadBlob(
+      response.data,
+      `Trainer_Detailed_Report_${params.trainerId}_${stamp}.xlsx`,
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+  },
 };
+

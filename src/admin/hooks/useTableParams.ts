@@ -20,6 +20,8 @@ export const useTableParams = (initial?: Partial<PaginatedRequest>) => {
         setParams((prev) => ({ ...prev, status, page: 1 })),
       setBranchId: (branchId?: string) =>
         setParams((prev) => ({ ...prev, branchId, page: 1 })),
+      setTrainerType: (trainerType?: string) =>
+        setParams((prev) => ({ ...prev, trainerType, page: 1 })),
       setPage: (page: number, pageSize?: number) =>
         setParams((prev) => ({
           ...prev,

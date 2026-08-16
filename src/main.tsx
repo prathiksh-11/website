@@ -10,6 +10,7 @@ import DownloadPage from './components/DownloadPage';
 import LocationsPage from './components/LocationsPage';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import AccountDeletionPolicy from './components/AccountDeletionPolicy';
+import CelebrationSuccessScreen from './components/CelebrationSuccessScreen';
 import './index.css';
 
 const ADMIN_PREFIXES = [
@@ -54,6 +55,7 @@ const RootSwitcher = () => {
       <Route path="/careers" element={<CareersPage />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/download" element={<DownloadPage />} />
+      <Route path="/success" element={<CelebrationSuccessScreen />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/account-deletion" element={<AccountDeletionPolicy />} />
       <Route path="/delete-account" element={<Navigate to="/account-deletion" replace />} />

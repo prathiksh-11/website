@@ -1,3 +1,4 @@
+import confetti from 'canvas-confetti';
 import { App, Button, Modal } from 'antd';
 import {
   Banknote,
@@ -7,6 +8,8 @@ import {
   Dumbbell,
   Layers,
   X,
+  CheckCircle2,
+  Sparkles,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -25,6 +28,36 @@ const formatInr = (amount: number) =>
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;
+
+const fireConfettiSprinkles = () => {
+  try {
+    confetti({
+      particleCount: 75,
+      spread: 80,
+      origin: { y: 0.55 },
+      colors: ['#ff5000', '#22c55e', '#3b82f6', '#f59e0b', '#ec4899', '#ffffff'],
+      disableForReducedMotion: true,
+    });
+    setTimeout(() => {
+      confetti({
+        particleCount: 40,
+        angle: 60,
+        spread: 60,
+        origin: { x: 0.15, y: 0.6 },
+        colors: ['#ff5000', '#22c55e', '#f59e0b'],
+      });
+      confetti({
+        particleCount: 40,
+        angle: 120,
+        spread: 60,
+        origin: { x: 0.85, y: 0.6 },
+        colors: ['#ff5000', '#22c55e', '#3b82f6'],
+      });
+    }, 150);
+  } catch (err) {
+    console.error('Confetti error:', err);
+  }
+};
 
 const asRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' && !Array.isArray(value)
@@ -107,12 +140,17 @@ export const CashPaymentApprovalHost = () => {
   const [queue, setQueue] = useState<CashPaymentPending[]>([]);
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(true);
+  const [successItem, setSuccessItem] = useState<{
+    customerName: string;
+    amount: number;
+    sessionName: string;
+  } | null>(null);
   const queueRef = useRef(queue);
   queueRef.current = queue;
 
   const current = queue[0] ?? null;
-  const remaining = Math.max(queue.length - 1, 0);
-  const showModal = open && Boolean(current);
+  const remaining = Math.max(queue.length - (successItem ? 0 : 1), 0);
+  const showModal = open && (Boolean(current) || Boolean(successItem));
   const showLauncher = !open && queue.length > 0;
 
   const removeFromQueue = useCallback((id: string) => {
@@ -260,6 +298,10 @@ export const CashPaymentApprovalHost = () => {
   const handleApprove = () => {
     if (!current || busy) return;
     const transactionId = current.id;
+    const approvedCustomer = current.customerName;
+    const approvedAmount = current.amount;
+    const approvedSession = current.sessionName;
+
     modal.confirm({
       title: 'Confirm cash received?',
       content: `Approve cash payment of ${formatInr(current.amount)} from ${current.customerName}?`,
@@ -270,8 +312,12 @@ export const CashPaymentApprovalHost = () => {
         setBusy(true);
         try {
           await cashPaymentApi.approve(transactionId);
-          message.success('Cash payment approved');
-          // Close locally; socket notifies other devices via cash_payment_resolved_*
+          fireConfettiSprinkles();
+          setSuccessItem({
+            customerName: approvedCustomer,
+            amount: approvedAmount,
+            sessionName: approvedSession,
+          });
           removeFromQueue(transactionId);
         } catch (error: unknown) {
           const err = error as { response?: { data?: { message?: string } } };
@@ -319,7 +365,10 @@ export const CashPaymentApprovalHost = () => {
     <>
       <Modal
         open={showModal}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          setSuccessItem(null);
+        }}
         footer={null}
         closable={false}
         maskClosable
@@ -329,11 +378,53 @@ export const CashPaymentApprovalHost = () => {
         centered
         destroyOnHidden
       >
-        {current ? (
+        {successItem ? (
+          <div className="cash-approve__success">
+            <button
+              type="button"
+              className="cash-approve__close"
+              aria-label="Close"
+              onClick={() => setSuccessItem(null)}
+            >
+              <X size={18} />
+            </button>
+            <div className="cash-approve__success-badge">
+              <CheckCircle2 size={40} strokeWidth={2.2} />
+            </div>
+            <div className="cash-approve__success-copy">
+              <span className="cash-approve__success-tag">
+                <Sparkles size={13} /> Verified & Approved
+              </span>
+              <h2 className="cash-approve__success-title">Payment Approved!</h2>
+              <p className="cash-approve__success-sub">
+                Cash payment of{' '}
+                <strong>{formatInr(successItem.amount)}</strong> received from{' '}
+                <strong>{successItem.customerName}</strong>
+              </p>
+            </div>
+            <div className="cash-approve__success-card">
+              <span className="cash-approve__success-label">Session / Package</span>
+              <strong className="cash-approve__success-session">{successItem.sessionName}</strong>
+            </div>
+            <Button
+              type="primary"
+              size="large"
+              className="cash-approve__approve"
+              style={{ width: '100%', marginTop: '0.4rem' }}
+              onClick={() => setSuccessItem(null)}
+            >
+              {queue.length > 0 ? `Next Pending (${queue.length})` : 'Done'}
+            </Button>
+          </div>
+        ) : current ? (
           <div className="cash-approve">
             <header className="cash-approve__head">
-              <div className="cash-approve__badge" aria-hidden>
-                <Banknote size={22} strokeWidth={1.75} />
+              <div className="cash-approve__brand">
+                <img
+                  src="/logo.png"
+                  alt="Game On Fitness"
+                  className="cash-approve__logo"
+                />
               </div>
               <div className="cash-approve__head-copy">
                 <p className="cash-approve__kicker">Cash payment</p>

@@ -252,7 +252,7 @@ export default function DownloadPage() {
                     <img
                       src={shot.src}
                       alt={`Game On Fitness app — ${shot.label}`}
-                      className="block w-full h-full object-contain object-top bg-[#0a0a0b]"
+                      className="block w-full h-full object-cover object-top bg-[#0a0a0b]"
                       loading="lazy"
                     />
                   </div>

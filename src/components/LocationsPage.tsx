@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronDown, MapPin } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronDown,
+  MapPin,
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import BackToTop from './BackToTop';
 import PageHero from './PageHero';
+import GrandOpeningCeremony from './GrandOpeningCeremony';
 import { IMAGES } from './image_constant';
 
 const destinations = [
@@ -104,7 +109,8 @@ export default function LocationsPage() {
         }
       />
 
-      <section className="py-24 atmosphere">
+      {/* Intro Header */}
+      <section className="py-20 md:py-24 atmosphere">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="section-ornament justify-center mb-5">
             <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
@@ -112,26 +118,37 @@ export default function LocationsPage() {
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-            Your journey.
+            10+ Premium Clubs. <span className="italic text-[#ff5000]">One Standard.</span>
           </h2>
-          <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-8">
-            Every Game On Fitness branch has its own personality. Different atmosphere. Different
-            energy. Different community.
-          </p>
-          <p className="text-[#3a3f4b] text-lg leading-relaxed max-w-xl mx-auto font-medium">
-            One commitment. Helping you become stronger every day.
+          <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-4">
+            Every Game On Fitness branch is custom-designed with imported biomechanical equipment, certified elite coaches, and a high-energy community.
           </p>
         </div>
       </section>
 
-      <section id="destinations" className="py-8 md:py-12">
+      {/* GRAND OPENING CEREMONY • CINEMATIC THEATRE CURTAIN REVEAL */}
+      <GrandOpeningCeremony />
+
+      {/* ACTIVE DESTINATIONS */}
+      <section id="destinations" className="py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-6 mb-10 text-center md:text-left">
+          <div className="section-ornament mb-3">
+            <span className="text-xs font-semibold tracking-[0.35em] uppercase text-[#ff5000]">
+              Active Locations
+            </span>
+          </div>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-[#16181f]">
+            Explore All <span className="italic text-[#ff5000]">Active Clubs.</span>
+          </h2>
+        </div>
+
         <div className="max-w-6xl mx-auto px-6 space-y-8 md:space-y-10">
           {destinations.map((branch, index) => {
             const reverse = index % 2 === 1;
             return (
               <article
                 key={branch.id}
-                className="grid md:grid-cols-2 gap-0 overflow-hidden rounded-[2rem] border border-[rgba(22,24,31,0.06)] bg-white shadow-[0_18px_50px_rgba(22,24,31,0.06)]"
+                className="grid md:grid-cols-2 gap-0 overflow-hidden rounded-[2rem] border border-[rgba(22,24,31,0.06)] bg-white shadow-[0_18px_50px_rgba(22,24,31,0.06)] hover:border-[#ff5000]/30 hover:shadow-[0_24px_60px_rgba(255,80,0,0.12)] transition-all duration-400 group"
               >
                 <div
                   className={`relative min-h-[260px] md:min-h-[360px] ${
@@ -141,7 +158,7 @@ export default function LocationsPage() {
                   <img
                     src={branch.image}
                     alt={branch.name}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/50 via-transparent to-transparent" />
@@ -162,7 +179,7 @@ export default function LocationsPage() {
                   <button
                     type="button"
                     onClick={() => openBranch(branch.id)}
-                    className="btn-premium-primary inline-flex items-center justify-center gap-2 self-start text-sm font-semibold px-7 py-3.5 rounded-full"
+                    className="btn-premium-primary inline-flex items-center justify-center gap-2 self-start text-sm font-semibold px-7 py-3.5 rounded-full shadow-[0_12px_28px_rgba(255,80,0,0.3)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
                   >
                     Experience This Branch
                     <ArrowRight size={16} />
@@ -193,6 +210,7 @@ export default function LocationsPage() {
           </p>
         </div>
       </section>
+
 
       <section className="py-24 gym-surface">
         <div className="max-w-4xl mx-auto px-6 text-center">

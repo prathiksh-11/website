@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Youtube, ArrowUpRight } from 'lucide-react';
+import { Instagram, Facebook, ArrowUpRight } from 'lucide-react';
 
 const exploreLinks = [
   { label: 'Home', to: '/' },
@@ -139,15 +139,6 @@ export default function Footer() {
                 aria-label="Facebook"
               >
                 <Facebook size={18} />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-[#ff5000] hover:text-white hover:border-transparent transition-all duration-300"
-                aria-label="YouTube"
-              >
-                <Youtube size={18} />
               </a>
             </div>
             <p className="text-xs text-white/35 leading-relaxed">

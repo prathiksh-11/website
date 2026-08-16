@@ -21,11 +21,9 @@ export const useReportExport = (query: ReportQuery) => {
       const label =
         reportType === 'attendance'
           ? 'Trainer attendance'
-          : reportType === 'revenue'
-            ? 'Revenue'
-            : reportType === 'branch'
-              ? 'Branch'
-              : 'Report';
+          : reportType === 'branch'
+            ? 'Branch summary'
+            : 'Report';
       message.success(`${label} Excel download started`);
     },
     onError: (error: { message?: string }) =>

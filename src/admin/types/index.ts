@@ -12,7 +12,9 @@ export type TrainerType =
   | 'general_trainer'
   | 'pt_trainer'
   | 'membership_coordinator'
-  | 'receptionist';
+  | 'receptionist'
+  | 'admin'
+  | 'manager';
 
 export interface User {
   id: string;
@@ -75,6 +77,7 @@ export interface PaginatedRequest {
   sortOrder?: 'asc' | 'desc';
   status?: string;
   branchId?: string;
+  trainerType?: string;
   startDate?: string;
   endDate?: string;
 }
@@ -142,6 +145,9 @@ export interface CustomerSessionPlanDetail {
   price: string | number;
   purchased_on: string;
   status: string;
+  is_partial?: boolean;
+  amount_pending?: number | string;
+  amount_paid?: number | string;
 }
 
 export interface CustomerAttendanceHistoryItem {
@@ -401,6 +407,8 @@ export interface DashboardSummary {
   nonPtClients: number;
   /** Revenue attributed to PT customers */
   ptCustomerRevenue: number;
+  /** Pending balance due from partial payments */
+  totalPendingAmount?: number;
 }
 
 export interface ChartPoint {

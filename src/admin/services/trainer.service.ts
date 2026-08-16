@@ -13,4 +13,15 @@ export const trainerService = {
   update: (id: string, payload: Partial<Trainer>) =>
     trainerApi.update(id, payload),
   remove: (id: string) => trainerApi.remove(id),
+  downloadSummaryReport: (params: {
+    branchId?: number | string;
+    fromDate?: string;
+    toDate?: string;
+  }) => trainerApi.downloadSummaryReport(params),
+  downloadDetailedReport: (params: {
+    trainerId: number | string;
+    branchId?: number | string;
+    fromDate?: string;
+    toDate?: string;
+  }) => trainerApi.downloadDetailedReport(params),
 };

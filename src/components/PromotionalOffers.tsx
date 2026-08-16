@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import {
-  ArrowRight,
   Sparkles,
   ChevronLeft,
   ChevronRight,
@@ -132,96 +131,76 @@ export default function PromotionalOffers() {
 
   return (
     <section
-      className="relative py-16 md:py-24 bg-[#f7f8fb] overflow-hidden"
+      id="offers"
+      className="relative py-16 md:py-20 overflow-hidden atmosphere scroll-mt-28"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Decorative Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-radial from-[#ff5000]/10 via-transparent to-transparent pointer-events-none blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-70 blur-[90px]"
+          style={{ background: 'radial-gradient(circle, rgba(255,80,0,0.18) 0%, transparent 70%)' }}
+        />
+      </div>
 
-      <div className="relative max-w-7xl mx-auto px-6">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fff0e8] border border-[#ff5000]/20 mb-3">
-              <Sparkles size={14} className="text-[#ff5000]" />
-              <span className="text-xs font-bold text-[#ff5000] uppercase tracking-wider">
+      <div className="relative max-w-6xl mx-auto px-6">
+        {/* Highlighted header strip */}
+        <div className="relative mb-8 md:mb-10">
+          <div className="flex flex-col items-center text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#ff5000]/25 shadow-[0_8px_24px_rgba(255,80,0,0.12)] mb-5">
+              <Sparkles size={15} className="text-[#ff5000]" />
+              <span className="text-xs font-bold text-[#ff5000] uppercase tracking-[0.2em]">
                 Limited Time Deals
               </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ff5000] animate-pulse" />
             </div>
-            <h2 className="font-display text-3xl md:text-5xl font-extrabold text-[#16181f] tracking-tight">
-              Exclusive <span className="text-[#ff5000] italic">Offers & Deals</span>
-            </h2>
-          </div>
 
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-[rgba(22,24,31,0.08)] shadow-sm">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5000] animate-pulse" />
-            <span className="text-xs font-bold text-[#16181f] uppercase tracking-wider">
-              {totalOffersCount} Active {totalOffersCount === 1 ? 'Offer' : 'Offers'}
-            </span>
+            <h2 className="font-display text-4xl md:text-6xl font-bold text-[#16181f] tracking-tight leading-[1.05] mb-4">
+              Exclusive{' '}
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#ff5000] via-[#e04800] to-[#ff5000]">
+                Offers &amp; Deals
+              </span>
+            </h2>
+
+            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#ff5000] to-[#e04800] text-white shadow-[0_12px_30px_rgba(255,80,0,0.35)]">
+              <Gift size={15} />
+              <span className="text-xs font-bold uppercase tracking-wider">
+                {totalOffersCount} Active {totalOffersCount === 1 ? 'Offer' : 'Offers'} Live Now
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Promo Cards Section (2:1 Ratio) */}
+        {/* Promo Cards Section */}
         {promoCards.length > 0 && (
-          <div className="relative mb-14">
-            <div className="overflow-hidden rounded-[2rem] shadow-[0_20px_50px_rgba(22,24,31,0.06)] border border-[rgba(22,24,31,0.08)] bg-white">
-              <div
-                className="flex transition-transform duration-700 ease-out"
-                style={{ transform: `translateX(-${currentPromoSlide * 100}%)` }}
-              >
-                {promoCards.map((offer) => (
-                  <div key={offer.id} className="flex-shrink-0 w-full">
-                    <div
-                      onClick={() =>
-                        offer.redirect_url && (window.location.href = offer.redirect_url)
-                      }
-                      className="group relative cursor-pointer"
-                    >
-                      <div className="relative w-full aspect-[2/1] overflow-hidden bg-[#16181f]">
-                        <img
-                          src={getFullImageUrl(offer.image_url)}
-                          alt={offer.title}
-                          crossOrigin="anonymous"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                        />
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/80 via-[#16181f]/20 to-transparent pointer-events-none" />
-
-                        {/* Top Badge */}
-                        <div className="absolute top-6 right-6 pointer-events-none">
-                          <div className="px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/20 shadow-md">
-                            <div className="flex items-center gap-2">
-                              <Gift size={14} className="text-[#ff5000]" />
-                              <span className="text-xs font-bold text-[#16181f] uppercase tracking-wider">
-                                Special Offer
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Card Content Overlay */}
-                        <div className="absolute inset-0 p-8 md:p-14 flex flex-col justify-end pointer-events-none">
-                          <div className="max-w-2xl pointer-events-auto">
-                            {offer.title && (
-                              <h3 className="font-display text-2xl md:text-4xl font-extrabold text-white mb-4 leading-tight drop-shadow-md">
-                                {offer.title}
-                              </h3>
-                            )}
-
-                            <button className="group/btn inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#ff5000] text-white font-bold text-sm shadow-lg hover:bg-white hover:text-[#16181f] transition-all duration-300">
-                              <span>Claim Offer Now</span>
-                              <ArrowRight
-                                size={16}
-                                className="group-hover/btn:translate-x-1 transition-transform"
-                              />
-                            </button>
-                          </div>
+          <div className="relative mb-12">
+            <div className="relative rounded-[2rem] p-[3px] bg-gradient-to-br from-[#ff5000] via-[#ffb089] to-[#ff5000] shadow-[0_24px_60px_rgba(255,80,0,0.2)]">
+              <div className="overflow-hidden rounded-[1.85rem] bg-white">
+                <div
+                  className="flex transition-transform duration-700 ease-out"
+                  style={{ transform: `translateX(-${currentPromoSlide * 100}%)` }}
+                >
+                  {promoCards.map((offer) => (
+                    <div key={offer.id} className="flex-shrink-0 w-full">
+                      <div
+                        onClick={() =>
+                          offer.redirect_url && (window.location.href = offer.redirect_url)
+                        }
+                        className="group relative cursor-pointer bg-[#fff8f5]"
+                      >
+                        <div className="relative w-full aspect-[2/1] overflow-hidden">
+                          <img
+                            src={getFullImageUrl(offer.image_url)}
+                            alt={offer.title || 'Special offer'}
+                            crossOrigin="anonymous"
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                          />
+                          <div className="absolute inset-0 ring-1 ring-inset ring-[#ff5000]/10 pointer-events-none rounded-[1.85rem]" />
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -268,14 +247,16 @@ export default function PromotionalOffers() {
         {/* Carousel Banners Section (16:9 Ratio) */}
         {carouselBanners.length > 0 && (
           <div className="relative">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-2 h-7 bg-[#ff5000] rounded-full" />
-              <h3 className="font-display text-xl md:text-3xl font-extrabold text-[#16181f] tracking-tight">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="h-px w-12 bg-gradient-to-r from-transparent to-[#ff5000]/40" />
+              <h3 className="font-display text-lg md:text-xl font-bold text-[#16181f] uppercase tracking-[0.15em]">
                 Featured Highlights
               </h3>
+              <span className="h-px w-12 bg-gradient-to-l from-transparent to-[#ff5000]/40" />
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] shadow-[0_20px_50px_rgba(22,24,31,0.06)] border border-[rgba(22,24,31,0.08)] bg-white">
+            <div className="relative rounded-[2rem] p-[2px] bg-gradient-to-r from-[#ff5000]/40 via-[#ffb089]/60 to-[#ff5000]/40 shadow-[0_20px_50px_rgba(22,24,31,0.08)]">
+              <div className="overflow-hidden rounded-[1.9rem] bg-white">
               <div
                 className="flex transition-transform duration-700 ease-out"
                 style={{ transform: `translateX(-${currentCarouselSlide * 100}%)` }}
@@ -314,9 +295,9 @@ export default function PromotionalOffers() {
                   </div>
                 ))}
               </div>
+              </div>
             </div>
 
-            {/* Navigation Arrows */}
             {carouselBanners.length > 1 && (
               <>
                 <button
@@ -333,25 +314,21 @@ export default function PromotionalOffers() {
                 >
                   <ChevronRight size={22} />
                 </button>
+                <div className="flex items-center justify-center gap-2 mt-6">
+                  {carouselBanners.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentCarouselSlide(index)}
+                      aria-label={`Go to slide ${index + 1}`}
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        index === currentCarouselSlide
+                          ? 'bg-[#ff5000] w-10'
+                          : 'bg-[#d4d7de] w-2.5 hover:bg-[#9aa0ab]'
+                      }`}
+                    />
+                  ))}
+                </div>
               </>
-            )}
-
-            {/* Pagination Dots */}
-            {carouselBanners.length > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-6">
-                {carouselBanners.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentCarouselSlide(index)}
-                    aria-label={`Go to slide ${index + 1}`}
-                    className={`h-2 rounded-full transition-all duration-500 ${
-                      index === currentCarouselSlide
-                        ? 'bg-[#ff5000] w-10'
-                        : 'bg-[#d4d7de] w-2.5 hover:bg-[#9aa0ab]'
-                    }`}
-                  />
-                ))}
-              </div>
             )}
           </div>
         )}

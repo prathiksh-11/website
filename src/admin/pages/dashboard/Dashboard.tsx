@@ -382,6 +382,11 @@ export const Dashboard = () => {
             <span className="bento-chip">Monthly</span>
           </div>
           <strong className="bento-value">{formatCurrency(summary.revenue)}</strong>
+          {summary.totalPendingAmount ? (
+            <p className="bento-hint" style={{ color: '#e04800', marginTop: '0.15rem', fontWeight: 600 }}>
+              Pending: {formatCurrency(summary.totalPendingAmount)}
+            </p>
+          ) : null}
           <div className="bento-chart bento-chart--spark">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={spark} margin={{ top: 10, right: 6, left: 0, bottom: 0 }}>
@@ -559,15 +564,26 @@ export const Dashboard = () => {
 
         <article className="bento-card bento-card--split">
           <div>
-            <span className="bento-label">Non-PT clients</span>
-            <strong className="bento-value">{summary.nonPtClients}</strong>
-            <p className="bento-hint">Membership only</p>
+            <span className="bento-label">Pending balance</span>
+            <strong
+              className="bento-value"
+              style={{
+                color: (summary.totalPendingAmount ?? 0) > 0 ? '#ea580c' : '#16a34a',
+              }}
+            >
+              {formatCurrency(summary.totalPendingAmount ?? 0)}
+            </strong>
+            <p className="bento-hint">
+              {(summary.totalPendingAmount ?? 0) > 0
+                ? 'Due from partial payments'
+                : 'All dues clear'}
+            </p>
           </div>
           <i className="bento-divider" />
           <div>
             <span className="bento-label">Total clients</span>
             <strong className="bento-value">{summary.totalCustomers}</strong>
-            <p className="bento-hint">Across all branches</p>
+            <p className="bento-hint">Across all branches ({summary.nonPtClients} non-PT)</p>
           </div>
         </article>
 

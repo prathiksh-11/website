@@ -8,6 +8,8 @@ export const TRAINER_TYPE_OPTIONS: { value: TrainerType; label: string }[] = [
   { value: 'pt_trainer', label: 'PT Trainer' },
   { value: 'membership_coordinator', label: 'Membership Coordinator' },
   { value: 'receptionist', label: 'Receptionist' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'manager', label: 'Manager' },
 ];
 
 const TRAINER_TYPE_ALIASES: Record<string, TrainerType> = {
@@ -26,6 +28,10 @@ const TRAINER_TYPE_ALIASES: Record<string, TrainerType> = {
   receptionist: 'receptionist',
   recept: 'receptionist',
   reception: 'receptionist',
+  admin: 'admin',
+  administrator: 'admin',
+  manager: 'manager',
+  branch_manager: 'manager',
 };
 
 export const normalizeTrainerType = (
@@ -49,6 +55,12 @@ export const normalizeTrainerType = (
   if (d.includes('reception') || d.includes('recept')) {
     return 'receptionist';
   }
+  if (d.includes('branch manager') || (d.includes('manager') && !d.includes('membership'))) {
+    return 'manager';
+  }
+  if (d.includes('admin')) {
+    return 'admin';
+  }
   if (
     d.includes('personal trainer') ||
     d.includes('pt trainer') ||
@@ -59,6 +71,26 @@ export const normalizeTrainerType = (
   if (d.includes('general trainer') || d.includes('genaral trainer')) {
     return 'general_trainer';
   }
+  return undefined;
+};
+
+/** Effective type for display/filter — uses type, description, then role_name */
+export const resolveTrainerType = (
+  trainer: {
+    trainerType?: TrainerType | string | null;
+    description?: string | null;
+    roleName?: string | null;
+  },
+): TrainerType | undefined => {
+  const fromFields = normalizeTrainerType(trainer.trainerType, trainer.description);
+  if (fromFields) return fromFields;
+
+  const role = String(trainer.roleName || '')
+    .trim()
+    .toLowerCase();
+  if (role === 'admin') return 'admin';
+  if (role === 'manager') return 'manager';
+
   return undefined;
 };
 
@@ -79,6 +111,10 @@ export const trainerTypeTagColor = (type?: TrainerType | string | null) => {
       return 'purple';
     case 'receptionist':
       return 'green';
+    case 'admin':
+      return 'geekblue';
+    case 'manager':
+      return 'gold';
     default:
       return 'blue';
   }
