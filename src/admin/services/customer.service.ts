@@ -10,4 +10,15 @@ export const customerService = {
   update: (id: string, payload: Partial<Customer>) =>
     customerApi.update(id, payload),
   remove: (id: string) => customerApi.remove(id),
+  downloadSummaryReport: (params: {
+    branchId?: string | number;
+    fromDate?: string;
+    toDate?: string;
+  }) => customerApi.downloadSummaryReport(params),
+  downloadDetailedReport: (params: {
+    customerId: string | number;
+    branchId?: string | number;
+    fromDate?: string;
+    toDate?: string;
+  }) => customerApi.downloadDetailedReport(params),
 };

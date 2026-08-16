@@ -1,7 +1,11 @@
+import dayjs from 'dayjs';
 import {
+  CalendarOutlined,
   DeleteOutlined,
+  DownloadOutlined,
   EditOutlined,
   EyeOutlined,
+  FileExcelOutlined,
   PhoneOutlined,
   PlusOutlined,
   SearchOutlined,
@@ -9,16 +13,20 @@ import {
 } from '@ant-design/icons';
 import {
   Button,
+  DatePicker,
   Drawer,
   Empty,
   Form,
   Input,
+  Modal,
   Progress,
   Select,
   Skeleton,
+  Space,
   Table,
   Tag,
   Tooltip,
+  message,
 } from 'antd';
 import {
   BarChart3,
@@ -43,6 +51,7 @@ import {
   useTrainers,
   useTrainersAll,
 } from '@/hooks/useTrainers';
+import { trainerService } from '@/services/trainer.service';
 import { useAuthStore } from '@/store/auth.store';
 import { useTableParams } from '@/hooks/useTableParams';
 import type { Trainer, TrainerType } from '@/types';
@@ -79,12 +88,101 @@ export const TrainerList = () => {
   const { create, update, remove } = useTrainerMutations();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const { data: details, isLoading: loadingDetails } =
-    useTrainerDetails(selectedId);
+  const { data: details, isLoading: loadingDetails } = useTrainerDetails(selectedId);
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Trainer | null>(null);
   const [form] = Form.useForm();
+
+  // Export Modal state
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportType, setExportType] = useState<'summary' | 'detailed'>('summary');
+  const [exportTrainer, setExportTrainer] = useState<Trainer | null>(null);
+  const [exportDates, setExportDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null] | null>(null);
+  const [exportBranchId, setExportBranchId] = useState<string | undefined>(undefined);
+  const [branchError, setBranchError] = useState(false);
+  const [dateError, setDateError] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const openSummaryExport = () => {
+    setExportType('summary');
+    setExportTrainer(null);
+    setExportDates(null);
+    setExportBranchId(params.branchId);
+    setBranchError(false);
+    setDateError(false);
+    setExportModalOpen(true);
+  };
+
+  const openDetailedExport = (trainer: Trainer) => {
+    setExportType('detailed');
+    setExportTrainer(trainer);
+    setExportDates(null);
+    setExportBranchId(trainer.branchId || params.branchId);
+    setBranchError(false);
+    setDateError(false);
+    setExportModalOpen(true);
+  };
+
+  const handleExportDownload = async () => {
+    const targetBranch = exportBranchId || (exportType === 'summary' ? params.branchId : exportTrainer?.branchId || params.branchId);
+
+    if (!targetBranch) {
+      setBranchError(true);
+      message.error('Branch selection is required to export the report');
+      return;
+    }
+    setBranchError(false);
+
+    if (exportDates) {
+      if (!exportDates[0] || !exportDates[1]) {
+        setDateError(true);
+        message.error('Incomplete date range. Please select both From Date and To Date.');
+        return;
+      }
+      if (exportDates[0].isAfter(exportDates[1], 'day')) {
+        setDateError(true);
+        message.error('From Date cannot be after To Date');
+        return;
+      }
+    }
+    setDateError(false);
+
+    const fromDate = exportDates?.[0] ? exportDates[0].format('YYYY-MM-DD') : undefined;
+    const toDate = exportDates?.[1] ? exportDates[1].format('YYYY-MM-DD') : undefined;
+
+    setExporting(true);
+    const hideMsg = message.loading('Generating Excel report...', 0);
+
+    try {
+      if (exportType === 'summary') {
+        await trainerService.downloadSummaryReport({
+          branchId: targetBranch,
+          fromDate,
+          toDate,
+        });
+        message.success('Trainer Summary Excel report downloaded successfully');
+      } else if (exportTrainer) {
+        await trainerService.downloadDetailedReport({
+          trainerId: exportTrainer.id,
+          branchId: targetBranch,
+          fromDate,
+          toDate,
+        });
+        message.success(`Detailed Excel report for ${exportTrainer.name} downloaded successfully`);
+      }
+      setExportModalOpen(false);
+    } catch (err: unknown) {
+      const errMsg =
+        typeof err === 'object' && err !== null && 'message' in err
+          ? String((err as { message?: string }).message)
+          : 'Failed to download report';
+      message.error(errMsg);
+    } finally {
+      hideMsg();
+      setExporting(false);
+    }
+  };
 
   const stats = useMemo(() => {
     const list = allTrainers ?? [];
@@ -203,7 +301,7 @@ export const TrainerList = () => {
       </section>
 
       <section className="emp__panel">
-        <div className="emp__toolbar">
+        <div className="emp__toolbar" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
           <Input
             allowClear
             size="large"
@@ -212,6 +310,7 @@ export const TrainerList = () => {
             value={params.search}
             onChange={(e) => setSearch(e.target.value)}
             className="emp__search"
+            style={{ minWidth: 240 }}
           />
           <Select
             allowClear
@@ -226,7 +325,23 @@ export const TrainerList = () => {
               value: b.id,
               label: shortBranch(b.name),
             }))}
+            style={{ width: 170 }}
           />
+          <Button
+            size="large"
+            icon={<FileExcelOutlined style={{ color: '#ff5000' }} />}
+            onClick={openSummaryExport}
+            style={{
+              borderRadius: 10,
+              fontWeight: 600,
+              borderColor: 'rgba(22, 24, 31, 0.12)',
+              color: '#16181f',
+              background: '#ffffff',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
+            }}
+          >
+            Export Summary
+          </Button>
         </div>
 
         <Table<Trainer>
@@ -324,9 +439,17 @@ export const TrainerList = () => {
             {
               title: 'Actions',
               key: 'actions',
-              width: 120,
+              width: 150,
               render: (_, record) => (
-                <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', gap: '0.2rem' }}>
+                <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
+                  <Tooltip title="Export Trainer Report">
+                    <Button
+                      type="text"
+                      icon={<FileExcelOutlined style={{ color: '#ff5000' }} />}
+                      onClick={() => openDetailedExport(record)}
+                      aria-label={`Export report for ${record.name}`}
+                    />
+                  </Tooltip>
                   <Tooltip title="View Session Details & Analytics">
                     <Button
                       type="text"
@@ -368,7 +491,7 @@ export const TrainerList = () => {
       <Drawer
         open={Boolean(selectedId)}
         onClose={() => setSelectedId(null)}
-        width={560}
+        width={580}
         destroyOnClose
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -402,32 +525,48 @@ export const TrainerList = () => {
             return (
               <div className="emp-detail">
                 {/* Hero Header Card */}
-                <div className="emp-detail__hero">
-                  {trainer.avatar ? (
-                    <img src={trainer.avatar} alt={trainer.name} className="emp-detail__avatar" />
-                  ) : (
-                    <span className="emp-detail__avatar emp-detail__avatar--fallback">
-                      {initials(trainer.name) || <UserOutlined />}
-                    </span>
-                  )}
-                  <div className="emp-detail__hero-info">
-                    <h3 className="emp-detail__name">{trainer.name}</h3>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-                      <StatusBadge status={trainer.status} />
-                      <Tag color={trainerTypeTagColor(trainer.trainerType)} style={{ borderRadius: 8, fontWeight: 600 }}>
-                        {trainerTypeLabel(trainer.trainerType)}
-                      </Tag>
-                      <Tag style={{ borderRadius: 8, fontWeight: 600 }}>ID #{trainer.id}</Tag>
-                      {details?.isCheckin !== undefined && (
-                        <Tag
-                          color={details.isCheckin ? 'success' : 'default'}
-                          style={{ borderRadius: 8, fontWeight: 600 }}
-                        >
-                          {details.isCheckin ? 'Checked In' : 'Checked Out'}
+                <div className="emp-detail__hero" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                    {trainer.avatar ? (
+                      <img src={trainer.avatar} alt={trainer.name} className="emp-detail__avatar" />
+                    ) : (
+                      <span className="emp-detail__avatar emp-detail__avatar--fallback">
+                        {initials(trainer.name) || <UserOutlined />}
+                      </span>
+                    )}
+                    <div className="emp-detail__hero-info">
+                      <h3 className="emp-detail__name" style={{ margin: 0 }}>{trainer.name}</h3>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center', marginTop: 4 }}>
+                        <StatusBadge status={trainer.status} />
+                        <Tag color={trainerTypeTagColor(trainer.trainerType)} style={{ borderRadius: 8, fontWeight: 600 }}>
+                          {trainerTypeLabel(trainer.trainerType)}
                         </Tag>
-                      )}
+                        <Tag style={{ borderRadius: 8, fontWeight: 600 }}>ID #{trainer.id}</Tag>
+                        {details?.isCheckin !== undefined && (
+                          <Tag
+                            color={details.isCheckin ? 'success' : 'default'}
+                            style={{ borderRadius: 8, fontWeight: 600 }}
+                          >
+                            {details.isCheckin ? 'Checked In' : 'Checked Out'}
+                          </Tag>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  <Button
+                    type="primary"
+                    icon={<FileExcelOutlined />}
+                    onClick={() => openDetailedExport(trainer)}
+                    style={{
+                      background: '#ff5000',
+                      borderColor: '#ff5000',
+                      borderRadius: 10,
+                      fontWeight: 600,
+                      boxShadow: '0 2px 8px rgba(255, 80, 0, 0.22)',
+                    }}
+                  >
+                    Download Excel Report
+                  </Button>
                 </div>
 
                 {/* Dark Analytics Graph Card */}
@@ -666,7 +805,7 @@ export const TrainerList = () => {
                                 </div>
                               </div>
                               <div style={{ textAlign: 'right' }}>
-                                <strong style={{ fontSize: '0.95rem', color: '#10b981', display: 'block' }}>
+                                <strong style={{ fontSize: '0.95rem', color: '#16181f', display: 'block' }}>
                                   {formatCurrency(c.totalAmount)}
                                 </strong>
                                 <span style={{ fontSize: '0.72rem', color: '#6f7685' }}>
@@ -802,15 +941,8 @@ export const TrainerList = () => {
           <Form.Item name="phone" label="Mobile" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="trainerType"
-            label="Staff type"
-            rules={[{ required: true, message: 'Select staff type' }]}
-          >
-            <Select
-              placeholder="Select staff type"
-              options={TRAINER_TYPE_OPTIONS}
-            />
+          <Form.Item name="trainerType" label="Type" rules={[{ required: true }]}>
+            <Select options={TRAINER_TYPE_OPTIONS} />
           </Form.Item>
           <Form.Item name="gender" label="Gender">
             <Select
@@ -825,16 +957,240 @@ export const TrainerList = () => {
             <Select
               allowClear
               options={branchesData?.data.map((b) => ({
-                value: b.id,
+                value: String(b.id),
                 label: shortBranch(b.name),
               }))}
             />
           </Form.Item>
-          <Form.Item name="specialization" label="Description / specialization">
-            <Input.TextArea rows={3} />
+          <Form.Item name="specialization" label="Specialization">
+            <Input />
           </Form.Item>
         </Form>
       </Drawer>
+
+      {/* Export Report Date Selection Modal */}
+      <Modal
+        open={exportModalOpen}
+        onCancel={() => !exporting && setExportModalOpen(false)}
+        destroyOnClose
+        centered
+        width={500}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <div style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              background: '#fff0e8',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ff5000',
+            }}>
+              <FileExcelOutlined style={{ fontSize: 20 }} />
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#16181f' }}>
+                {exportType === 'summary' ? 'Export Trainer Summary Report' : `Export Report: ${exportTrainer?.name}`}
+              </h4>
+              <small style={{ color: '#6f7685', fontSize: '0.78rem' }}>
+                {exportType === 'summary'
+                  ? 'Download PT Trainers overview report as an Excel (.xlsx) file'
+                  : 'Download 2-sheet performance & customer details report'}
+              </small>
+            </div>
+          </div>
+        }
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingTop: '0.5rem' }}>
+            <Button disabled={exporting} onClick={() => setExportModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              icon={<DownloadOutlined />}
+              loading={exporting}
+              onClick={handleExportDownload}
+              style={{
+                background: '#ff5000',
+                borderColor: '#ff5000',
+                fontWeight: 600,
+                borderRadius: 10,
+                boxShadow: '0 3px 10px rgba(255, 80, 0, 0.22)',
+              }}
+            >
+              Download Excel (.xlsx)
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', paddingTop: '0.75rem' }}>
+          {/* Context Card */}
+          {exportType === 'detailed' && exportTrainer ? (
+            <div style={{
+              padding: '0.85rem 1rem',
+              borderRadius: 14,
+              background: '#f8fafc',
+              border: '1px solid rgba(22, 24, 31, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.85rem',
+            }}>
+              {exportTrainer.avatar ? (
+                <img src={exportTrainer.avatar} alt="" style={{ width: 44, height: 44, borderRadius: 12, objectFit: 'cover' }} />
+              ) : (
+                <span style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: '#fff0e8',
+                  color: '#ff5000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                }}>
+                  {initials(exportTrainer.name) || <UserOutlined />}
+                </span>
+              )}
+              <div>
+                <strong style={{ fontSize: '0.95rem', color: '#16181f', display: 'block' }}>
+                  {exportTrainer.name}
+                </strong>
+                <div style={{ display: 'flex', gap: '0.4rem', marginTop: 2, alignItems: 'center' }}>
+                  <Tag color={trainerTypeTagColor(exportTrainer.trainerType)} style={{ borderRadius: 6, fontWeight: 600, fontSize: '0.72rem' }}>
+                    {trainerTypeLabel(exportTrainer.trainerType)}
+                  </Tag>
+                  {exportTrainer.phone && (
+                    <span style={{ fontSize: '0.78rem', color: '#6f7685' }}>
+                      <PhoneOutlined /> {exportTrainer.phone}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              padding: '0.85rem 1rem',
+              borderRadius: 14,
+              background: '#f8fafc',
+              border: branchError ? '1px solid #ff4d4f' : '1px solid rgba(22, 24, 31, 0.08)',
+              transition: 'border-color 0.2s ease',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6f7685', fontWeight: 600 }}>
+                  Target Branch <span style={{ color: '#ff4d4f' }}>*</span>
+                </span>
+                {branchError && (
+                  <span style={{ fontSize: '0.75rem', color: '#ff4d4f', fontWeight: 600 }}>
+                    Selection Required
+                  </span>
+                )}
+              </div>
+              <Select
+                allowClear
+                showSearch
+                optionFilterProp="label"
+                style={{ width: '100%' }}
+                placeholder="Select Branch (Required)"
+                status={branchError ? 'error' : ''}
+                value={exportBranchId}
+                onChange={(val) => {
+                  setExportBranchId(val);
+                  if (val) setBranchError(false);
+                }}
+                options={branchesData?.data.map((b) => ({
+                  value: String(b.id),
+                  label: shortBranch(b.name),
+                }))}
+              />
+              {branchError && (
+                <small style={{ color: '#ff4d4f', fontSize: '0.75rem', marginTop: 4, display: 'block' }}>
+                  Please select a branch to generate the trainer summary report.
+                </small>
+              )}
+            </div>
+          )}
+
+          {/* Quick Presets */}
+          <div>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#16181f', display: 'block', marginBottom: '0.5rem' }}>
+              Quick Date Presets
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+              {[
+                { label: 'This Month', range: [dayjs().startOf('month'), dayjs()] },
+                { label: 'Last 30 Days', range: [dayjs().subtract(30, 'day'), dayjs()] },
+                { label: 'This Year', range: [dayjs().startOf('year'), dayjs().endOf('year')] },
+                { label: 'All Time', range: null },
+              ].map((preset) => (
+                <Tag
+                  key={preset.label}
+                  onClick={() => {
+                    setExportDates(preset.range as [dayjs.Dayjs, dayjs.Dayjs] | null);
+                    setDateError(false);
+                  }}
+                  style={{
+                    padding: '0.35rem 0.7rem',
+                    borderRadius: 8,
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    fontSize: '0.78rem',
+                    background:
+                      (preset.range === null && !exportDates) ||
+                        (exportDates &&
+                          preset.range &&
+                          exportDates[0]?.isSame(preset.range[0], 'day') &&
+                          exportDates[1]?.isSame(preset.range[1], 'day'))
+                        ? '#ff5000'
+                        : '#f1f3f6',
+                    color:
+                      (preset.range === null && !exportDates) ||
+                        (exportDates &&
+                          preset.range &&
+                          exportDates[0]?.isSame(preset.range[0], 'day') &&
+                          exportDates[1]?.isSame(preset.range[1], 'day'))
+                        ? '#ffffff'
+                        : '#4b5563',
+                    border: 'none',
+                  }}
+                >
+                  {preset.label}
+                </Tag>
+              ))}
+            </div>
+          </div>
+
+          {/* Custom Date Range Picker */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#16181f' }}>
+                Custom Date Range (YYYY-MM-DD)
+              </span>
+              {dateError && (
+                <span style={{ fontSize: '0.75rem', color: '#ff4d4f', fontWeight: 600 }}>
+                  Selection Invalid
+                </span>
+              )}
+            </div>
+            <DatePicker.RangePicker
+              style={{ width: '100%', borderRadius: 10 }}
+              format="YYYY-MM-DD"
+              status={dateError ? 'error' : ''}
+              value={exportDates}
+              onChange={(dates) => {
+                setExportDates(dates);
+                if (!dates || (dates[0] && dates[1])) setDateError(false);
+              }}
+            />
+            {dateError && (
+              <small style={{ color: '#ff4d4f', fontSize: '0.75rem', marginTop: 4, display: 'block' }}>
+                Incomplete date range. Please select both From Date and To Date.
+              </small>
+            )}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

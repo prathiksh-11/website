@@ -35,6 +35,8 @@ export const ENDPOINTS = {
     ROOT: '/get-customers',
     BY_ID: (id: string) => `/get-customers/${id}`,
     DETAILS: (id: string) => `/get-customer-details/${id}`,
+    SUMMARY_EXCEL_REPORT: '/export-customer-report',
+    DETAILED_EXCEL_REPORT: '/export-customer-details',
   },
   TRAINERS: {
     ROOT: '/getemployeesbybranch',
@@ -44,6 +46,8 @@ export const ENDPOINTS = {
     DELETE: '/deleteemployee',
     BY_BRANCH: '/get-employee-by-branch_id',
     BY_BRANCH_IDS: '/get-employees-by-branch-ids',
+    SUMMARY_EXCEL_REPORT: '/trainer-summary-excel-report',
+    DETAILED_EXCEL_REPORT: '/trainer-excel-report',
   },
   BRANCHES: {
     ROOT: '/getbranches',
