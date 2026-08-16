@@ -1,10 +1,12 @@
 import {
   EyeOutlined,
+  FileExcelOutlined,
   PhoneOutlined,
   SearchOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Drawer, Empty, Input, Progress, Select, Skeleton, Table, Tag } from 'antd';
+import { Button, DatePicker, Drawer, Empty, Input, message, Modal, Progress, Select, Skeleton, Table, Tag } from 'antd';
+import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import {
   Activity,
@@ -13,6 +15,7 @@ import {
   Clock,
   CreditCard,
   DollarSign,
+  Download,
   Dumbbell,
   Mail,
   MapPin,
@@ -25,6 +28,7 @@ import { PageSkeleton, StatusBadge } from '@/components/common';
 import { PAGE_SIZE_OPTIONS } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
 import { useCustomerDetails, useCustomers, useCustomersAll } from '@/hooks/useCustomers';
+import { customerService } from '@/services/customer.service';
 import { useAuthStore } from '@/store/auth.store';
 import { useTableParams } from '@/hooks/useTableParams';
 import type { Customer } from '@/types';
@@ -59,6 +63,96 @@ export const CustomerList = () => {
     isLoading: loadingDetails,
     isError: detailsError,
   } = useCustomerDetails(selectedId);
+
+  // Export Modal state
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportType, setExportType] = useState<'summary' | 'detailed'>('summary');
+  const [exportCustomer, setExportCustomer] = useState<Customer | null>(null);
+  const [exportDates, setExportDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null] | null>(null);
+  const [exportBranchId, setExportBranchId] = useState<string | undefined>(undefined);
+  const [branchError, setBranchError] = useState(false);
+  const [dateError, setDateError] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const openSummaryExport = () => {
+    setExportType('summary');
+    setExportCustomer(null);
+    setExportDates(null);
+    setExportBranchId(params.branchId);
+    setBranchError(false);
+    setDateError(false);
+    setExportModalOpen(true);
+  };
+
+  const openDetailedExport = (customer: Customer) => {
+    setExportType('detailed');
+    setExportCustomer(customer);
+    setExportDates(null);
+    setExportBranchId(customer.branchId || params.branchId);
+    setBranchError(false);
+    setDateError(false);
+    setExportModalOpen(true);
+  };
+
+  const handleExportDownload = async () => {
+    const targetBranch = exportBranchId || (exportType === 'summary' ? params.branchId : exportCustomer?.branchId || params.branchId);
+
+    if (!targetBranch) {
+      setBranchError(true);
+      message.error('Branch selection is required to export the report');
+      return;
+    }
+    setBranchError(false);
+
+    if (exportDates) {
+      if (!exportDates[0] || !exportDates[1]) {
+        setDateError(true);
+        message.error('Incomplete date range. Please select both From Date and To Date.');
+        return;
+      }
+      if (exportDates[0].isAfter(exportDates[1], 'day')) {
+        setDateError(true);
+        message.error('From Date cannot be after To Date');
+        return;
+      }
+    }
+    setDateError(false);
+
+    const fromDate = exportDates?.[0] ? exportDates[0].format('YYYY-MM-DD') : undefined;
+    const toDate = exportDates?.[1] ? exportDates[1].format('YYYY-MM-DD') : undefined;
+
+    setExporting(true);
+    const hideMsg = message.loading('Generating Excel report...', 0);
+
+    try {
+      if (exportType === 'summary') {
+        await customerService.downloadSummaryReport({
+          branchId: targetBranch,
+          fromDate,
+          toDate,
+        });
+        message.success('Customer Summary Excel report downloaded successfully');
+      } else if (exportCustomer) {
+        await customerService.downloadDetailedReport({
+          customerId: exportCustomer.id,
+          branchId: targetBranch,
+          fromDate,
+          toDate,
+        });
+        message.success(`Detailed Excel report for ${exportCustomer.name} downloaded successfully`);
+      }
+      setExportModalOpen(false);
+    } catch (err: unknown) {
+      const errMsg =
+        typeof err === 'object' && err !== null && 'message' in err
+          ? String((err as { message?: string }).message)
+          : 'Failed to download report';
+      message.error(errMsg);
+    } finally {
+      hideMsg();
+      setExporting(false);
+    }
+  };
 
   const stats = useMemo(() => {
     const list = allCustomers ?? [];
@@ -159,6 +253,23 @@ export const CustomerList = () => {
               label: shortBranch(b.name),
             }))}
           />
+          <Button
+            icon={<FileExcelOutlined style={{ color: '#ff5000' }} />}
+            onClick={openSummaryExport}
+            size="large"
+            style={{
+              borderRadius: 10,
+              fontWeight: 600,
+              borderColor: 'rgba(22, 24, 31, 0.12)',
+              color: '#16181f',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+            }}
+          >
+            Export Summary
+          </Button>
         </div>
 
         <Table<Customer>
@@ -250,17 +361,29 @@ export const CustomerList = () => {
             {
               title: '',
               key: 'view',
-              width: 72,
+              width: 100,
               render: (_, record) => (
-                <Button
-                  type="text"
-                  icon={<EyeOutlined />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedId(record.id);
-                  }}
-                  aria-label={`View ${record.name}`}
-                />
+                <div style={{ display: 'flex', gap: '0.2rem', justifyContent: 'flex-end' }}>
+                  <Button
+                    type="text"
+                    icon={<FileExcelOutlined style={{ color: '#ff5000' }} />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openDetailedExport(record);
+                    }}
+                    title="Export Excel Report"
+                    aria-label={`Export Excel Report for ${record.name}`}
+                  />
+                  <Button
+                    type="text"
+                    icon={<EyeOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedId(record.id);
+                    }}
+                    aria-label={`View ${record.name}`}
+                  />
+                </div>
               ),
             },
           ]}
@@ -269,9 +392,36 @@ export const CustomerList = () => {
 
       <Drawer
         title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <UserOutlined style={{ color: '#ff5000' }} />
-            <span style={{ fontWeight: 700, fontSize: '1.05rem' }}>Member Profile</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingRight: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <UserOutlined style={{ color: '#ff5000' }} />
+              <span style={{ fontWeight: 700, fontSize: '1.05rem' }}>Member Profile</span>
+            </div>
+            {customerDetails && (
+              <Button
+                icon={<FileExcelOutlined style={{ color: '#ff5000' }} />}
+                onClick={() => {
+                  const found = (allCustomers ?? []).find((c) => c.id === customerDetails.id) || {
+                    id: customerDetails.id,
+                    name: customerDetails.name,
+                    branchId: params.branchId,
+                    branchName: customerDetails.branch_name,
+                  };
+                  openDetailedExport(found as Customer);
+                }}
+                style={{
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  borderColor: 'rgba(22, 24, 31, 0.12)',
+                  color: '#16181f',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                }}
+              >
+                Export Excel
+              </Button>
+            )}
           </div>
         }
         open={Boolean(selectedId)}
@@ -689,6 +839,220 @@ export const CustomerList = () => {
           <Empty description="Select a customer to view details" />
         )}
       </Drawer>
+
+      {/* Export Date & Branch Selection Modal */}
+      <Modal
+        open={exportModalOpen}
+        onCancel={() => setExportModalOpen(false)}
+        footer={null}
+        width={480}
+        destroyOnClose
+        centered
+        styles={{
+          content: {
+            borderRadius: 20,
+            padding: '1.75rem',
+          },
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <div style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: '#fff0e8',
+              display: 'grid',
+              placeItems: 'center',
+              color: '#ff5000',
+              fontWeight: 700,
+            }}>
+              <FileExcelOutlined style={{ fontSize: 22 }} />
+            </div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#16181f' }}>
+                {exportType === 'summary' ? 'Export Customer Summary' : 'Export Customer Report'}
+              </h3>
+              <p style={{ margin: 0, fontSize: '0.82rem', color: '#6f7685' }}>
+                {exportType === 'summary'
+                  ? 'Generate an Excel report for all customers in branch'
+                  : `Export performance & attendance details for ${exportCustomer?.name ?? 'member'}`}
+              </p>
+            </div>
+          </div>
+
+          {/* Context Info / Target Branch */}
+          {exportType === 'detailed' && exportCustomer ? (
+            <div style={{
+              padding: '0.85rem 1rem',
+              borderRadius: 14,
+              background: '#f8fafc',
+              border: '1px solid rgba(22, 24, 31, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+            }}>
+              {exportCustomer.avatar ? (
+                <img src={exportCustomer.avatar} alt="" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#fff0e8', color: '#ff5000', display: 'grid', placeItems: 'center', fontWeight: 700 }}>
+                  {initials(exportCustomer.name) || <UserOutlined />}
+                </div>
+              )}
+              <div>
+                <strong style={{ fontSize: '0.95rem', color: '#16181f', display: 'block' }}>
+                  {exportCustomer.name}
+                </strong>
+                <span style={{ fontSize: '0.78rem', color: '#6f7685' }}>
+                  Member ID #{exportCustomer.id} · {shortBranch(exportCustomer.branchName || 'Unassigned')}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              padding: '0.85rem 1rem',
+              borderRadius: 14,
+              background: '#f8fafc',
+              border: branchError ? '1px solid #ff4d4f' : '1px solid rgba(22, 24, 31, 0.08)',
+              transition: 'border-color 0.2s ease',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6f7685', fontWeight: 600 }}>
+                  Target Branch <span style={{ color: '#ff4d4f' }}>*</span>
+                </span>
+                {branchError && (
+                  <span style={{ fontSize: '0.75rem', color: '#ff4d4f', fontWeight: 600 }}>
+                    Selection Required
+                  </span>
+                )}
+              </div>
+              <Select
+                allowClear
+                showSearch
+                optionFilterProp="label"
+                style={{ width: '100%' }}
+                placeholder="Select Branch (Required)"
+                status={branchError ? 'error' : ''}
+                value={exportBranchId}
+                onChange={(val) => {
+                  setExportBranchId(val);
+                  if (val) setBranchError(false);
+                }}
+                options={branchesData?.data.map((b) => ({
+                  value: String(b.id),
+                  label: shortBranch(b.name),
+                }))}
+              />
+              {branchError && (
+                <small style={{ color: '#ff4d4f', fontSize: '0.75rem', marginTop: 4, display: 'block' }}>
+                  Please select a branch to generate the customer summary report.
+                </small>
+              )}
+            </div>
+          )}
+
+          {/* Quick Presets */}
+          <div>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#16181f', display: 'block', marginBottom: '0.5rem' }}>
+              Quick Date Presets
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+              {[
+                { label: 'This Month', range: [dayjs().startOf('month'), dayjs()] },
+                { label: 'Last 30 Days', range: [dayjs().subtract(30, 'day'), dayjs()] },
+                { label: 'This Year', range: [dayjs().startOf('year'), dayjs().endOf('year')] },
+                { label: 'All Time', range: null },
+              ].map((preset) => (
+                <Tag
+                  key={preset.label}
+                  onClick={() => {
+                    setExportDates(preset.range as [dayjs.Dayjs, dayjs.Dayjs] | null);
+                    setDateError(false);
+                  }}
+                  style={{
+                    padding: '0.35rem 0.7rem',
+                    borderRadius: 8,
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    fontSize: '0.78rem',
+                    background:
+                      (preset.range === null && !exportDates) ||
+                        (exportDates &&
+                          preset.range &&
+                          exportDates[0]?.isSame(preset.range[0], 'day') &&
+                          exportDates[1]?.isSame(preset.range[1], 'day'))
+                        ? '#ff5000'
+                        : '#f1f3f6',
+                    color:
+                      (preset.range === null && !exportDates) ||
+                        (exportDates &&
+                          preset.range &&
+                          exportDates[0]?.isSame(preset.range[0], 'day') &&
+                          exportDates[1]?.isSame(preset.range[1], 'day'))
+                        ? '#ffffff'
+                        : '#4b5563',
+                    border: 'none',
+                  }}
+                >
+                  {preset.label}
+                </Tag>
+              ))}
+            </div>
+          </div>
+
+          {/* Custom Date Range Picker */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#16181f' }}>
+                Custom Date Range (YYYY-MM-DD)
+              </span>
+              {dateError && (
+                <span style={{ fontSize: '0.75rem', color: '#ff4d4f', fontWeight: 600 }}>
+                  Selection Invalid
+                </span>
+              )}
+            </div>
+            <DatePicker.RangePicker
+              style={{ width: '100%', borderRadius: 10 }}
+              format="YYYY-MM-DD"
+              status={dateError ? 'error' : ''}
+              value={exportDates}
+              onChange={(dates) => {
+                setExportDates(dates);
+                if (!dates || (dates[0] && dates[1])) setDateError(false);
+              }}
+            />
+            {dateError && (
+              <small style={{ color: '#ff4d4f', fontSize: '0.75rem', marginTop: 4, display: 'block' }}>
+                Incomplete date range. Please select both From Date and To Date.
+              </small>
+            )}
+          </div>
+
+          {/* Download Action CTA Button */}
+          <Button
+            type="primary"
+            size="large"
+            icon={<Download size={18} />}
+            loading={exporting}
+            onClick={handleExportDownload}
+            style={{
+              width: '100%',
+              borderRadius: 12,
+              height: 46,
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              background: '#ff5000',
+              borderColor: '#ff5000',
+              boxShadow: '0 3px 10px rgba(255, 80, 0, 0.22)',
+              marginTop: '0.5rem',
+            }}
+          >
+            {exporting ? 'Generating Report...' : 'Download Excel (.xlsx)'}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

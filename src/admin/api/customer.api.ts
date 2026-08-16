@@ -8,6 +8,7 @@ import type {
   PaginatedResponse,
 } from '@/types';
 import { mapBackendCustomer } from '@/utils/entity-map';
+import { downloadBlob } from '@/utils/format';
 import { filterBySearch, generateId, paginate } from '@/utils/query';
 import { apiClient } from './axios';
 import { ENDPOINTS } from './endpoints';
@@ -178,5 +179,66 @@ export const customerApi = {
       message: 'Delete customer is not available on this API yet',
       status: 501,
     };
+  },
+
+  downloadSummaryReport: async (params: {
+    branchId?: string | number;
+    fromDate?: string;
+    toDate?: string;
+  }): Promise<void> => {
+    const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
+    const payload: Record<string, unknown> = {};
+    if (params.branchId) payload.branch_id = Number(params.branchId) || params.branchId;
+    if (params.fromDate) payload.from_date = params.fromDate;
+    if (params.toDate) payload.to_date = params.toDate;
+
+    const response = await apiClient.post(
+      ENDPOINTS.CUSTOMERS.SUMMARY_EXCEL_REPORT,
+      payload,
+      {
+        responseType: 'blob',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        timeout: 120000,
+      },
+    );
+
+    const dateSuffix = params.fromDate && params.toDate ? `_${params.fromDate}_to_${params.toDate}` : '';
+    const filename = `Customer_Summary_Report${dateSuffix}.xlsx`;
+
+    downloadBlob(response.data as Blob, filename);
+  },
+
+  downloadDetailedReport: async (params: {
+    customerId: string | number;
+    branchId?: string | number;
+    fromDate?: string;
+    toDate?: string;
+  }): Promise<void> => {
+    const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
+    const payload: Record<string, unknown> = {
+      customer_id: Number(params.customerId) || params.customerId,
+    };
+    if (params.branchId) payload.branch_id = Number(params.branchId) || params.branchId;
+    if (params.fromDate) payload.from_date = params.fromDate;
+    if (params.toDate) payload.to_date = params.toDate;
+
+    const response = await apiClient.post(
+      ENDPOINTS.CUSTOMERS.DETAILED_EXCEL_REPORT,
+      payload,
+      {
+        responseType: 'blob',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        timeout: 120000,
+      },
+    );
+
+    const dateSuffix = params.fromDate && params.toDate ? `_${params.fromDate}_to_${params.toDate}` : '';
+    const filename = `Customer_Details_Report_${params.customerId}${dateSuffix}.xlsx`;
+
+    downloadBlob(response.data as Blob, filename);
   },
 };
