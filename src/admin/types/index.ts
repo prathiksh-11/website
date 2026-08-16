@@ -12,7 +12,9 @@ export type TrainerType =
   | 'general_trainer'
   | 'pt_trainer'
   | 'membership_coordinator'
-  | 'receptionist';
+  | 'receptionist'
+  | 'admin'
+  | 'manager';
 
 export interface User {
   id: string;
