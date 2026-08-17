@@ -2,15 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Sparkles,
-  Flame,
-  Zap,
-  Layers,
-  Shield,
   Scissors,
   RotateCcw,
   ArrowRight,
+  MapPin,
+  EyeOff,
 } from 'lucide-react';
-import { IMAGES } from './image_constant';
 
 export default function GrandOpeningCeremony() {
   const [curtainsOpen, setCurtainsOpen] = useState(false);
@@ -240,14 +237,42 @@ export default function GrandOpeningCeremony() {
                     transform: `rotateY(${tilt.x}deg) rotateX(${tilt.y}deg) scale3d(1.02, 1.02, 1.02)`,
                   }}
                 >
-                  <img
-                    src={IMAGES.Branches.kasavanahalli}
-                    alt="Upcoming flagship club preview"
-                    className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-1000 ${
-                      curtainsOpen ? 'scale-100 filter-none' : 'scale-105 blur-[2px]'
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br from-[#2a1410] via-[#4a2218] to-[#1a0c08] transition-all duration-1000 ${
+                      curtainsOpen ? 'scale-100' : 'scale-105'
                     }`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#fff4ed]/95 via-[#fff4ed]/20 to-transparent" />
+
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={{
+                      backgroundImage:
+                        'repeating-linear-gradient(45deg, #ff5000 0, #ff5000 1px, transparent 0, transparent 50%), repeating-linear-gradient(-45deg, #f5d9a6 0, #f5d9a6 1px, transparent 0, transparent 50%)',
+                      backgroundSize: '28px 28px',
+                    }}
+                  />
+
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,80,0,0.35),transparent_45%),radial-gradient(circle_at_70%_80%,rgba(245,217,166,0.2),transparent_40%)]" />
+
+                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-[78%] max-w-[320px] aspect-square">
+                      <div className="absolute inset-0 rounded-[2rem] border-2 border-dashed border-[#ff8c56]/50 rotate-6 animate-pulse" />
+                      <div className="absolute inset-4 rounded-[1.75rem] border border-[#f5d9a6]/30 -rotate-3" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center rounded-[2rem] bg-black/35 backdrop-blur-md border border-white/10 shadow-[inset_0_0_60px_rgba(255,80,0,0.15)]">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#ff8c56] to-[#ff5e1a] flex items-center justify-center shadow-[0_0_40px_rgba(255,80,0,0.5)] mb-4">
+                          <EyeOff size={36} className="text-white" />
+                        </div>
+                        <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.35em] text-[#ffb089] mb-2">
+                          Under Wraps
+                        </p>
+                        <p className="font-display text-2xl sm:text-3xl font-black text-white/90 tracking-tight">
+                          ???
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1a0c08]/90 via-transparent to-[#2a1410]/40 pointer-events-none" />
 
                   <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-xl border border-[#ffd7c0] text-xs font-black tracking-[0.16em] uppercase shadow-[0_8px_24px_rgba(255,176,137,0.35)]">
                     <span className="relative flex h-2 w-2">
@@ -258,16 +283,16 @@ export default function GrandOpeningCeremony() {
                   </div>
 
                   <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] text-white text-[11px] font-black tracking-wider uppercase shadow-[0_8px_20px_rgba(255,80,0,0.35)]">
-                    <Sparkles size={13} className="fill-white" />
-                    <span>Preview</span>
+                    <EyeOff size={13} />
+                    <span>Classified</span>
                   </div>
 
                   <div className="absolute bottom-4 left-4 right-4 p-4 sm:p-5 rounded-2xl bg-white/88 backdrop-blur-xl border border-white/80 shadow-[0_12px_32px_rgba(255,176,137,0.28)]">
                     <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff5000] mb-1">
-                      Luxury Sanctuary
+                      Luxury Club
                     </p>
                     <p className="font-display text-base sm:text-lg font-black text-[#5c3a2a] leading-snug">
-                      18,000 Sq.Ft • Three Floors • Thermal Plunge & Sauna
+                      Game On Fitness Luxury Club Bellandur
                     </p>
                   </div>
                 </div>
@@ -281,9 +306,9 @@ export default function GrandOpeningCeremony() {
                   </div>
 
                   <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.08] text-[#5c3a2a] mb-4">
-                    Something <span className="italic text-[#ff5000]">extraordinary</span>
+                    Game On Fitness
                     <br />
-                    is almost here.
+                    <span className="italic text-[#ff5000]">Luxury Club Bellandur</span>
                   </h3>
 
                   <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 border border-[#ffd7c0] mb-5 flex items-center justify-between shadow-sm">
@@ -299,32 +324,23 @@ export default function GrandOpeningCeremony() {
                   </div>
 
                   <p className="text-[#8a6a58] text-sm sm:text-base leading-relaxed mb-6">
-                    Our most ambitious club yet. 18,000 sq.ft across three floors — imported Italian
-                    biomechanics, thermal contrast plunge, infrared sauna, and a 40m rooftop sprint turf.
+                    A new luxury destination is taking shape in Bellandur. The full experience stays
+                    under wraps for now — draw the curtains and be among the first to glimpse what&apos;s
+                    coming.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                    {[
-                      { icon: Zap, title: '18,000 Sq.Ft Club', sub: '3 Bespoke Floors' },
-                      { icon: Flame, title: 'Plunge & Sauna', sub: 'Thermal Contrast Zone' },
-                      { icon: Layers, title: 'Sprint Turf', sub: '40m Rooftop Track' },
-                      { icon: Shield, title: 'Biomechanics', sub: 'Imported Italian Gear' },
-                    ].map(({ icon: Icon, title, sub }) => (
-                      <div
-                        key={title}
-                        className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white/80 hover:bg-white border border-[#ffeadc] hover:border-[#ffb089] backdrop-blur-xl transition-all duration-300 group shadow-sm"
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff8c56] to-[#ff5e1a] text-white flex items-center justify-center shadow-[0_6px_16px_rgba(255,80,0,0.28)] group-hover:scale-110 transition-transform shrink-0">
-                          <Icon size={18} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-[#5c3a2a] group-hover:text-[#ff5000] transition-colors leading-tight">
-                            {title}
-                          </p>
-                          <p className="text-[11px] font-medium text-[#8a6a58]">{sub}</p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-white/80 border border-[#ffeadc] backdrop-blur-xl shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff8c56] to-[#ff5e1a] text-white flex items-center justify-center shadow-[0_6px_16px_rgba(255,80,0,0.28)] shrink-0">
+                      <MapPin size={18} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-[#5c3a2a] leading-tight">
+                        Bellandur, Bengaluru
+                      </p>
+                      <p className="text-[11px] font-medium text-[#8a6a58]">
+                        Details revealed at inauguration
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -366,8 +382,8 @@ export default function GrandOpeningCeremony() {
               </div>
 
               <h3 className="relative z-10 font-display text-3xl sm:text-5xl font-black text-[#5c3a2a] tracking-tight leading-tight max-w-2xl mb-3">
-                Behind this silk curtain lies the{' '}
-                <span className="italic text-[#ff5000]">next sanctuary.</span>
+                Game On Fitness{' '}
+                <span className="italic text-[#ff5000]">Luxury Club Bellandur</span>
               </h3>
 
               <p className="relative z-10 text-[#8a6a58] text-sm sm:text-base max-w-lg mx-auto mb-7 leading-relaxed">
