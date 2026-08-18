@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import BellandurComingSoon from './components/BellandurComingSoon';
 import AmenityMarquee from './components/AmenityMarquee';
 import HomeAboutUs from './components/HomeAboutUs';
 import JourneyWords from './components/JourneyWords';
@@ -70,6 +71,7 @@ function App() {
     <div className="min-h-screen bg-[#f7f8fb]">
       <Navbar />
       <Hero />
+      <BellandurComingSoon />
       <AmenityMarquee />
       <HomeAboutUs />
       <JourneyWords />

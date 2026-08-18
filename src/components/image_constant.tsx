@@ -119,6 +119,9 @@ import KasavanahalliTrainerAvinash from '../assets/KASAVANAHALLI/kasavanahalli_t
 import KasavanahalliTrainerSamrat from '../assets/KASAVANAHALLI/kasavanahalli_trainer_samrat.png';
 import KasavanahalliTrainerGirish from '../assets/KASAVANAHALLI/kasavanahalli_trainer_girish.png';
 
+// BELLANDUR (NEW BRANCH)
+import BellandurOpening from '../assets/BELLANDUR/bellandur_opening.png';
+
 import bannerimage from '../assets/bannerImage.jpeg';
 
 export const IMAGES = {
@@ -133,6 +136,7 @@ export const IMAGES = {
     akshayanagar: AkshayanagarBranch,
     sarjapurRoad: SarjapurBranch,
     kasavanahalli: KasavanahalliBranch,
+    bellandur: BellandurOpening,
   },
   // AKSHAYANAGAR
   Akshayanagar: {
@@ -253,6 +257,9 @@ export const IMAGES = {
     trainer4: KasavanahalliTrainerAvinash,
     trainer5: KasavanahalliTrainerSamrat,
     trainer6: KasavanahalliTrainerGirish,
+  },
+  Bellandur: {
+    opening: BellandurOpening,
   },
   bannerImage: bannerimage,
 };

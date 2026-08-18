@@ -1213,6 +1213,85 @@ h4,
   animation: ringSpin 28s linear infinite;
 }
 
+@keyframes goRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes goPricePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 80, 0, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(255, 80, 0, 0);
+  }
+}
+
+@keyframes goShimmerSlide {
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-12deg);
+  }
+}
+
+.go-reveal-1 {
+  animation: goRevealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.go-reveal-2 {
+  animation: goRevealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+.go-reveal-3 {
+  animation: goRevealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both;
+}
+
+.go-reveal-4 {
+  animation: goRevealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
+}
+
+.go-price-pulse {
+  animation: goPricePulse 2.8s ease-in-out infinite;
+}
+
+.go-image-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.go-image-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 58%
+  );
+  animation: goShimmerSlide 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.go-class-pill {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.go-class-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(255, 80, 0, 0.18);
+  border-color: rgba(255, 80, 0, 0.45);
+}
+
 @keyframes testimonialFloat {
   0%,
   100% {
@@ -1304,7 +1383,13 @@ h4,
   .testimonial-orb,
   .testimonial-orb-delay,
   .testimonial-quote-mark,
-  .testimonial-shine::after {
+  .testimonial-shine::after,
+  .go-reveal-1,
+  .go-reveal-2,
+  .go-reveal-3,
+  .go-reveal-4,
+  .go-price-pulse,
+  .go-image-shine::after {
     animation: none !important;
   }
 
