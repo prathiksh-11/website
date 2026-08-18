@@ -29,8 +29,9 @@ const PHONE_NUMBERS = [
 ];
 
 const SIGNATURE_CLASSES = [
+  { name: 'Biggest Group Studio', icon: Sparkles, highlight: true },
+  { name: 'Dance Fit', icon: Music2 },
   { name: 'CrossFit', icon: Dumbbell },
-  { name: 'Biggest Dance Studio', icon: Music2, highlight: true },
   { name: 'Zumba', icon: Activity },
   { name: 'Yoga', icon: HeartPulse },
   { name: 'HIIT', icon: Zap },
@@ -120,19 +121,19 @@ export default function BellandurComingSoon() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3 max-w-4xl mx-auto">
             <div className="px-4 py-2 rounded-xl bg-white border border-zinc-200/90 text-xs sm:text-sm font-bold text-zinc-800 shadow-sm flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff5000]" />
-              Luxury gym.
+              Luxury Gym
             </div>
             <div className="px-4 py-2 rounded-xl bg-white border border-zinc-200/90 text-xs sm:text-sm font-bold text-zinc-800 shadow-sm flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff5000]" />
-              Bigger energy.
+              Bigger Energy
             </div>
             <div className="px-4 py-2 rounded-xl bg-white border border-zinc-200/90 text-xs sm:text-sm font-bold text-zinc-800 shadow-sm flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff5000]" />
-              Dedicated Group Class Studio.
+              Dedicated Group Studio
             </div>
             <div className="px-4 py-2 rounded-xl bg-[#fff4ed] border border-[#ff5000]/30 text-xs sm:text-sm font-bold text-[#ff5000] shadow-sm flex items-center gap-2">
               <Flame size={15} className="text-[#ff5000]" />
-              CrossFit. HIIT. Zumba. Yoga. Dance. Kickboxing.
+              Dance Fit · CrossFit · Zumba · Yoga · HIIT · Kickboxing
             </div>
           </div>
         </div>
@@ -159,7 +160,7 @@ export default function BellandurComingSoon() {
                 </div>
                 <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-white/40 text-zinc-900 text-[11px] sm:text-xs font-bold shadow-md">
                   <MapPin size={13} className="text-[#ff5000]" />
-                  Opp. Eco World South Gate
+                  Opp. EcoWorld South Gate
                 </div>
               </div>
 
@@ -266,7 +267,7 @@ export default function BellandurComingSoon() {
               </div>
 
               <h3 className="font-display text-xl sm:text-2xl font-bold text-zinc-950 mb-2">
-                Opp. Eco World South Gate
+                Opp. EcoWorld South Gate
               </h3>
               <p className="text-xs text-zinc-600 leading-relaxed mb-4">
                 {BELLANDUR_ADDRESS}
@@ -332,7 +333,7 @@ export default function BellandurComingSoon() {
           {[
             { title: '10,000+ Sq. Ft.', desc: 'High ceilings & elite machines' },
             { title: 'Certified Coaches', desc: 'Personalized guidance & diet' },
-            { title: 'Biggest Dance Floor', desc: 'Sprung wood acoustic studio' },
+            { title: 'Biggest Dance Studio', desc: 'Sprung wood acoustic studio' },
             { title: 'Steam & Recovery', desc: 'Luxury lockers & shower zone' },
           ].map((item, idx) => (
             <div key={idx} className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-zinc-200/70 shadow-sm text-left">
@@ -403,5 +404,3 @@ export default function BellandurComingSoon() {
     </section>
   );
 }
-
-
