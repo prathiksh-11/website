@@ -29,7 +29,7 @@ const PHONE_NUMBERS = [
 ];
 
 const SIGNATURE_CLASSES = [
-  { name: 'Biggest Group Studio', icon: Sparkles, highlight: true },
+  { name: 'Biggest Group Class Studio', icon: Sparkles, highlight: true },
   { name: 'Dance Fit', icon: Music2 },
   { name: 'CrossFit', icon: Dumbbell },
   { name: 'Zumba', icon: Activity },
@@ -129,8 +129,7 @@ export default function BellandurComingSoon() {
             </div>
             <div className="px-4 py-2 rounded-xl bg-white border border-zinc-200/90 text-xs sm:text-sm font-bold text-zinc-800 shadow-sm flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff5000]" />
-              Dedicated Group Studio
-            </div>
+              Dedicated Group Class Studio            </div>
             <div className="px-4 py-2 rounded-xl bg-[#fff4ed] border border-[#ff5000]/30 text-xs sm:text-sm font-bold text-[#ff5000] shadow-sm flex items-center gap-2">
               <Flame size={15} className="text-[#ff5000]" />
               Dance Fit · CrossFit · Zumba · Yoga · HIIT · Kickboxing
@@ -226,8 +225,7 @@ export default function BellandurComingSoon() {
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-zinc-800 text-[11px] font-bold uppercase tracking-wider mb-4">
                 <Activity size={12} className="text-[#ff5000]" />
-                Dedicated Group Studio
-              </div>
+                Dedicated Group Class Studio              </div>
 
               <h3 className="font-display text-xl sm:text-2xl font-bold text-zinc-950 mb-2">
                 All-In-One Studios
