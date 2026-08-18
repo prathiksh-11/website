@@ -118,10 +118,10 @@ export default function LocationsPage() {
             </span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-[#16181f] leading-tight mb-6">
-            10+ Premium Clubs. <span className="italic text-[#ff5000]">One Standard.</span>
+            10+ Premium Clubs. <span className="italic text-[#ff5000]">One More Coming.</span>
           </h2>
           <p className="text-[#6f7685] text-lg leading-relaxed max-w-2xl mx-auto mb-4">
-            Every Game On Fitness branch is custom-designed with imported biomechanical equipment, certified elite coaches, and a high-energy community.
+            Every Game On Fitness branch is custom-designed with imported biomechanical equipment, certified elite coaches, and a high-energy community. A brand-new luxury club is opening soon in Bellandur.
           </p>
         </div>
       </section>
