@@ -84,9 +84,8 @@ export default function BellandurComingSoon() {
         {/* Section Header & Main Punchy Intro */}
         <div
           ref={ref}
-          className={`text-center max-w-4xl mx-auto mb-10 md:mb-14 reveal ${
-            isVisible ? 'visible' : ''
-          }`}
+          className={`text-center max-w-4xl mx-auto mb-10 md:mb-14 reveal ${isVisible ? 'visible' : ''
+            }`}
         >
           {/* Dear Bellandur Tag */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#ff5000]/30 shadow-[0_4px_20px_rgba(255,80,0,0.12)] mb-5">
@@ -240,11 +239,10 @@ export default function BellandurComingSoon() {
                 {SIGNATURE_CLASSES.map(({ name, icon: Icon, highlight }) => (
                   <div
                     key={name}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold ${
-                      highlight
-                        ? 'bg-[#fff4ed] border border-[#ff5000]/35 text-[#ff5000] col-span-2'
-                        : 'bg-zinc-50 border border-zinc-200/70 text-zinc-800'
-                    }`}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold ${highlight
+                      ? 'bg-[#fff4ed] border border-[#ff5000]/35 text-[#ff5000] col-span-2'
+                      : 'bg-zinc-50 border border-zinc-200/70 text-zinc-800'
+                      }`}
                   >
                     <Icon size={14} className="text-[#ff5000] shrink-0" />
                     <span className="truncate">{name}</span>
@@ -294,7 +292,7 @@ export default function BellandurComingSoon() {
             </div>
 
             <a
-              href="https://maps.google.com/?q=Game+On+Fitness+Bellandur+EcoWorld"
+              href="https://maps.app.goo.gl/JEuiCtcGDHGfoe4U8"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 text-xs font-bold text-zinc-800 hover:text-zinc-950 bg-zinc-100 hover:bg-zinc-200 px-4 py-2.5 rounded-xl border border-zinc-200/80 transition-all text-center"
