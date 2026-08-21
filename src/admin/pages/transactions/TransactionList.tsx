@@ -628,10 +628,13 @@ export const TransactionList = () => {
             placeholder="Branch"
             value={params.branchId}
             onChange={(value) => setBranchId(value)}
-            options={branches.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...branches.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })),
+            ]}
             className="txn__select"
           />
           <Select

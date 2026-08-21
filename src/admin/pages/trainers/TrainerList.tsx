@@ -322,10 +322,13 @@ export const TrainerList = () => {
             className="emp__filter"
             value={params.branchId}
             onChange={setBranchId}
-            options={branchesData?.data.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...(branchesData?.data.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })) || []),
+            ]}
             style={{ width: 170 }}
           />
           <Select
@@ -1011,7 +1014,7 @@ export const TrainerList = () => {
               </h4>
               <small style={{ color: '#6f7685', fontSize: '0.78rem' }}>
                 {exportType === 'summary'
-                  ? 'Download PT Trainers overview report as an Excel (.xlsx) file'
+                  ? 'Download Personal Trainers overview report as an Excel (.xlsx) file'
                   : 'Download 2-sheet performance & customer details report'}
               </small>
             </div>

@@ -15,7 +15,7 @@ import {
   Tabs,
   Tag,
 } from 'antd';
-import { Building2, MapPin, Users } from 'lucide-react';
+import { Building2, MapPin } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { StatusBadge, PageSkeleton } from '@/components/common';
 import {
@@ -32,6 +32,26 @@ const shortBranch = (name: string) =>
     .replace(/^Game On Fitness\s*/i, '')
     .replace(/^(Premium Club|Luxury Club)\s*-?\s*/i, '')
     .trim() || name;
+
+const formatIndianTime = (timeStr?: string) => {
+  if (!timeStr) return '—';
+  if (/am|pm/i.test(timeStr)) return timeStr.toUpperCase();
+  const parts = timeStr.split(':');
+  if (parts.length >= 2) {
+    let hours = parseInt(parts[0], 10);
+    const minutes = parts[1].padStart(2, '0');
+    if (isNaN(hours)) return timeStr;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    return `${hours}:${minutes} ${ampm}`;
+  }
+  return timeStr;
+};
+
+const formatBranchHours = (opening?: string, closing?: string) => {
+  if (!opening && !closing) return '—';
+  return `${formatIndianTime(opening)} – ${formatIndianTime(closing)}`;
+};
 
 const initials = (name: string) =>
   name
@@ -93,7 +113,7 @@ export const BranchList = () => {
 
   const openBranch = (branch: Branch) => setSelectedId(branch.id);
 
-  if (loadingAll && !allBranches?.length) {
+  if (loadingAll && !allBranches) {
     return <PageSkeleton variant="cards" />;
   }
 
@@ -193,14 +213,10 @@ export const BranchList = () => {
                   </p>
 
                   <div className="brch-card__meta">
-                    <span>
-                      <Users size={14} />
-                      {branch.customerCount} people
-                    </span>
                     {(branch.openingTime || branch.closingTime) && (
                       <span>
                         <ClockCircleOutlined />
-                        {branch.openingTime ?? '—'} – {branch.closingTime ?? '—'}
+                        {formatBranchHours(branch.openingTime, branch.closingTime)}
                       </span>
                     )}
                   </div>
@@ -210,12 +226,6 @@ export const BranchList = () => {
                       <UserOutlined />
                       {branch.managerName}
                     </span>
-                    {branch.phone && (
-                      <span>
-                        <PhoneOutlined />
-                        {branch.phone}
-                      </span>
-                    )}
                   </div>
                 </div>
               </button>
@@ -316,11 +326,7 @@ export const BranchList = () => {
                   </div>
                   <div>
                     <dt>Hours</dt>
-                    <dd>
-                      {branch.openingTime || branch.closingTime
-                        ? `${branch.openingTime ?? '—'} – ${branch.closingTime ?? '—'}`
-                        : '—'}
-                    </dd>
+                    <dd>{formatBranchHours(branch.openingTime, branch.closingTime)}</dd>
                   </div>
                   <div>
                     <dt>Manager</dt>

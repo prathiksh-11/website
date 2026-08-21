@@ -8873,3 +8873,8 @@ html[data-theme='dark'] .ant-table-tbody > tr:hover > td,
   color: #64748b;
 }
 
+.bento-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(22, 24, 31, 0.09) !important;
+}
+

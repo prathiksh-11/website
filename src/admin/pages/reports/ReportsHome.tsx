@@ -372,7 +372,7 @@ const BranchOverviewCards = ({
     },
     {
       key: 'pt-trainer',
-      label: 'PT trainer',
+      label: 'Personal trainer',
       value: String(aggregates.ptTrainer),
       icon: Dumbbell,
     },
@@ -589,7 +589,7 @@ const BranchSummaryTab = ({
     },
     { title: 'Manager', dataIndex: 'manager', width: 140 },
     { title: 'General trainer', dataIndex: 'generalTrainer', width: 120, align: 'center' },
-    { title: 'PT trainer', dataIndex: 'ptTrainer', width: 100, align: 'center' },
+    { title: 'Personal trainer', dataIndex: 'ptTrainer', width: 120, align: 'center' },
     { title: 'Membership Coordinator', dataIndex: 'Membership Coordinator', width: 70, align: 'center' },
     { title: 'Receptionist', dataIndex: 'Receptionist', width: 70, align: 'center' },
     { title: 'Total clients', dataIndex: 'totalClients', width: 100, align: 'center' },
@@ -1468,10 +1468,13 @@ export const ReportsHome = () => {
               setBranchId(v);
               setTrainerId(undefined);
             }}
-            options={branchesData?.data.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...(branchesData?.data.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })) || []),
+            ]}
           />
           {tab !== 'branch' && (
             <Select
