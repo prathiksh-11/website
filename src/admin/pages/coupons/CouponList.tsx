@@ -334,10 +334,13 @@ export const CouponList = () => {
             placeholder="Filter by Branch"
             value={params.branchId}
             onChange={(value) => setBranchId(value)}
-            options={branches.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...branches.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })),
+            ]}
             className="coupon__select"
           />
           <Select

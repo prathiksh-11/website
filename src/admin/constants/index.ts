@@ -5,7 +5,7 @@ export const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 
 export const TRAINER_TYPE_OPTIONS: { value: TrainerType; label: string }[] = [
   { value: 'general_trainer', label: 'General Trainer' },
-  { value: 'pt_trainer', label: 'PT Trainer' },
+  { value: 'pt_trainer', label: 'Personal Trainer' },
   { value: 'membership_coordinator', label: 'Membership Coordinator' },
   { value: 'receptionist', label: 'Receptionist' },
   { value: 'admin', label: 'Admin' },

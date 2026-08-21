@@ -184,7 +184,7 @@ export const EventList = () => {
     setOpen(false);
   };
 
-  if (loadingAll && !allEvents?.length) {
+  if (loadingAll && !allEvents) {
     return <PageSkeleton variant="cards" />;
   }
 
@@ -258,10 +258,13 @@ export const EventList = () => {
             className="evt__filter evt__filter--wide"
             value={params.branchId}
             onChange={setBranchId}
-            options={branchesData?.data.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...(branchesData?.data.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })) || []),
+            ]}
           />
         </div>
 

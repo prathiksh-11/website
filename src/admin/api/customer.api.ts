@@ -188,7 +188,10 @@ export const customerApi = {
   }): Promise<void> => {
     const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
     const payload: Record<string, unknown> = {};
-    if (params.branchId) payload.branch_id = Number(params.branchId) || params.branchId;
+    if (params.branchId != null && params.branchId !== '') {
+      payload.branch_id =
+        params.branchId === 'all' ? 'all' : Number(params.branchId);
+    }
     if (params.fromDate) payload.from_date = params.fromDate;
     if (params.toDate) payload.to_date = params.toDate;
 

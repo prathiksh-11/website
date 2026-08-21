@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import { message } from 'antd';
 import { reportService } from '@/services/report.service';
 import type { ReportExportType, ReportQuery } from '@/types';
@@ -13,17 +13,56 @@ export const useGymReport = (query: ReportQuery, enabled = true) =>
     staleTime: 30_000,
   });
 
+/** Fetch multiple gym report date ranges in parallel (week/month revenue slices). */
+export const useGymReportQueries = (queries: ReportQuery[], enabled = true) =>
+  useQueries({
+    queries: queries.map((query) => ({
+      queryKey: ['reports', 'gym', query] as const,
+      queryFn: () => reportService.fetch(query),
+      enabled:
+        enabled &&
+        query.filter === 'custom' &&
+        Boolean(query.startDate && query.endDate),
+      staleTime: 30_000,
+    })),
+  });
+
 export const useReportExport = (query: ReportQuery) => {
   const excel = useMutation({
-    mutationFn: (reportType: ReportExportType) =>
-      reportService.downloadExcel({ ...query, reportType }),
-    onSuccess: (_data, reportType) => {
+    mutationFn: (
+      args:
+        | ReportExportType
+        | {
+            reportType: ReportExportType;
+            branchId?: string;
+            filter?: ReportQuery['filter'];
+            startDate?: string;
+            endDate?: string;
+          },
+    ) => {
+      if (typeof args === 'string') {
+        return reportService.downloadExcel({ ...query, reportType: args });
+      }
+      return reportService.downloadExcel({
+        ...query,
+        reportType: args.reportType,
+        branchId: args.branchId ?? query.branchId,
+        filter: args.filter ?? query.filter,
+        startDate: args.startDate,
+        endDate: args.endDate,
+        trainerId: undefined,
+      });
+    },
+    onSuccess: (_data, args) => {
+      const reportType = typeof args === 'string' ? args : args.reportType;
       const label =
         reportType === 'attendance'
           ? 'Trainer attendance'
           : reportType === 'branch'
             ? 'Branch summary'
-            : 'Report';
+            : reportType === 'pending'
+              ? 'Pending amount'
+              : 'Report';
       message.success(`${label} Excel download started`);
     },
     onError: (error: { message?: string }) =>
