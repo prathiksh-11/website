@@ -248,10 +248,13 @@ export const CustomerList = () => {
             className="cust__filter cust__filter--wide"
             value={params.branchId}
             onChange={setBranchId}
-            options={branchesData?.data.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...(branchesData?.data.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })) || []),
+            ]}
           />
           <Button
             icon={<FileExcelOutlined style={{ color: '#ff5000' }} />}
@@ -482,18 +485,24 @@ export const CustomerList = () => {
 
             {/* Key KPI Stats Grid */}
             <div className="cust-detail__kpi-grid">
-              <div className="cust-detail__kpi-card">
-                <div className="cust-detail__kpi-header">
-                  <span>Sessions Left</span>
-                  <Dumbbell size={14} style={{ color: '#ff5000' }} />
+              {(customerDetails.remaining_sessions != null ||
+                customerDetails.session_plan ||
+                (customerDetails.session_plans && customerDetails.session_plans.length > 0)) && (
+                <div className="cust-detail__kpi-card">
+                  <div className="cust-detail__kpi-header">
+                    <span>Sessions Left</span>
+                    <Dumbbell size={14} style={{ color: '#ff5000' }} />
+                  </div>
+                  <div className="cust-detail__kpi-value">
+                    {customerDetails.remaining_sessions ?? '—'}
+                  </div>
+                  {(customerDetails.session_plan?.total_sessions || 0) > 0 && (
+                    <div className="cust-detail__kpi-sub">
+                      Total {customerDetails.session_plan?.total_sessions} sessions
+                    </div>
+                  )}
                 </div>
-                <div className="cust-detail__kpi-value">
-                  {customerDetails.remaining_sessions ?? '—'}
-                </div>
-                <div className="cust-detail__kpi-sub">
-                  Total {customerDetails.session_plan?.total_sessions ?? 0} sessions
-                </div>
-              </div>
+              )}
 
               <div className="cust-detail__kpi-card">
                 <div className="cust-detail__kpi-header">
@@ -601,15 +610,17 @@ export const CustomerList = () => {
                 </div>
               </div>
 
-              <div className="cust-detail__info-item">
-                <div className="cust-detail__info-icon">
-                  <ShieldCheck size={15} />
+              {customerDetails.membership_type ? (
+                <div className="cust-detail__info-item">
+                  <div className="cust-detail__info-icon">
+                    <ShieldCheck size={15} />
+                  </div>
+                  <div>
+                    <span className="cust-detail__info-label">Plan Type</span>
+                    <span className="cust-detail__info-value">{customerDetails.membership_type}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="cust-detail__info-label">Plan Type</span>
-                  <span className="cust-detail__info-value">{customerDetails.membership_type || 'General'}</span>
-                </div>
-              </div>
+              ) : null}
             </div>
 
             {/* Active Subscription Card */}

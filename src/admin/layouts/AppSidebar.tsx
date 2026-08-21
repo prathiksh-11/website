@@ -71,7 +71,7 @@ const MENU_SECTIONS: NavSection[] = [
       },
       {
         key: '/trainers',
-        label: 'Trainers',
+        label: 'Employees',
         permission: 'trainers',
         icon: <Dumbbell {...iconProps} />,
       },

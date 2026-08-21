@@ -190,7 +190,7 @@ export const SessionList = () => {
     setOpen(false);
   };
 
-  if (loadingAll && !allSessions?.length) {
+  if (loadingAll && !allSessions) {
     return <PageSkeleton variant="cards" />;
   }
 
@@ -263,10 +263,13 @@ export const SessionList = () => {
             className="sess__filter sess__filter--wide"
             value={params.branchId}
             onChange={setBranchId}
-            options={branchesData?.data.map((b) => ({
-              value: b.id,
-              label: shortBranch(b.name),
-            }))}
+            options={[
+              { value: '', label: 'All Branches' },
+              ...(branchesData?.data.map((b) => ({
+                value: b.id,
+                label: shortBranch(b.name),
+              })) || []),
+            ]}
           />
         </div>
 
@@ -366,7 +369,7 @@ export const SessionList = () => {
                       </div>
 
                       {session.partiallyAllow &&
-                      session.installmentAmount != null ? (
+                        session.installmentAmount != null ? (
                         <div className="sess-card__installment-badge">
                           <Percent size={13} />
                           <span>
@@ -545,9 +548,9 @@ export const SessionList = () => {
           {partiallyAllow ? (
             <Form.Item
               name="installmentAmount"
-              label="Installment amount"
+              label="Initial Payment Amount"
               rules={[
-                { required: true, message: 'Enter installment amount' },
+                { required: true, message: 'Enter minimum amount' },
                 {
                   type: 'number',
                   min: 0,

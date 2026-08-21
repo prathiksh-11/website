@@ -391,47 +391,19 @@ export interface GymEvent {
 }
 
 export interface DashboardSummary {
-  totalCustomers: number;
-  totalTrainers: number;
+  totalEmployees: number;
   totalBranches: number;
-  activeSubscriptions: number;
-  ptSessions: number;
-  todaySessions: number;
-  events: number;
-  revenue: number;
-  /** Active subscription count (subscribers) */
-  subscribers: number;
-  /** Total PT package purchase amount */
-  ptPurchaseAmount: number;
-  /** Clients without PT */
-  nonPtClients: number;
-  /** Revenue attributed to PT customers */
-  ptCustomerRevenue: number;
-  /** Pending balance due from partial payments */
-  totalPendingAmount?: number;
-}
-
-export interface ChartPoint {
-  label: string;
-  value: number;
-}
-
-export interface BranchPerformance {
-  branchName: string;
-  revenue: number;
-  customers: number;
-  sessions: number;
+  totalRevenue: number;
+  totalSubscriptionRevenue: number;
+  totalPtRevenue: number;
+  yesterdayRevenue: number;
+  todayRevenue: number;
+  todayPtRevenue: number;
+  todaySubscriptionRevenue: number;
 }
 
 export interface DashboardData {
   summary: DashboardSummary;
-  monthlyRevenue: ChartPoint[];
-  subscriptionGrowth: ChartPoint[];
-  customerGrowth: ChartPoint[];
-  branchPerformance: BranchPerformance[];
-  recentCustomers: Customer[];
-  todaySessions: BookedPtSession[];
-  upcomingEvents: GymEvent[];
 }
 
 export type TransactionType = 'subscription' | 'sessions' | 'events';

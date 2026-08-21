@@ -139,7 +139,7 @@ export const SubscriptionList = () => {
     setOpen(false);
   };
 
-  if (loadingAll && !allPlans?.length) {
+  if (loadingAll && !allPlans) {
     return <PageSkeleton variant="cards" />;
   }
 
@@ -174,10 +174,13 @@ export const SubscriptionList = () => {
           className="plan__branch"
           value={params.branchId}
           onChange={setBranchId}
-          options={branchesData?.data.map((b) => ({
-            value: b.id,
-            label: shortBranch(b.name),
-          }))}
+          options={[
+            { value: '', label: 'All Branches' },
+            ...(branchesData?.data.map((b) => ({
+              value: b.id,
+              label: shortBranch(b.name),
+            })) || []),
+          ]}
         />
         <div className="plan__toggle" role="tablist" aria-label="Plan duration">
           {durationTabs.map((tab) => {
