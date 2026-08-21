@@ -1115,10 +1115,13 @@ export const TrainerList = () => {
                   setExportBranchId(val);
                   if (val) setBranchError(false);
                 }}
-                options={branchesData?.data.map((b) => ({
-                  value: String(b.id),
-                  label: shortBranch(b.name),
-                }))}
+                options={[
+                  { value: 'all', label: 'All Branches' },
+                  ...(branchesData?.data.map((b) => ({
+                    value: String(b.id),
+                    label: shortBranch(b.name),
+                  })) ?? []),
+                ]}
               />
               {branchError && (
                 <small style={{ color: '#ff4d4f', fontSize: '0.75rem', marginTop: 4, display: 'block' }}>

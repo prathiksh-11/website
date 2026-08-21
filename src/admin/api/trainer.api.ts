@@ -213,7 +213,8 @@ export const trainerApi = {
 
     const payload: Record<string, unknown> = {};
     if (params.branchId != null && params.branchId !== '') {
-      payload.branch_id = Number(params.branchId);
+      payload.branch_id =
+        params.branchId === 'all' ? 'all' : Number(params.branchId);
     }
     if (params.fromDate) payload.from_date = params.fromDate;
     if (params.toDate) payload.to_date = params.toDate;
