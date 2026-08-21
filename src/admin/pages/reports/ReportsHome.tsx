@@ -26,16 +26,19 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { PageSkeleton } from '@/components/common';
-import { normalizeTrainerType, THEME_TOKENS } from '@/constants';
+import { normalizeTrainerType } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
-import { useGymReport, useReportExport } from '@/hooks/useReports';
+import {
+  useGymReport,
+  useGymReportQueries,
+  useReportExport,
+} from '@/hooks/useReports';
 import { useTrainers, useTrainersAll } from '@/hooks/useTrainers';
 import type {
   Branch,
@@ -54,22 +57,25 @@ const { RangePicker } = DatePicker;
 
 const EMPTY_REPORT_TOTALS = emptyGymReport().totals;
 
-const ACCENT = THEME_TOKENS.colorPrimary;
 const MUTED = '#9aa0ab';
+const PRIMARY_BAR = '#ff8a4c';
+const COMPARE_BAR = '#c5cad3';
+const PT_BAR = '#ff6b1a';
+const SUB_BAR = '#ffb088';
 
 type ReportTab = 'branch' | 'attendance' | 'revenue';
 
 const TABS: Array<{ key: ReportTab; label: string; hint: string }> = [
   { key: 'branch', label: 'Branch summary', hint: '' },
   { key: 'attendance', label: 'Trainer attendance', hint: 'Presence & working hours' },
-  { key: 'revenue', label: 'Revenue', hint: 'Monthly or custom comparison' },
+  { key: 'revenue', label: 'Revenue', hint: 'Week-wise monthly or month-wise yearly comparison' },
 ];
 
-type RevenueCompareMode = 'monthly' | 'custom';
+type RevenueCompareMode = 'monthly' | 'yearly';
 
 const REVENUE_MODES: Array<{ value: RevenueCompareMode; label: string }> = [
   { value: 'monthly', label: 'Monthly' },
-  { value: 'custom', label: 'Custom' },
+  { value: 'yearly', label: 'Yearly' },
 ];
 
 const PERIODS: Array<{ value: ReportDateFilter; label: string }> = [
@@ -80,6 +86,25 @@ const PERIODS: Array<{ value: ReportDateFilter; label: string }> = [
   { value: 'all', label: 'All time' },
   { value: 'custom', label: 'Custom' },
 ];
+
+type RevenueSlice = {
+  key: string;
+  label: string;
+  shortLabel: string;
+  start: string;
+  end: string;
+};
+
+type RevenueComparePoint = {
+  label: string;
+  shortLabel: string;
+  primaryTotal: number;
+  compareTotal: number;
+  primaryPt: number;
+  comparePt: number;
+  primarySub: number;
+  compareSub: number;
+};
 
 const shortBranch = (name: string) =>
   name
@@ -106,18 +131,6 @@ const moneyTick = (v: number) =>
       ? `${Math.round(v / 1000)}k`
       : String(v);
 
-const getMonthRange = (month: Dayjs) => {
-  const start = month.startOf('month');
-  const now = dayjs();
-  const end = month.isSame(now, 'month') ? now : month.endOf('month');
-
-  return {
-    start: start.format('YYYY-MM-DD'),
-    end: end.format('YYYY-MM-DD'),
-    label: month.format('MMMM YYYY'),
-  };
-};
-
 const getDefaultRevenueMonths = () => {
   const now = dayjs();
   return {
@@ -126,27 +139,81 @@ const getDefaultRevenueMonths = () => {
   };
 };
 
-const getDefaultRevenueCustomRanges = (): {
-  primary: [Dayjs, Dayjs];
-  compare: [Dayjs, Dayjs];
-} => {
+const getDefaultRevenueYears = () => {
   const now = dayjs();
-  const lastMonth = now.subtract(1, 'month');
   return {
-    primary: [now.startOf('month'), now.endOf('day')],
-    compare: [lastMonth.startOf('month'), lastMonth.endOf('month')],
+    primary: now.startOf('year'),
+    compare: now.subtract(1, 'year').startOf('year'),
   };
 };
 
-const getCustomRange = (range: [Dayjs, Dayjs]) => ({
-  start: range[0].format('YYYY-MM-DD'),
-  end: range[1].format('YYYY-MM-DD'),
-  label: `${range[0].format('DD MMM YYYY')} – ${range[1].format('DD MMM YYYY')}`,
-});
+/** Split a month into Week 1–5 buckets (days 1–7, 8–14, …). */
+const getMonthWeekSlices = (month: Dayjs): RevenueSlice[] => {
+  const monthStart = month.startOf('month');
+  const now = dayjs();
+  const monthEnd = month.isSame(now, 'month') ? now.endOf('day') : month.endOf('month');
+  const weekCount = Math.ceil(month.daysInMonth() / 7);
+  const slices: RevenueSlice[] = [];
+
+  for (let w = 0; w < weekCount; w += 1) {
+    const start = monthStart.add(w * 7, 'day');
+    if (start.isAfter(monthEnd, 'day')) break;
+    let end = monthStart.add(w * 7 + 6, 'day').endOf('day');
+    if (end.isAfter(monthEnd)) end = monthEnd;
+    slices.push({
+      key: `w${w + 1}`,
+      label: `Week ${w + 1}`,
+      shortLabel: `W${w + 1}`,
+      start: start.format('YYYY-MM-DD'),
+      end: end.format('YYYY-MM-DD'),
+    });
+  }
+
+  return slices;
+};
+
+/** Jan–Dec slices for a year (skips future months). */
+const getYearMonthSlices = (year: Dayjs): RevenueSlice[] => {
+  const now = dayjs();
+  const slices: RevenueSlice[] = [];
+
+  for (let i = 0; i < 12; i += 1) {
+    const month = year.month(i).startOf('month');
+    if (month.isAfter(now, 'month')) break;
+    const end = month.isSame(now, 'month') ? now.endOf('day') : month.endOf('month');
+    slices.push({
+      key: `m${i}`,
+      label: month.format('MMMM'),
+      shortLabel: month.format('MMM'),
+      start: month.format('YYYY-MM-DD'),
+      end: end.format('YYYY-MM-DD'),
+    });
+  }
+
+  return slices;
+};
 
 const calcRevenueChange = (current: number, previous: number) => {
   if (previous === 0) return current > 0 ? 100 : 0;
   return Number((((current - previous) / previous) * 100).toFixed(1));
+};
+
+const sumSliceTotals = (
+  reports: Array<GymReport | undefined>,
+  count: number,
+  offset = 0,
+) => {
+  let totalRevenue = 0;
+  let ptRevenue = 0;
+  let subscriberRevenue = 0;
+  for (let i = 0; i < count; i += 1) {
+    const t = reports[offset + i]?.totals;
+    if (!t) continue;
+    totalRevenue += t.totalRevenue;
+    ptRevenue += t.ptRevenue;
+    subscriberRevenue += t.subscriberRevenue;
+  }
+  return { totalRevenue, ptRevenue, subscriberRevenue };
 };
 
 const ChangeBadge = ({ value }: { value: number }) => {
@@ -893,260 +960,399 @@ const AttendanceTab = ({
 };
 
 const RevenueTab = ({
-  primaryMonth,
-  compareMonth,
-  monthLabels,
+  mode,
+  points,
+  primaryLabel,
+  compareLabel,
+  primaryTotals,
+  compareTotals,
+  loading,
 }: {
-  primaryMonth: GymReport['totals'];
-  compareMonth: GymReport['totals'];
-  monthLabels: { primary: string; compare: string };
+  mode: RevenueCompareMode;
+  points: RevenueComparePoint[];
+  primaryLabel: string;
+  compareLabel: string;
+  primaryTotals: { totalRevenue: number; ptRevenue: number; subscriberRevenue: number };
+  compareTotals: { totalRevenue: number; ptRevenue: number; subscriberRevenue: number };
+  loading: boolean;
 }) => {
   const totalChange = calcRevenueChange(
-    primaryMonth.totalRevenue,
-    compareMonth.totalRevenue,
+    primaryTotals.totalRevenue,
+    compareTotals.totalRevenue,
   );
-  const ptChange = calcRevenueChange(
-    primaryMonth.ptRevenue,
-    compareMonth.ptRevenue,
-  );
+  const difference = primaryTotals.totalRevenue - compareTotals.totalRevenue;
+  const ptChange = calcRevenueChange(primaryTotals.ptRevenue, compareTotals.ptRevenue);
   const subChange = calcRevenueChange(
-    primaryMonth.subscriberRevenue,
-    compareMonth.subscriberRevenue,
+    primaryTotals.subscriberRevenue,
+    compareTotals.subscriberRevenue,
   );
 
-  const streamComparison = [
-    {
-      name: 'Subscriptions',
-      compare: compareMonth.subscriberRevenue,
-      primary: primaryMonth.subscriberRevenue,
-      change: subChange,
-      primaryClients: primaryMonth.subscriberClients,
-      compareClients: compareMonth.subscriberClients,
-      color: '#ffb088',
-    },
-    {
-      name: 'PT',
-      compare: compareMonth.ptRevenue,
-      primary: primaryMonth.ptRevenue,
-      change: ptChange,
-      primaryClients: primaryMonth.ptClients,
-      compareClients: compareMonth.ptClients,
-      color: '#ff8a4c',
-    },
-  ];
+  const hasData = points.some(
+    (p) =>
+      p.primaryTotal > 0 ||
+      p.compareTotal > 0 ||
+      p.primaryPt > 0 ||
+      p.comparePt > 0 ||
+      p.primarySub > 0 ||
+      p.compareSub > 0,
+  );
 
-  const totalComparison = [
-    {
-      name: monthLabels.compare,
-      total: compareMonth.totalRevenue,
-      fill: '#d5d9e0',
-    },
-    {
-      name: monthLabels.primary,
-      total: primaryMonth.totalRevenue,
-      fill: '#ff8a4c',
-    },
-  ];
+  const bucketLabel = mode === 'monthly' ? 'week' : 'month';
+  let peakLabel = '—';
+  let lowLabel = '—';
+  if (points.length > 0) {
+    const withPrimary = [...points].sort((a, b) => b.primaryTotal - a.primaryTotal);
+    peakLabel = withPrimary[0]?.label ?? '—';
+    const nonZero = withPrimary.filter((p) => p.primaryTotal > 0);
+    lowLabel = (nonZero.length ? nonZero[nonZero.length - 1] : withPrimary[withPrimary.length - 1])
+      ?.label ?? '—';
+  }
 
-  const hasData =
-    primaryMonth.totalRevenue > 0 ||
-    compareMonth.totalRevenue > 0 ||
-    primaryMonth.ptRevenue > 0 ||
-    compareMonth.ptRevenue > 0 ||
-    primaryMonth.subscriberRevenue > 0 ||
-    compareMonth.subscriberRevenue > 0;
+  if (loading) {
+    return <PageSkeleton variant="report" />;
+  }
 
   return (
     <div className="rpt-tab rpt-tab--revenue">
-      <section className="rpt-rev-compare__summary" aria-label="Monthly revenue summary">
-        <article className="rpt-rev-compare__card rpt-rev-compare__card--hero">
-          <div className="rpt-rev-compare__card-icon">
-            <CircleDollarSign size={18} />
-          </div>
-          <div>
-            <span>{monthLabels.primary}</span>
-            <strong>{formatCurrency(primaryMonth.totalRevenue)}</strong>
-            <small>Selected month total</small>
-          </div>
-        </article>
-        <article className="rpt-rev-compare__card">
-          <div className="rpt-rev-compare__card-icon">
-            <Wallet size={18} />
-          </div>
-          <div>
-            <span>{monthLabels.compare}</span>
-            <strong>{formatCurrency(compareMonth.totalRevenue)}</strong>
-            <small>Comparison month total</small>
-          </div>
-        </article>
-        <article className="rpt-rev-compare__card">
-          <div className="rpt-rev-compare__card-icon">
-            <TrendingUp size={18} />
-          </div>
-          <div>
-            <span>Change</span>
-            <strong>
-              <ChangeBadge value={totalChange} />
-            </strong>
-            <small>
-              {monthLabels.primary} vs {monthLabels.compare}
-            </small>
-          </div>
-        </article>
-      </section>
+      <header className="rpt-rev-dash__intro">
+        <div>
+          <h2>Revenue Comparison</h2>
+          <p>
+            {primaryLabel} vs {compareLabel} ·{' '}
+            {mode === 'monthly' ? 'Week-wise' : 'Month-wise'} breakdown
+          </p>
+        </div>
+      </header>
 
-      <section className="rpt-rev-compare__streams" aria-label="Revenue streams">
-        {streamComparison.map((stream) => (
-          <article key={stream.name} className="rpt-rev-compare__stream">
-            <header>
-              <div
-                className="rpt-rev-compare__stream-icon"
-                style={{ background: `${stream.color}22`, color: stream.color }}
-              >
-                {stream.name === 'PT' ? (
-                  <Dumbbell size={18} />
-                ) : (
-                  <Users size={18} />
-                )}
-              </div>
-              <div>
-                <h3>{stream.name}</h3>
-                <p>
-                  {stream.primaryClients} clients in {monthLabels.primary} ·{' '}
-                  {stream.compareClients} in {monthLabels.compare}
-                </p>
-              </div>
-              <ChangeBadge value={stream.change} />
-            </header>
-            <div className="rpt-rev-compare__stream-values">
-              <div>
-                <span>{monthLabels.compare}</span>
-                <strong>{formatCurrency(stream.compare)}</strong>
-              </div>
-              <div>
-                <span>{monthLabels.primary}</span>
-                <strong>{formatCurrency(stream.primary)}</strong>
-              </div>
-            </div>
-          </article>
-        ))}
+      <section className="rpt-rev-dash__summary" aria-label="Revenue summary">
+        <article className="rpt-rev-dash__card rpt-rev-dash__card--hero">
+          <span>Selected period</span>
+          <strong>{formatCurrency(primaryTotals.totalRevenue)}</strong>
+          <small>{primaryLabel}</small>
+        </article>
+        <article className="rpt-rev-dash__card">
+          <span>Comparison period</span>
+          <strong>{formatCurrency(compareTotals.totalRevenue)}</strong>
+          <small>{compareLabel}</small>
+        </article>
+        <article className="rpt-rev-dash__card">
+          <span>Revenue difference</span>
+          <strong className={difference >= 0 ? 'rpt-rev-dash__pos' : 'rpt-rev-dash__neg'}>
+            {difference >= 0 ? '+' : ''}
+            {formatCurrency(difference)}
+          </strong>
+          <small>Selected − comparison</small>
+        </article>
+        <article className="rpt-rev-dash__card">
+          <span>Growth</span>
+          <strong>
+            <ChangeBadge value={totalChange} />
+          </strong>
+          <small>
+            {primaryLabel} vs {compareLabel}
+          </small>
+        </article>
       </section>
 
       {hasData ? (
-        <section className="rpt__charts rpt-rev-compare__charts">
-          <article className="rpt-card rpt-card--wide">
-            <header>
-              <h2>PT vs Subscriptions</h2>
-              <p>
-                {monthLabels.compare} compared with {monthLabels.primary}
-              </p>
-            </header>
-            <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={streamComparison} barGap={8} barCategoryGap="24%">
-                  <CartesianGrid
-                    strokeDasharray="3 6"
-                    vertical={false}
-                    stroke="rgba(22,24,31,0.06)"
-                  />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: MUTED, fontSize: 12 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={moneyTick}
-                  />
-                  <Tooltip
-                    contentStyle={tooltipStyle}
-                    formatter={(value) => formatCurrency(Number(value))}
-                  />
-                  <Legend
-                    verticalAlign="top"
-                    height={36}
-                    iconType="circle"
-                    formatter={(value) => (
-                      <span style={{ color: MUTED, fontSize: 12 }}>{value}</span>
-                    )}
-                  />
-                  <Bar
-                    dataKey="compare"
-                    name={monthLabels.compare}
-                    fill="#d5d9e0"
-                    radius={[8, 8, 0, 0]}
-                    maxBarSize={56}
-                  />
-                  <Bar
-                    dataKey="primary"
-                    name={monthLabels.primary}
-                    fill="#ff8a4c"
-                    radius={[8, 8, 0, 0]}
-                    maxBarSize={56}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
+        <>
+          <section className="rpt-rev-dash__main" aria-label="Main revenue comparison">
+            <article className="rpt-card rpt-rev-dash__chart-card">
+              <header>
+                <div>
+                  <h2>Total Revenue</h2>
+                  <p>
+                    {mode === 'monthly'
+                      ? 'Week-wise comparison for both months'
+                      : 'Month-wise comparison for both years'}
+                  </p>
+                </div>
+                <div className="rpt-rev-dash__legend">
+                  <span>
+                    <i style={{ background: PRIMARY_BAR }} />
+                    {primaryLabel}
+                  </span>
+                  <span>
+                    <i style={{ background: COMPARE_BAR }} />
+                    {compareLabel}
+                  </span>
+                </div>
+              </header>
+              <div className="rpt-card__chart rpt-rev-dash__chart-tall">
+                <ResponsiveContainer width="100%" height={380}>
+                  <BarChart data={points} barGap={6} barCategoryGap="18%">
+                    <CartesianGrid
+                      strokeDasharray="3 6"
+                      vertical={false}
+                      stroke="rgba(22,24,31,0.06)"
+                    />
+                    <XAxis
+                      dataKey="shortLabel"
+                      tick={{ fill: MUTED, fontSize: 12 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: MUTED, fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                      tickFormatter={moneyTick}
+                    />
+                    <Tooltip
+                      contentStyle={tooltipStyle}
+                      labelFormatter={(_, payload) =>
+                        String(payload?.[0]?.payload?.label ?? _)
+                      }
+                      formatter={(value, name) => [
+                        formatCurrency(Number(value)),
+                        String(name),
+                      ]}
+                    />
+                    <Legend
+                      verticalAlign="top"
+                      height={32}
+                      iconType="circle"
+                      formatter={(value) => (
+                        <span style={{ color: MUTED, fontSize: 12 }}>{value}</span>
+                      )}
+                    />
+                    <Bar
+                      dataKey="compareTotal"
+                      name={compareLabel}
+                      fill={COMPARE_BAR}
+                      radius={[8, 8, 0, 0]}
+                      maxBarSize={42}
+                    />
+                    <Bar
+                      dataKey="primaryTotal"
+                      name={primaryLabel}
+                      fill={PRIMARY_BAR}
+                      radius={[8, 8, 0, 0]}
+                      maxBarSize={42}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="rpt-rev-dash__peak">
+                <span>
+                  Highest {bucketLabel} ({primaryLabel}): <strong>{peakLabel}</strong>
+                </span>
+                <span>
+                  Lowest {bucketLabel} ({primaryLabel}): <strong>{lowLabel}</strong>
+                </span>
+              </div>
+            </article>
+          </section>
 
-          <article className="rpt-card">
-            <header>
-              <h2>Total revenue</h2>
-              <p>Overall collection comparison</p>
+          <section className="rpt-rev-dash__breakdown" aria-label="Revenue breakdown">
+            <header className="rpt-rev-dash__breakdown-head">
+              <h2>Revenue Breakdown</h2>
+              <p>PT and subscription revenue by {bucketLabel}</p>
             </header>
-            <div className="rpt-card__chart">
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={totalComparison} barCategoryGap="30%">
-                  <CartesianGrid
-                    strokeDasharray="3 6"
-                    vertical={false}
-                    stroke="rgba(22,24,31,0.06)"
-                  />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                    interval={0}
-                    angle={-12}
-                    textAnchor="end"
-                    height={56}
-                  />
-                  <YAxis
-                    tick={{ fill: MUTED, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={moneyTick}
-                  />
-                  <Tooltip
-                    contentStyle={tooltipStyle}
-                    formatter={(value) => formatCurrency(Number(value))}
-                  />
-                  <Bar dataKey="total" radius={[8, 8, 0, 0]} maxBarSize={72}>
-                    {totalComparison.map((entry) => (
-                      <Cell key={entry.name} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+
+            <div className="rpt-rev-dash__stream-cards">
+              <article className="rpt-rev-dash__stream">
+                <header>
+                  <div className="rpt-rev-dash__stream-icon" style={{ color: PT_BAR }}>
+                    <Dumbbell size={18} />
+                  </div>
+                  <div>
+                    <h3>PT Revenue</h3>
+                    <p>
+                      {formatCurrency(primaryTotals.ptRevenue)} vs{' '}
+                      {formatCurrency(compareTotals.ptRevenue)}
+                    </p>
+                  </div>
+                  <ChangeBadge value={ptChange} />
+                </header>
+              </article>
+              <article className="rpt-rev-dash__stream">
+                <header>
+                  <div className="rpt-rev-dash__stream-icon" style={{ color: SUB_BAR }}>
+                    <Users size={18} />
+                  </div>
+                  <div>
+                    <h3>Subscription Revenue</h3>
+                    <p>
+                      {formatCurrency(primaryTotals.subscriberRevenue)} vs{' '}
+                      {formatCurrency(compareTotals.subscriberRevenue)}
+                    </p>
+                  </div>
+                  <ChangeBadge value={subChange} />
+                </header>
+              </article>
+              <article className="rpt-rev-dash__stream">
+                <header>
+                  <div className="rpt-rev-dash__stream-icon" style={{ color: PRIMARY_BAR }}>
+                    <CircleDollarSign size={18} />
+                  </div>
+                  <div>
+                    <h3>Total Revenue</h3>
+                    <p>
+                      {formatCurrency(primaryTotals.totalRevenue)} vs{' '}
+                      {formatCurrency(compareTotals.totalRevenue)}
+                    </p>
+                  </div>
+                  <ChangeBadge value={totalChange} />
+                </header>
+              </article>
             </div>
-            <div className="rpt-rev-compare__totals">
-              <div>
-                <span>{monthLabels.compare}</span>
-                <strong>{formatCurrency(compareMonth.totalRevenue)}</strong>
-              </div>
-              <div>
-                <span>{monthLabels.primary}</span>
-                <strong>{formatCurrency(primaryMonth.totalRevenue)}</strong>
-              </div>
+
+            <div className="rpt-rev-dash__breakdown-charts">
+              <article className="rpt-card">
+                <header>
+                  <h2>PT Revenue</h2>
+                  <p>{mode === 'monthly' ? 'Week-wise' : 'Month-wise'} PT comparison</p>
+                </header>
+                <div className="rpt-card__chart">
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={points} barGap={4} barCategoryGap="20%">
+                      <CartesianGrid
+                        strokeDasharray="3 6"
+                        vertical={false}
+                        stroke="rgba(22,24,31,0.06)"
+                      />
+                      <XAxis
+                        dataKey="shortLabel"
+                        tick={{ fill: MUTED, fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fill: MUTED, fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={moneyTick}
+                      />
+                      <Tooltip
+                        contentStyle={tooltipStyle}
+                        labelFormatter={(_, payload) =>
+                          String(payload?.[0]?.payload?.label ?? _)
+                        }
+                        formatter={(value, name) => [
+                          formatCurrency(Number(value)),
+                          String(name),
+                        ]}
+                      />
+                      <Bar
+                        dataKey="comparePt"
+                        name={compareLabel}
+                        fill={COMPARE_BAR}
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={36}
+                      />
+                      <Bar
+                        dataKey="primaryPt"
+                        name={primaryLabel}
+                        fill={PT_BAR}
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={36}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </article>
+
+              <article className="rpt-card">
+                <header>
+                  <h2>Subscription Revenue</h2>
+                  <p>
+                    {mode === 'monthly' ? 'Week-wise' : 'Month-wise'} subscription comparison
+                  </p>
+                </header>
+                <div className="rpt-card__chart">
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={points} barGap={4} barCategoryGap="20%">
+                      <CartesianGrid
+                        strokeDasharray="3 6"
+                        vertical={false}
+                        stroke="rgba(22,24,31,0.06)"
+                      />
+                      <XAxis
+                        dataKey="shortLabel"
+                        tick={{ fill: MUTED, fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fill: MUTED, fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={moneyTick}
+                      />
+                      <Tooltip
+                        contentStyle={tooltipStyle}
+                        labelFormatter={(_, payload) =>
+                          String(payload?.[0]?.payload?.label ?? _)
+                        }
+                        formatter={(value, name) => [
+                          formatCurrency(Number(value)),
+                          String(name),
+                        ]}
+                      />
+                      <Bar
+                        dataKey="compareSub"
+                        name={compareLabel}
+                        fill={COMPARE_BAR}
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={36}
+                      />
+                      <Bar
+                        dataKey="primarySub"
+                        name={primaryLabel}
+                        fill={SUB_BAR}
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={36}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </article>
             </div>
-          </article>
-        </section>
+
+            <div className="rpt-rev-dash__table-wrap">
+              <table className="rpt-rev-dash__table">
+                <thead>
+                  <tr>
+                    <th>{mode === 'monthly' ? 'Week' : 'Month'}</th>
+                    <th>{primaryLabel} Total</th>
+                    <th>{compareLabel} Total</th>
+                    <th>{primaryLabel} PT</th>
+                    <th>{compareLabel} PT</th>
+                    <th>{primaryLabel} Sub</th>
+                    <th>{compareLabel} Sub</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {points.map((row) => (
+                    <tr key={row.label}>
+                      <td>{row.label}</td>
+                      <td>{formatCurrency(row.primaryTotal)}</td>
+                      <td>{formatCurrency(row.compareTotal)}</td>
+                      <td>{formatCurrency(row.primaryPt)}</td>
+                      <td>{formatCurrency(row.comparePt)}</td>
+                      <td>{formatCurrency(row.primarySub)}</td>
+                      <td>{formatCurrency(row.compareSub)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>Total</td>
+                    <td>{formatCurrency(primaryTotals.totalRevenue)}</td>
+                    <td>{formatCurrency(compareTotals.totalRevenue)}</td>
+                    <td>{formatCurrency(primaryTotals.ptRevenue)}</td>
+                    <td>{formatCurrency(compareTotals.ptRevenue)}</td>
+                    <td>{formatCurrency(primaryTotals.subscriberRevenue)}</td>
+                    <td>{formatCurrency(compareTotals.subscriberRevenue)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+        </>
       ) : (
-        <Empty description="No revenue data for these months" />
+        <Empty description="No revenue data for these periods" />
       )}
     </div>
   );
@@ -1160,7 +1366,7 @@ export const ReportsHome = () => {
   const [trainerId, setTrainerId] = useState<string | undefined>();
   const [trainerSearch, setTrainerSearch] = useState('');
   const defaultRevenueMonths = useMemo(() => getDefaultRevenueMonths(), []);
-  const defaultRevenueRanges = useMemo(() => getDefaultRevenueCustomRanges(), []);
+  const defaultRevenueYears = useMemo(() => getDefaultRevenueYears(), []);
   const [revenueMode, setRevenueMode] = useState<RevenueCompareMode>('monthly');
   const [revenuePrimaryMonth, setRevenuePrimaryMonth] = useState(
     defaultRevenueMonths.primary,
@@ -1168,12 +1374,12 @@ export const ReportsHome = () => {
   const [revenueCompareMonth, setRevenueCompareMonth] = useState(
     defaultRevenueMonths.compare,
   );
-  const [revenuePrimaryRange, setRevenuePrimaryRange] = useState<
-    [Dayjs, Dayjs] | null
-  >(defaultRevenueRanges.primary);
-  const [revenueCompareRange, setRevenueCompareRange] = useState<
-    [Dayjs, Dayjs] | null
-  >(defaultRevenueRanges.compare);
+  const [revenuePrimaryYear, setRevenuePrimaryYear] = useState(
+    defaultRevenueYears.primary,
+  );
+  const [revenueCompareYear, setRevenueCompareYear] = useState(
+    defaultRevenueYears.compare,
+  );
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [exportType, setExportType] = useState<'branch' | 'attendance' | 'pending'>(
     'branch',
@@ -1217,65 +1423,47 @@ export const ReportsHome = () => {
   );
   const { data: allTrainers = [] } = useTrainersAll();
 
-  const primaryPeriodRange = useMemo(() => {
-    if (revenueMode === 'monthly') {
-      return getMonthRange(revenuePrimaryMonth);
-    }
-    if (!revenuePrimaryRange?.[0] || !revenuePrimaryRange?.[1]) return null;
-    return getCustomRange(revenuePrimaryRange);
-  }, [revenueMode, revenuePrimaryMonth, revenuePrimaryRange]);
+  const primarySlices = useMemo(
+    () =>
+      revenueMode === 'monthly'
+        ? getMonthWeekSlices(revenuePrimaryMonth)
+        : getYearMonthSlices(revenuePrimaryYear),
+    [revenueMode, revenuePrimaryMonth, revenuePrimaryYear],
+  );
 
-  const comparePeriodRange = useMemo(() => {
-    if (revenueMode === 'monthly') {
-      return getMonthRange(revenueCompareMonth);
-    }
-    if (!revenueCompareRange?.[0] || !revenueCompareRange?.[1]) return null;
-    return getCustomRange(revenueCompareRange);
-  }, [revenueMode, revenueCompareMonth, revenueCompareRange]);
+  const compareSlices = useMemo(
+    () =>
+      revenueMode === 'monthly'
+        ? getMonthWeekSlices(revenueCompareMonth)
+        : getYearMonthSlices(revenueCompareYear),
+    [revenueMode, revenueCompareMonth, revenueCompareYear],
+  );
 
-  const primaryMonthReportQuery = useMemo<ReportQuery | null>(() => {
-    if (!primaryPeriodRange) return null;
-    return {
+  const primaryLabel =
+    revenueMode === 'monthly'
+      ? revenuePrimaryMonth.format('MMMM YYYY')
+      : revenuePrimaryYear.format('YYYY');
+  const compareLabel =
+    revenueMode === 'monthly'
+      ? revenueCompareMonth.format('MMMM YYYY')
+      : revenueCompareYear.format('YYYY');
+
+  const revenueSliceQueries = useMemo<ReportQuery[]>(() => {
+    const toQuery = (slice: RevenueSlice): ReportQuery => ({
       filter: 'custom',
-      startDate: primaryPeriodRange.start,
-      endDate: primaryPeriodRange.end,
+      startDate: slice.start,
+      endDate: slice.end,
       branchId,
       trainerId,
-    };
-  }, [primaryPeriodRange, branchId, trainerId]);
+    });
+    return [...primarySlices.map(toQuery), ...compareSlices.map(toQuery)];
+  }, [primarySlices, compareSlices, branchId, trainerId]);
 
-  const compareMonthReportQuery = useMemo<ReportQuery | null>(() => {
-    if (!comparePeriodRange) return null;
-    return {
-      filter: 'custom',
-      startDate: comparePeriodRange.start,
-      endDate: comparePeriodRange.end,
-      branchId,
-      trainerId,
-    };
-  }, [comparePeriodRange, branchId, trainerId]);
-
-  const revenueReady =
-    revenueMode === 'monthly' ||
-    Boolean(
-      revenuePrimaryRange?.[0] &&
-        revenuePrimaryRange?.[1] &&
-        revenueCompareRange?.[0] &&
-        revenueCompareRange?.[1],
-    );
-
-  const revenueTabActive =
-    tab === 'revenue' && revenueReady && Boolean(primaryMonthReportQuery && compareMonthReportQuery);
+  const revenueReady = primarySlices.length > 0 && compareSlices.length > 0;
+  const revenueTabActive = tab === 'revenue' && revenueReady;
 
   const { data, isLoading, isFetching } = useGymReport(query, enabled && tab !== 'revenue');
-  const { data: primaryMonthReport, isLoading: loadingPrimaryMonth } = useGymReport(
-    primaryMonthReportQuery ?? { filter: 'monthly' },
-    revenueTabActive && Boolean(primaryMonthReportQuery),
-  );
-  const { data: compareMonthReport, isLoading: loadingCompareMonth } = useGymReport(
-    compareMonthReportQuery ?? { filter: 'monthly' },
-    revenueTabActive && Boolean(compareMonthReportQuery),
-  );
+  const revenueSliceResults = useGymReportQueries(revenueSliceQueries, revenueTabActive);
   const { excel } = useReportExport(query);
 
   const totals = data?.totals ?? EMPTY_REPORT_TOTALS;
@@ -1293,17 +1481,65 @@ export const ReportsHome = () => {
     );
   }, [branches, trainerSearch]);
 
-  const revenueLoading = loadingPrimaryMonth || loadingCompareMonth;
+  const revenueLoading = revenueSliceResults.some((r) => r.isLoading || r.isFetching);
+  const revenueReports = useMemo(
+    () => revenueSliceResults.map((r) => r.data),
+    [revenueSliceResults],
+  );
+
+  const revenuePoints = useMemo<RevenueComparePoint[]>(() => {
+    const len = Math.max(primarySlices.length, compareSlices.length);
+    const points: RevenueComparePoint[] = [];
+
+    for (let i = 0; i < len; i += 1) {
+      const primary = primarySlices[i];
+      const compare = compareSlices[i];
+      const primaryReport = primary ? revenueReports[i] : undefined;
+      const compareReport = compare
+        ? revenueReports[primarySlices.length + i]
+        : undefined;
+      const label =
+        primary?.label ??
+        compare?.label ??
+        (revenueMode === 'monthly' ? `Week ${i + 1}` : `Month ${i + 1}`);
+      const shortLabel =
+        primary?.shortLabel ??
+        compare?.shortLabel ??
+        (revenueMode === 'monthly' ? `W${i + 1}` : `M${i + 1}`);
+
+      points.push({
+        label,
+        shortLabel,
+        primaryTotal: primaryReport?.totals.totalRevenue ?? 0,
+        compareTotal: compareReport?.totals.totalRevenue ?? 0,
+        primaryPt: primaryReport?.totals.ptRevenue ?? 0,
+        comparePt: compareReport?.totals.ptRevenue ?? 0,
+        primarySub: primaryReport?.totals.subscriberRevenue ?? 0,
+        compareSub: compareReport?.totals.subscriberRevenue ?? 0,
+      });
+    }
+
+    return points;
+  }, [primarySlices, compareSlices, revenueReports, revenueMode]);
+
+  const primaryRevenueTotals = useMemo(
+    () => sumSliceTotals(revenueReports, primarySlices.length, 0),
+    [revenueReports, primarySlices.length],
+  );
+  const compareRevenueTotals = useMemo(
+    () =>
+      sumSliceTotals(revenueReports, compareSlices.length, primarySlices.length),
+    [revenueReports, compareSlices.length, primarySlices.length],
+  );
+
   const pageLoading =
-    tab === 'revenue' ? revenueLoading : isLoading || !data;
+    tab === 'revenue' ? false : isLoading || !data;
   const showReports =
     tab === 'revenue' ? revenueReady : enabled;
   const isRefreshing =
     tab === 'revenue' ? revenueLoading : isFetching;
 
   const activeTab = TABS.find((t) => t.key === tab)!;
-  const primaryMonthTotals = primaryMonthReport?.totals ?? EMPTY_REPORT_TOTALS;
-  const compareMonthTotals = compareMonthReport?.totals ?? EMPTY_REPORT_TOTALS;
 
   const excelLabel =
     tab === 'attendance' ? 'Trainer Attendance Excel' : 'Branch Summary Excel';
@@ -1505,34 +1741,34 @@ export const ReportsHome = () => {
                 </label>
               </div>
             ) : (
-              <div className="rpt__revenue-ranges">
-                <label className="rpt__revenue-range">
-                  <span>Compare period</span>
-                  <RangePicker
+              <div className="rpt__revenue-months">
+                <label className="rpt__revenue-month">
+                  <span>Compare year</span>
+                  <DatePicker
+                    picker="year"
                     size="large"
-                    value={revenuePrimaryRange}
+                    allowClear={false}
+                    value={revenuePrimaryYear}
                     onChange={(value) =>
-                      setRevenuePrimaryRange(
-                        value && value[0] && value[1] ? [value[0], value[1]] : null,
-                      )
+                      value && setRevenuePrimaryYear(value.startOf('year'))
                     }
-                    disabledDate={(date) => date.isAfter(dayjs(), 'day')}
-                    format="DD MMM YYYY"
+                    disabledDate={(date) => date.isAfter(dayjs(), 'year')}
+                    format="YYYY"
                   />
                 </label>
                 <span className="rpt__revenue-vs">vs</span>
-                <label className="rpt__revenue-range">
-                  <span>With period</span>
-                  <RangePicker
+                <label className="rpt__revenue-month">
+                  <span>With year</span>
+                  <DatePicker
+                    picker="year"
                     size="large"
-                    value={revenueCompareRange}
+                    allowClear={false}
+                    value={revenueCompareYear}
                     onChange={(value) =>
-                      setRevenueCompareRange(
-                        value && value[0] && value[1] ? [value[0], value[1]] : null,
-                      )
+                      value && setRevenueCompareYear(value.startOf('year'))
                     }
-                    disabledDate={(date) => date.isAfter(dayjs(), 'day')}
-                    format="DD MMM YYYY"
+                    disabledDate={(date) => date.isAfter(dayjs(), 'year')}
+                    format="YYYY"
                   />
                 </label>
               </div>
@@ -1594,7 +1830,7 @@ export const ReportsHome = () => {
         <Empty
           description={
             tab === 'revenue'
-              ? 'Pick compare and with date ranges'
+              ? 'Select periods to compare revenue'
               : 'Pick a custom date range to load reports'
           }
         />
@@ -1625,12 +1861,13 @@ export const ReportsHome = () => {
             />
           ) : (
             <RevenueTab
-              primaryMonth={primaryMonthTotals}
-              compareMonth={compareMonthTotals}
-              monthLabels={{
-                primary: primaryPeriodRange?.label ?? 'Compare period',
-                compare: comparePeriodRange?.label ?? 'With period',
-              }}
+              mode={revenueMode}
+              points={revenuePoints}
+              primaryLabel={primaryLabel}
+              compareLabel={compareLabel}
+              primaryTotals={primaryRevenueTotals}
+              compareTotals={compareRevenueTotals}
+              loading={revenueLoading}
             />
           )}
         </>

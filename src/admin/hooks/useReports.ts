@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import { message } from 'antd';
 import { reportService } from '@/services/report.service';
 import type { ReportExportType, ReportQuery } from '@/types';
@@ -11,6 +11,20 @@ export const useGymReport = (query: ReportQuery, enabled = true) =>
       enabled &&
       (query.filter !== 'custom' || Boolean(query.startDate && query.endDate)),
     staleTime: 30_000,
+  });
+
+/** Fetch multiple gym report date ranges in parallel (week/month revenue slices). */
+export const useGymReportQueries = (queries: ReportQuery[], enabled = true) =>
+  useQueries({
+    queries: queries.map((query) => ({
+      queryKey: ['reports', 'gym', query] as const,
+      queryFn: () => reportService.fetch(query),
+      enabled:
+        enabled &&
+        query.filter === 'custom' &&
+        Boolean(query.startDate && query.endDate),
+      staleTime: 30_000,
+    })),
   });
 
 export const useReportExport = (query: ReportQuery) => {
