@@ -645,7 +645,7 @@ export type ReportDateFilter =
   | 'yearly'
   | 'custom';
 
-export type ReportExportType = 'branch' | 'attendance' | 'revenue' | 'all';
+export type ReportExportType = 'branch' | 'attendance' | 'revenue' | 'pending' | 'all';
 
 export interface ReportQuery {
   filter: ReportDateFilter;

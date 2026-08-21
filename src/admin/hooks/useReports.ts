@@ -15,15 +15,40 @@ export const useGymReport = (query: ReportQuery, enabled = true) =>
 
 export const useReportExport = (query: ReportQuery) => {
   const excel = useMutation({
-    mutationFn: (reportType: ReportExportType) =>
-      reportService.downloadExcel({ ...query, reportType }),
-    onSuccess: (_data, reportType) => {
+    mutationFn: (
+      args:
+        | ReportExportType
+        | {
+            reportType: ReportExportType;
+            branchId?: string;
+            filter?: ReportQuery['filter'];
+            startDate?: string;
+            endDate?: string;
+          },
+    ) => {
+      if (typeof args === 'string') {
+        return reportService.downloadExcel({ ...query, reportType: args });
+      }
+      return reportService.downloadExcel({
+        ...query,
+        reportType: args.reportType,
+        branchId: args.branchId ?? query.branchId,
+        filter: args.filter ?? query.filter,
+        startDate: args.startDate,
+        endDate: args.endDate,
+        trainerId: undefined,
+      });
+    },
+    onSuccess: (_data, args) => {
+      const reportType = typeof args === 'string' ? args : args.reportType;
       const label =
         reportType === 'attendance'
           ? 'Trainer attendance'
           : reportType === 'branch'
             ? 'Branch summary'
-            : 'Report';
+            : reportType === 'pending'
+              ? 'Pending amount'
+              : 'Report';
       message.success(`${label} Excel download started`);
     },
     onError: (error: { message?: string }) =>

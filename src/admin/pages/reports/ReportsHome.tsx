@@ -1,8 +1,9 @@
 import {
+  DownloadOutlined,
   FileExcelOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, DatePicker, Empty, Progress, Select, Table } from 'antd';
+import { Button, DatePicker, Empty, Modal, Progress, Select, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { type Dayjs } from 'dayjs';
 import {
@@ -1173,6 +1174,15 @@ export const ReportsHome = () => {
   const [revenueCompareRange, setRevenueCompareRange] = useState<
     [Dayjs, Dayjs] | null
   >(defaultRevenueRanges.compare);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportType, setExportType] = useState<'branch' | 'attendance' | 'pending'>(
+    'branch',
+  );
+  const [exportBranchId, setExportBranchId] = useState<string | undefined>();
+  const [exportBranchError, setExportBranchError] = useState(false);
+  const [exportFilter, setExportFilter] = useState<ReportDateFilter>('monthly');
+  const [exportRange, setExportRange] = useState<[Dayjs, Dayjs] | null>(null);
+  const [exportDateError, setExportDateError] = useState(false);
 
   const query: ReportQuery = useMemo(
     () => ({
@@ -1300,6 +1310,83 @@ export const ReportsHome = () => {
 
   const showExcelExport = tab === 'branch' || tab === 'attendance';
 
+  const exportModalCopy = {
+    branch: {
+      title: 'Export Branch Summary',
+      subtitle: 'Download branch summary report as Excel (.xlsx)',
+      hint: 'Branch totals, revenue, and trainer highlights for the selected period.',
+      error: 'Please select a branch to generate the branch summary report.',
+    },
+    attendance: {
+      title: 'Export Trainer Attendance',
+      subtitle: 'Download trainer attendance report as Excel (.xlsx)',
+      hint: 'Trainer presence and working hours for the selected period.',
+      error: 'Please select a branch to generate the attendance report.',
+    },
+    pending: {
+      title: 'Export Pending Amount List',
+      subtitle: 'Download pending amounts as Excel (.xlsx)',
+      hint: 'Columns: Branch, Trainer, Client Name, Contact, Plan Value, Collected, Pending.',
+      error: 'Please select a branch to generate the pending amount report.',
+    },
+  } as const;
+
+  const openExportModal = (type: 'branch' | 'attendance' | 'pending') => {
+    setExportType(type);
+    setExportBranchId(branchId ?? 'all');
+    setExportBranchError(false);
+    setExportFilter(filter === 'custom' ? 'custom' : filter);
+    setExportRange(
+      filter === 'custom' && range?.[0] && range?.[1]
+        ? [range[0], range[1]]
+        : null,
+    );
+    setExportDateError(false);
+    setExportModalOpen(true);
+  };
+
+  const handleExportDownload = () => {
+    if (!exportBranchId) {
+      setExportBranchError(true);
+      message.error('Branch selection is required to export the report');
+      return;
+    }
+    setExportBranchError(false);
+
+    if (exportFilter === 'custom') {
+      if (!exportRange?.[0] || !exportRange?.[1]) {
+        setExportDateError(true);
+        message.error('Please select a custom date range');
+        return;
+      }
+      if (exportRange[0].isAfter(exportRange[1], 'day')) {
+        setExportDateError(true);
+        message.error('From date cannot be after To date');
+        return;
+      }
+    }
+    setExportDateError(false);
+
+    excel.mutate(
+      {
+        reportType: exportType,
+        branchId: exportBranchId,
+        filter: exportFilter,
+        startDate:
+          exportFilter === 'custom' && exportRange?.[0]
+            ? exportRange[0].format('YYYY-MM-DD')
+            : undefined,
+        endDate:
+          exportFilter === 'custom' && exportRange?.[1]
+            ? exportRange[1].format('YYYY-MM-DD')
+            : undefined,
+      },
+      {
+        onSuccess: () => setExportModalOpen(false),
+      },
+    );
+  };
+
   return (
     <div className="rpt">
       <header className="rpt__hero">
@@ -1312,15 +1399,23 @@ export const ReportsHome = () => {
           {showExcelExport ? (
             <Button
               icon={<FileExcelOutlined />}
-              loading={excel.isPending}
               disabled={!showReports}
               onClick={() => {
                 if (tab === 'branch' || tab === 'attendance') {
-                  excel.mutate(tab);
+                  openExportModal(tab);
                 }
               }}
             >
               {excelLabel}
+            </Button>
+          ) : null}
+          {tab === 'branch' ? (
+            <Button
+              icon={<FileExcelOutlined />}
+              disabled={!showReports}
+              onClick={() => openExportModal('pending')}
+            >
+              Pending Amount Excel
             </Button>
           ) : null}
         </div>
@@ -1537,6 +1632,213 @@ export const ReportsHome = () => {
           )}
         </>
       )}
+
+      <Modal
+        open={exportModalOpen}
+        onCancel={() => !excel.isPending && setExportModalOpen(false)}
+        destroyOnClose
+        centered
+        width={500}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 12,
+                background: '#fff0e8',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ff5000',
+              }}
+            >
+              <FileExcelOutlined style={{ fontSize: 20 }} />
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#16181f' }}>
+                {exportModalCopy[exportType].title}
+              </h4>
+              <small style={{ color: '#6f7685', fontSize: '0.78rem' }}>
+                {exportModalCopy[exportType].subtitle}
+              </small>
+            </div>
+          </div>
+        }
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', paddingTop: '0.5rem' }}>
+            <Button disabled={excel.isPending} onClick={() => setExportModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              icon={<DownloadOutlined />}
+              loading={excel.isPending}
+              onClick={handleExportDownload}
+              style={{
+                background: '#ff5000',
+                borderColor: '#ff5000',
+                fontWeight: 600,
+                borderRadius: 10,
+              }}
+            >
+              Download Excel (.xlsx)
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '0.75rem' }}>
+          <div
+            style={{
+              padding: '0.85rem 1rem',
+              borderRadius: 14,
+              background: '#f8fafc',
+              border: exportBranchError
+                ? '1px solid #ff4d4f'
+                : '1px solid rgba(22, 24, 31, 0.08)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 4,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  textTransform: 'uppercase',
+                  color: '#6f7685',
+                  fontWeight: 600,
+                }}
+              >
+                Target Branch <span style={{ color: '#ff4d4f' }}>*</span>
+              </span>
+              {exportBranchError ? (
+                <span style={{ fontSize: '0.75rem', color: '#ff4d4f', fontWeight: 600 }}>
+                  Selection Required
+                </span>
+              ) : null}
+            </div>
+            <Select
+              showSearch
+              optionFilterProp="label"
+              style={{ width: '100%' }}
+              placeholder="Select Branch (Required)"
+              status={exportBranchError ? 'error' : ''}
+              value={exportBranchId}
+              onChange={(val) => {
+                setExportBranchId(val);
+                if (val) setExportBranchError(false);
+              }}
+              options={[
+                { value: 'all', label: 'All Branches' },
+                ...(branchesData?.data.map((b) => ({
+                  value: String(b.id),
+                  label: shortBranch(b.name),
+                })) ?? []),
+              ]}
+            />
+            {exportBranchError ? (
+              <small
+                style={{
+                  color: '#ff4d4f',
+                  fontSize: '0.75rem',
+                  marginTop: 4,
+                  display: 'block',
+                }}
+              >
+                {exportModalCopy[exportType].error}
+              </small>
+            ) : null}
+          </div>
+
+          <div>
+            <span
+              style={{
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                color: '#16181f',
+                display: 'block',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Date Range
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+              {PERIODS.map((p) => (
+                <button
+                  key={p.value}
+                  type="button"
+                  className={
+                    exportFilter === p.value
+                      ? 'rpt__period rpt__period--on'
+                      : 'rpt__period'
+                  }
+                  onClick={() => {
+                    setExportFilter(p.value);
+                    setExportDateError(false);
+                    if (p.value !== 'custom') setExportRange(null);
+                  }}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {exportFilter === 'custom' ? (
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#16181f' }}>
+                  Custom Date Range <span style={{ color: '#ff4d4f' }}>*</span>
+                </span>
+                {exportDateError ? (
+                  <span style={{ fontSize: '0.75rem', color: '#ff4d4f', fontWeight: 600 }}>
+                    Required
+                  </span>
+                ) : null}
+              </div>
+              <RangePicker
+                style={{ width: '100%' }}
+                value={exportRange}
+                status={exportDateError ? 'error' : ''}
+                format="DD MMM YYYY"
+                onChange={(v) => {
+                  setExportRange(v && v[0] && v[1] ? [v[0], v[1]] : null);
+                  if (v?.[0] && v?.[1]) setExportDateError(false);
+                }}
+                disabledDate={(d) => d.isAfter(dayjs(), 'day')}
+              />
+              {exportDateError ? (
+                <small
+                  style={{
+                    color: '#ff4d4f',
+                    fontSize: '0.75rem',
+                    marginTop: 4,
+                    display: 'block',
+                  }}
+                >
+                  Please select both From and To dates.
+                </small>
+              ) : null}
+            </div>
+          ) : null}
+
+          <p style={{ margin: 0, fontSize: '0.8rem', color: '#6f7685' }}>
+            {exportModalCopy[exportType].hint}
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 };

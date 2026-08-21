@@ -11,7 +11,17 @@ const excelFilename = (reportType?: ReportQuery['reportType']) => {
   if (reportType === 'attendance') return `Trainer_Attendance_${stamp}.xlsx`;
   if (reportType === 'revenue') return `Revenue_Report_${stamp}.xlsx`;
   if (reportType === 'branch') return `Branch_Report_${stamp}.xlsx`;
+  if (reportType === 'pending') return `Pending_Amount_Report_${stamp}.xlsx`;
   return `Gym_Report_${stamp}.xlsx`;
+};
+
+const toBranchId = (branchId: string | string[]) => {
+  if (branchId === 'all') return 'all';
+  if (Array.isArray(branchId)) {
+    if (branchId.length === 1 && branchId[0] === 'all') return 'all';
+    return branchId.map(Number);
+  }
+  return Number(branchId);
 };
 
 const toBody = (query: ReportQuery) => {
@@ -25,12 +35,10 @@ const toBody = (query: ReportQuery) => {
   }
 
   if (query.branchId != null && query.branchId !== '') {
-    body.branch_id = Array.isArray(query.branchId)
-      ? query.branchId.map(Number)
-      : Number(query.branchId);
+    body.branch_id = toBranchId(query.branchId);
   }
 
-  if (query.trainerId != null && query.trainerId !== '') {
+  if (query.reportType !== 'pending' && query.trainerId != null && query.trainerId !== '') {
     body.trainer_id = Array.isArray(query.trainerId)
       ? query.trainerId.map(Number)
       : Number(query.trainerId);
