@@ -51,12 +51,7 @@ export default function HomeAboutUs() {
                 loading="lazy"
               />
             </div>
-            <div className="absolute -bottom-6 -right-4 md:right-6 px-6 py-4 rounded-2xl bg-white border border-[rgba(22,24,31,0.06)] shadow-[0_16px_40px_rgba(22,24,31,0.1)]">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#ff5000] mb-1">
-                Our First Club
-              </p>
-              <p className="font-display text-lg font-bold text-[#16181f]">Arekere, Bengaluru</p>
-            </div>
+           
           </div>
 
           <div>

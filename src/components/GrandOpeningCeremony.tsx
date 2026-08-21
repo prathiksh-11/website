@@ -2,15 +2,28 @@ import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Sparkles,
-  Flame,
-  Zap,
-  Layers,
-  Shield,
   Scissors,
   RotateCcw,
   ArrowRight,
+  MapPin,
+  Dumbbell,
+  Flame,
+  Music2,
+  Zap,
 } from 'lucide-react';
 import { IMAGES } from './image_constant';
+
+const BELLANDUR_ADDRESS =
+  '2nd & 3rd Floor, 71/1, Opp EcoWorld South Gate, Bhoganahalli, Bellandur, Bengaluru, Karnataka 560103';
+
+const CLASS_PILLS = [
+  'CrossFit',
+  'HIIT',
+  'Zumba',
+  'Yoga',
+  'Dance',
+  'Kickboxing',
+];
 
 export default function GrandOpeningCeremony() {
   const [curtainsOpen, setCurtainsOpen] = useState(false);
@@ -51,10 +64,7 @@ export default function GrandOpeningCeremony() {
   const handleOpenCurtains = () => {
     if (curtainsOpen) return;
     setCurtainsOpen(true);
-
-    setTimeout(() => {
-      triggerCelebrationConfetti();
-    }, 1300);
+    setTimeout(() => triggerCelebrationConfetti(), 1300);
   };
 
   const handleReplayCeremony = () => {
@@ -67,19 +77,14 @@ export default function GrandOpeningCeremony() {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasAutoOpened) {
             setHasAutoOpened(true);
-            setTimeout(() => {
-              handleOpenCurtains();
-            }, 500);
+            setTimeout(() => handleOpenCurtains(), 500);
           }
         });
       },
-      { threshold: 0.25 }
+      { threshold: 0.25 },
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [hasAutoOpened]);
 
@@ -94,75 +99,45 @@ export default function GrandOpeningCeremony() {
     let height = (canvas.height = canvas.parentElement?.clientHeight || 650);
 
     const handleResize = () => {
-      if (!canvas || !canvas.parentElement) return;
+      if (!canvas?.parentElement) return;
       width = canvas.width = canvas.parentElement.clientWidth;
       height = canvas.height = canvas.parentElement.clientHeight;
     };
     window.addEventListener('resize', handleResize);
 
-    const particles: Array<{
-      x: number;
-      y: number;
-      size: number;
-      speedY: number;
-      speedX: number;
-      opacity: number;
-      fadeSpeed: number;
-      color: string;
-    }> = [];
-
-    const colors = [
-      'rgba(255, 80, 0, ',
-      'rgba(255, 122, 56, ',
-      'rgba(245, 217, 166, ',
-      'rgba(255, 180, 140, ',
-    ];
-
-    for (let i = 0; i < 28; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        size: Math.random() * 2.4 + 0.8,
-        speedY: -(Math.random() * 0.4 + 0.15),
-        speedX: (Math.random() - 0.5) * 0.25,
-        opacity: Math.random() * 0.55 + 0.2,
-        fadeSpeed: Math.random() * 0.01 + 0.003,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      });
-    }
+    const particles = Array.from({ length: 24 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.2 + 0.6,
+      speedY: -(Math.random() * 0.35 + 0.12),
+      speedX: (Math.random() - 0.5) * 0.2,
+      opacity: Math.random() * 0.5 + 0.15,
+      fadeSpeed: Math.random() * 0.01 + 0.003,
+      color: ['rgba(255,80,0,', 'rgba(255,122,56,', 'rgba(245,217,166,'][
+        Math.floor(Math.random() * 3)
+      ],
+    }));
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
-
       particles.forEach((p) => {
         p.y += p.speedY;
         p.x += p.speedX;
         p.opacity += p.fadeSpeed;
-
-        if (p.opacity > 0.75 || p.opacity < 0.12) {
-          p.fadeSpeed = -p.fadeSpeed;
-        }
-
+        if (p.opacity > 0.7 || p.opacity < 0.1) p.fadeSpeed = -p.fadeSpeed;
         if (p.y < -10) {
           p.y = height + 10;
           p.x = Math.random() * width;
         }
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `${p.color}${Math.max(0, Math.min(1, p.opacity))})`;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#ffb089';
         ctx.fill();
       });
-
       animationFrameId = requestAnimationFrame(render);
     };
 
     render();
-
     return () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
@@ -173,175 +148,172 @@ export default function GrandOpeningCeremony() {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ x: x * 8, y: -y * 8 });
+    setTilt({ x: x * 6, y: -y * 6 });
   };
 
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-  };
+  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   return (
-    <section className="py-8 sm:py-12 md:py-16 relative overflow-hidden bg-transparent">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" ref={containerRef}>
-        <div className="relative rounded-[2.5rem] bg-gradient-to-br from-[#fffdfb] via-[#fff6ef] to-[#ffe8d6] border border-[#ffd7c0] shadow-[0_30px_90px_rgba(255,112,51,0.16),0_12px_40px_rgba(232,184,109,0.18)] overflow-hidden min-h-[640px]">
+    <section className="py-10 sm:py-14 md:py-20 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" ref={containerRef}>
+        <div className="relative rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden min-h-[580px] border border-[#ff5000]/20 shadow-[0_40px_100px_rgba(255,80,0,0.18),0_0_0_1px_rgba(255,255,255,0.6)_inset] bg-gradient-to-br from-[#fffaf7] via-[#fff3eb] to-[#ffe4d4]">
+          {/* Ambient glow */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-16 right-0 w-[620px] h-[420px] bg-gradient-to-b from-[#ffb089]/45 via-[#ffd7c0]/25 to-transparent rounded-full blur-[110px]" />
-            <div className="absolute -bottom-24 -left-16 w-[480px] h-[480px] bg-[#f5d9a6]/40 rounded-full blur-[100px]" />
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[70%] h-[50%] bg-white/50 rounded-full blur-[90px]" />
+            <div className="absolute -top-32 -right-20 w-[500px] h-[500px] rounded-full bg-[#ff5000]/20 blur-[120px]" />
+            <div className="absolute -bottom-32 -left-20 w-[400px] h-[400px] rounded-full bg-[#f5d9a6]/50 blur-[100px]" />
           </div>
 
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-60"
-          />
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-40" />
 
-          <div className="relative z-40 bg-white/70 backdrop-blur-xl border-b border-[#ffd7c0] py-4 px-6 sm:px-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff5000] opacity-70" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ff7033] shadow-[0_0_10px_#ffb089]" />
+          {/* Top bar */}
+          <div className="relative z-40 flex items-center justify-between px-5 sm:px-8 py-4 border-b border-[#ff5000]/10 bg-white/50 backdrop-blur-md">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff5000] opacity-75" />
+                <span className="relative rounded-full h-2 w-2 bg-[#ff5000]" />
               </span>
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-[0.22em]">
-                <span className="text-[#8a6a58] hidden sm:inline">Grand Opening •</span>
-                <span className="text-[#ff5000] font-black">A New Chapter</span>
-              </div>
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em] text-[#c45a28]">
+                Grand Opening
+              </span>
             </div>
-
             {curtainsOpen && (
               <button
                 type="button"
                 onClick={handleReplayCeremony}
-                className="inline-flex items-center gap-2 text-xs font-bold text-[#c45a28] bg-white hover:bg-[#ff5000] hover:text-white px-4 py-2 rounded-full border border-[#ffd7c0] hover:border-[#ff5000] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-[0_8px_24px_rgba(255,80,0,0.28)] hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#ff5000] hover:text-white hover:bg-[#ff5000] px-3 py-1.5 rounded-full border border-[#ff5000]/30 transition-all duration-300"
               >
-                <RotateCcw size={13} />
-                <span>Replay Reveal</span>
+                <RotateCcw size={12} />
+                Replay
               </button>
             )}
           </div>
 
           {curtainsOpen && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[550px] bg-gradient-to-b from-[#ffb089]/40 via-[#f5d9a6]/20 to-transparent rounded-full blur-[110px] pointer-events-none grand-light-burst z-15" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[#ff5000]/25 rounded-full blur-[100px] pointer-events-none grand-light-burst z-[15]" />
           )}
 
+          {/* Main content */}
           <div
-            className={`relative z-20 p-6 sm:p-10 lg:p-12 transition-all duration-1000 ${
-              curtainsOpen ? 'opacity-100 blur-0 translate-y-0' : 'opacity-20 blur-sm translate-y-4'
+            className={`relative z-20 p-5 sm:p-8 lg:p-10 transition-all duration-1000 ${
+              curtainsOpen ? 'opacity-100 blur-0' : 'opacity-0 blur-md scale-[0.98]'
             }`}
           >
-            <div className="grid lg:grid-cols-[1.1fr_1.3fr] gap-8 lg:gap-12 items-center">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+              {/* Image — cinematic frame */}
               <div
-                className="relative min-h-[360px] sm:min-h-[440px] lg:min-h-[500px] rounded-3xl overflow-hidden border border-[#ffd7c0] shadow-[0_24px_60px_rgba(255,112,51,0.22)] group perspective-1000"
+                className={`go-reveal-1 relative ${curtainsOpen ? '' : 'pointer-events-none'}`}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               >
+                <div className="absolute -inset-1 rounded-[1.75rem] bg-gradient-to-br from-[#ff5000] via-[#ff8c56] to-[#f5d9a6] opacity-60 blur-sm" />
                 <div
-                  className="w-full h-full absolute inset-0 transition-transform duration-300 ease-out"
+                  className="relative rounded-[1.5rem] overflow-hidden go-image-shine shadow-[0_30px_70px_rgba(255,80,0,0.25)] ring-1 ring-white/80"
                   style={{
-                    transform: `rotateY(${tilt.x}deg) rotateX(${tilt.y}deg) scale3d(1.02, 1.02, 1.02)`,
+                    transform: `perspective(800px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`,
+                    transition: 'transform 0.3s ease-out',
                   }}
                 >
-                  <img
-                    src={IMAGES.Branches.kasavanahalli}
-                    alt="Upcoming flagship club preview"
-                    className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-1000 ${
-                      curtainsOpen ? 'scale-100 filter-none' : 'scale-105 blur-[2px]'
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#fff4ed]/95 via-[#fff4ed]/20 to-transparent" />
+                  <div className="aspect-video w-full">
+                    <img
+                      src={IMAGES.Branches.bellandur}
+                      alt="Game On Fitness Luxury Club Bellandur"
+                      className="w-full h-full object-cover object-center"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#2a1410]/50 via-transparent to-transparent pointer-events-none" />
 
-                  <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-xl border border-[#ffd7c0] text-xs font-black tracking-[0.16em] uppercase shadow-[0_8px_24px_rgba(255,176,137,0.35)]">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff5000] opacity-70" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff7033]" />
-                    </span>
-                    <span className="text-[#c45a28]">Coming Soon • Q3 2026</span>
+                  {/* Price sticker */}
+                  <div className="go-price-pulse absolute bottom-4 left-4 flex items-end gap-2">
+                    <div className="px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-white">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#8a6a58] mb-0.5">
+                        Annual
+                      </p>
+                      <p className="font-display text-2xl sm:text-3xl font-black text-[#ff5000] leading-none">
+                        ₹18,999
+                      </p>
+                      <p className="text-xs text-[#8a6a58] line-through mt-0.5">₹29,999</p>
+                    </div>
                   </div>
 
-                  <div className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] text-white text-[11px] font-black tracking-wider uppercase shadow-[0_8px_20px_rgba(255,80,0,0.35)]">
-                    <Sparkles size={13} className="fill-white" />
-                    <span>Preview</span>
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-4 p-4 sm:p-5 rounded-2xl bg-white/88 backdrop-blur-xl border border-white/80 shadow-[0_12px_32px_rgba(255,176,137,0.28)]">
-                    <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff5000] mb-1">
-                      Luxury Sanctuary
-                    </p>
-                    <p className="font-display text-base sm:text-lg font-black text-[#5c3a2a] leading-snug">
-                      18,000 Sq.Ft • Three Floors • Thermal Plunge & Sauna
-                    </p>
+                  <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-[#ff5000] text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-lg">
+                    <Sparkles size={11} className="fill-white" />
+                    New Branch
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col space-y-6">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#ffd7c0] text-xs font-black uppercase tracking-[0.25em] text-[#ff5000] mb-3.5 shadow-sm">
-                    <Sparkles size={13} className="fill-[#ff5000]" />
-                    <span>The Next Chapter</span>
-                  </div>
-
-                  <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.08] text-[#5c3a2a] mb-4">
-                    Something <span className="italic text-[#ff5000]">extraordinary</span>
-                    <br />
-                    is almost here.
+              {/* Copy — editorial */}
+              <div className="space-y-5 sm:space-y-6">
+                <div className={curtainsOpen ? 'go-reveal-2' : ''}>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[#ff5000] mb-3">
+                    Coming Soon · Bellandur
+                  </p>
+                  <h3 className="font-display text-[2rem] sm:text-4xl lg:text-[2.6rem] font-black text-[#2a1410] leading-[1.08] tracking-tight mb-4">
+                    Dear Bellandur,
                   </h3>
+                  <p className="text-[#5c3a2a] text-base sm:text-lg leading-relaxed mb-2">
+                    Your &ldquo;I&apos;ll start Monday&rdquo; era is officially under threat.{' '}
+                    <span aria-hidden>🙂</span>
+                  </p>
+                  <p className="text-[#5c3a2a] text-base sm:text-lg leading-relaxed">
+                    <span className="font-bold text-[#ff5000]">Game On Fitness Luxury Club</span>{' '}
+                    is coming — and we&apos;re not exactly coming quietly.
+                  </p>
+                </div>
 
-                  <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 border border-[#ffd7c0] mb-5 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-2 h-2 rounded-full bg-[#ff5000] animate-ping" />
-                      <span className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#c45a28]">
-                        Inauguration • Q3 2026
+                {/* Highlights row */}
+                <div className={`grid grid-cols-3 gap-2 sm:gap-3 ${curtainsOpen ? 'go-reveal-3' : ''}`}>
+                  {[
+                    { icon: Dumbbell, label: 'Big Gym' },
+                    { icon: Flame, label: 'Bigger Energy' },
+                    { icon: Music2, label: 'Dance Studio' },
+                  ].map(({ icon: Icon, label }) => (
+                    <div
+                      key={label}
+                      className="flex flex-col items-center gap-1.5 p-3 sm:p-4 rounded-2xl bg-white/70 border border-[#ffd7c0]/80 backdrop-blur-sm text-center shadow-sm"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ff7a3d] to-[#ff5e1a] flex items-center justify-center text-white shadow-md">
+                        <Icon size={16} />
+                      </div>
+                      <span className="text-[10px] sm:text-xs font-bold text-[#5c3a2a] leading-tight">
+                        {label}
                       </span>
                     </div>
-                    <span className="px-2.5 py-1 rounded-full bg-gradient-to-r from-[#ff7a3d] to-[#ff5e1a] text-white text-[11px] font-black tracking-wider hidden sm:inline">
-                      Exclusive
-                    </span>
-                  </div>
+                  ))}
+                </div>
 
-                  <p className="text-[#8a6a58] text-sm sm:text-base leading-relaxed mb-6">
-                    Our most ambitious club yet. 18,000 sq.ft across three floors — imported Italian
-                    biomechanics, thermal contrast plunge, infrared sauna, and a 40m rooftop sprint turf.
+               
+
+                {/* Location + tagline */}
+                <div className={curtainsOpen ? 'go-reveal-4' : ''}>
+                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#ff5000]/10 to-transparent border border-[#ff5000]/20">
+                    <div className="w-10 h-10 rounded-xl bg-[#ff5000] flex items-center justify-center shrink-0 shadow-[0_8px_20px_rgba(255,80,0,0.35)]">
+                      <MapPin size={18} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-[#2a1410] mb-1">Opp. Eco World South Gate</p>
+                      <p className="text-xs sm:text-sm text-[#6f5a4a] leading-relaxed">{BELLANDUR_ADDRESS}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm text-[#8a6a58] italic font-medium">
+                    Your excuses have been notified. <span aria-hidden>👀</span>
                   </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                    {[
-                      { icon: Zap, title: '18,000 Sq.Ft Club', sub: '3 Bespoke Floors' },
-                      { icon: Flame, title: 'Plunge & Sauna', sub: 'Thermal Contrast Zone' },
-                      { icon: Layers, title: 'Sprint Turf', sub: '40m Rooftop Track' },
-                      { icon: Shield, title: 'Biomechanics', sub: 'Imported Italian Gear' },
-                    ].map(({ icon: Icon, title, sub }) => (
-                      <div
-                        key={title}
-                        className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white/80 hover:bg-white border border-[#ffeadc] hover:border-[#ffb089] backdrop-blur-xl transition-all duration-300 group shadow-sm"
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff8c56] to-[#ff5e1a] text-white flex items-center justify-center shadow-[0_6px_16px_rgba(255,80,0,0.28)] group-hover:scale-110 transition-transform shrink-0">
-                          <Icon size={18} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-[#5c3a2a] group-hover:text-[#ff5000] transition-colors leading-tight">
-                            {title}
-                          </p>
-                          <p className="text-[11px] font-medium text-[#8a6a58]">{sub}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Curtains */}
           <div
-            className={`absolute top-[52px] bottom-0 left-0 w-1/2 z-30 theatre-curtain-fabric-left transition-all duration-[1800ms] ease-[cubic-bezier(0.77,0,0.175,1)] pointer-events-none origin-left ${
+            className={`absolute top-[53px] bottom-0 left-0 w-1/2 z-30 theatre-curtain-fabric-left transition-all duration-[1800ms] ease-[cubic-bezier(0.77,0,0.175,1)] pointer-events-none origin-left ${
               curtainsOpen ? '-translate-x-[92%] scale-x-[0.16] opacity-90' : 'translate-x-0 scale-x-100 opacity-100'
             }`}
           >
             <div className="absolute bottom-0 inset-x-0 h-5 curtain-gold-fringe" />
             <div className="absolute top-0 bottom-0 right-0 w-3 curtain-gold-trim" />
           </div>
-
           <div
-            className={`absolute top-[52px] bottom-0 right-0 w-1/2 z-30 theatre-curtain-fabric-right transition-all duration-[1800ms] ease-[cubic-bezier(0.77,0,0.175,1)] pointer-events-none origin-right ${
+            className={`absolute top-[53px] bottom-0 right-0 w-1/2 z-30 theatre-curtain-fabric-right transition-all duration-[1800ms] ease-[cubic-bezier(0.77,0,0.175,1)] pointer-events-none origin-right ${
               curtainsOpen ? 'translate-x-[92%] scale-x-[0.16] opacity-90' : 'translate-x-0 scale-x-100 opacity-100'
             }`}
           >
@@ -349,39 +321,40 @@ export default function GrandOpeningCeremony() {
             <div className="absolute top-0 bottom-0 left-0 w-3 curtain-gold-trim" />
           </div>
 
+          {/* Curtain overlay */}
           {!curtainsOpen && (
-            <div className="absolute inset-0 z-35 flex flex-col items-center justify-center p-6 text-center bg-[#fff6ef]/55 backdrop-blur-[3px]">
-              <div className="ribbon-sway-anim absolute inset-x-0 top-1/2 -translate-y-1/2 h-14 bg-gradient-to-r from-[#ffb089] via-[#ff7033] to-[#ffb089] border-y-2 border-[#f5d9a6] shadow-[0_0_36px_rgba(255,112,51,0.45)] pointer-events-none flex items-center justify-center opacity-90">
-                <div className="curtain-gold-trim h-1 w-full" />
-              </div>
+            <div className="absolute inset-0 z-[35] flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-[#fff6ef]/80 via-[#ffe8d6]/70 to-[#fff6ef]/80 backdrop-blur-sm">
+              <div className="ribbon-sway-anim absolute inset-x-0 top-1/2 -translate-y-1/2 h-12 bg-gradient-to-r from-[#ff5000] via-[#ff7033] to-[#ff5000] opacity-90 pointer-events-none" />
 
-              <div className="relative z-10 w-22 h-22 rounded-full bg-gradient-to-br from-[#f5d9a6] via-[#ff8c56] to-[#ff5e1a] p-1.5 shadow-[0_0_50px_rgba(255,140,86,0.7)] seal-pulse-anim mb-4 flex items-center justify-center">
-                <div className="w-full h-full rounded-full bg-white border-2 border-[#f5d9a6] flex items-center justify-center text-[#ff5000]">
-                  <Sparkles size={36} className="fill-[#ff5000] animate-spin" style={{ animationDuration: '8s' }} />
+              <div className="relative z-10 mb-5">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#ff8c56] to-[#ff5000] p-1 shadow-[0_0_40px_rgba(255,80,0,0.5)] seal-pulse-anim mx-auto flex items-center justify-center">
+                  <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                    <Sparkles size={32} className="text-[#ff5000] fill-[#ff5000]" />
+                  </div>
                 </div>
               </div>
 
-              <div className="relative z-10 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-[#ffd7c0] text-[#c45a28] text-xs font-black tracking-[0.25em] uppercase mb-4 shadow-md">
-                <span>Grand Inauguration</span>
-              </div>
+              <p className="relative z-10 text-[11px] font-bold uppercase tracking-[0.35em] text-[#ff5000] mb-3">
+                Something big is coming
+              </p>
 
-              <h3 className="relative z-10 font-display text-3xl sm:text-5xl font-black text-[#5c3a2a] tracking-tight leading-tight max-w-2xl mb-3">
-                Behind this silk curtain lies the{' '}
-                <span className="italic text-[#ff5000]">next sanctuary.</span>
+              <h3 className="relative z-10 font-display text-3xl sm:text-5xl font-black text-[#2a1410] leading-tight max-w-xl mb-3">
+                Dear Bellandur,{' '}
+                <span className="italic text-[#ff5000]">ready?</span>
               </h3>
 
-              <p className="relative z-10 text-[#8a6a58] text-sm sm:text-base max-w-lg mx-auto mb-7 leading-relaxed">
-                Cut the ribbon, draw the curtains, and be first to see what we have been building.
+              <p className="relative z-10 text-[#6f5a4a] text-sm sm:text-base max-w-md mb-8 leading-relaxed">
+                Cut the ribbon. Draw the curtains. See Bengaluru&apos;s next luxury fitness club first.
               </p>
 
               <button
                 type="button"
                 onClick={handleOpenCurtains}
-                className="relative z-10 group inline-flex items-center gap-3 px-8 sm:px-10 py-4 rounded-full bg-gradient-to-r from-[#ff7a3d] via-[#ff8c56] to-[#ff7a3d] hover:from-[#ff6e2e] hover:to-[#ff7a3d] text-white font-display font-black text-sm sm:text-base tracking-wide shadow-[0_15px_45px_rgba(255,112,51,0.45)] hover:shadow-[0_20px_65px_rgba(255,112,51,0.6)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+                className="relative z-10 group inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#ff5000] hover:bg-[#e04800] text-white font-bold text-sm sm:text-base shadow-[0_16px_40px_rgba(255,80,0,0.45)] hover:shadow-[0_20px_50px_rgba(255,80,0,0.55)] hover:scale-105 active:scale-95 transition-all duration-300"
               >
-                <Scissors size={20} className="fill-white group-hover:rotate-45 transition-transform" />
-                <span>Cut Ribbon & Draw Curtains</span>
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <Scissors size={18} className="group-hover:rotate-45 transition-transform" />
+                Cut Ribbon & Reveal
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           )}

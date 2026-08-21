@@ -275,7 +275,7 @@ export default function Hero() {
             </button>
             <button
               onClick={() =>
-                document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' })
+                document.querySelector('#bellandur')?.scrollIntoView({ behavior: 'smooth' })
               }
               className="hero-cta-secondary text-sm font-semibold px-8 py-4 rounded-full text-white hover:bg-white/20 transition-all duration-300 cursor-pointer"
             >
@@ -305,23 +305,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Scroll Down Indicator */}
-      <button
-        onClick={() =>
-          document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth' })
-        }
-        className={`absolute bottom-10 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-white/60 hover:text-white transition-colors cursor-pointer ${
-          loaded ? 'hero-fade-up' : 'opacity-0'
-        }`}
-        style={{ animationDelay: '1.3s' }}
-        aria-label="Scroll down"
-      >
-        <span className="text-[10px] uppercase tracking-[0.25em] font-bold">Scroll</span>
-        <span className="hero-scroll-mouse relative w-5 h-8 rounded-full border border-white/40">
-          <span className="absolute top-1.5 left-1/2 -translate-x-1/2 w-1 h-1.5 rounded-full bg-white/80" />
-        </span>
-      </button>
 
       {/* Location Permission Toast */}
       {locationDenied && (
