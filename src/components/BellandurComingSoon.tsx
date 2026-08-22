@@ -204,7 +204,7 @@ export default function BellandurComingSoon() {
               </p>
 
               <p className="text-xs text-zinc-600 leading-relaxed mb-6">
-                Lock in Bengaluru's best pre-launch gym membership. Includes full access to group classes, functional rig, and 24/7 luxury club facilities.
+                Lock in Bengaluru's best pre-launch gym membership. Includes full access to group classes, functional rig, and luxury club facilities.
               </p>
             </div>
 
@@ -252,7 +252,7 @@ export default function BellandurComingSoon() {
 
             <div className="flex items-center gap-2 text-[11px] text-zinc-500 pt-2 border-t border-zinc-100">
               <Clock size={13} className="text-[#ff5000]" />
-              <span>24/7 Access for unrestricted training schedules</span>
+              <span>24-7 Access for unrestricted training schedules</span>
             </div>
           </div>
 
@@ -332,7 +332,7 @@ export default function BellandurComingSoon() {
             { title: '10,000+ Sq. Ft.', desc: 'High ceilings & elite machines' },
             { title: 'Certified Coaches', desc: 'Personalized guidance & diet' },
             { title: 'Biggest Dance Studio', desc: 'Sprung wood acoustic studio' },
-            { title: 'Steam & Recovery', desc: 'Luxury lockers & shower zone' },
+            { title: 'Steam & Recovery', desc: 'Luxury lockers & refresh zone' },
           ].map((item, idx) => (
             <div key={idx} className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-zinc-200/70 shadow-sm text-left">
               <ShieldCheck size={16} className="text-[#ff5000] shrink-0" />
