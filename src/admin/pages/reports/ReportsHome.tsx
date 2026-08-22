@@ -26,6 +26,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -71,9 +72,10 @@ const TABS: Array<{ key: ReportTab; label: string; hint: string }> = [
   { key: 'revenue', label: 'Revenue', hint: 'Week-wise monthly or month-wise yearly comparison' },
 ];
 
-type RevenueCompareMode = 'monthly' | 'yearly';
+type RevenueCompareMode = 'today' | 'monthly' | 'yearly';
 
 const REVENUE_MODES: Array<{ value: RevenueCompareMode; label: string }> = [
+  { value: 'today', label: 'Today' },
   { value: 'monthly', label: 'Monthly' },
   { value: 'yearly', label: 'Yearly' },
 ];
@@ -239,16 +241,6 @@ const MoneyHealthCards = ({ totals }: { totals: GymReport['totals'] }) => (
         <span>Paid amount</span>
         <strong>{formatCurrency(totals.paidAmount)}</strong>
         <small>Collected in this period</small>
-      </div>
-    </article>
-    <article className="rpt-money rpt-money--pending">
-      <div className="rpt-money__icon">
-        <Hourglass size={18} />
-      </div>
-      <div>
-        <span>Pending amount</span>
-        <strong>{formatCurrency(totals.pendingAmount)}</strong>
-        <small>{totals.pendingCount} awaiting approval</small>
       </div>
     </article>
     <article className="rpt-money rpt-money--partial">
@@ -419,88 +411,88 @@ const BranchOverviewCards = ({
     hero?: boolean;
     wide?: boolean;
   }> = [
-    {
-      key: 'branch',
-      label: 'Total branches',
-      value: branchNameLabel,
-      icon: Building2,
-      hero: true,
-    },
-    {
-      key: 'manager',
-      label: 'Manager',
-      value: managerLabel,
-      icon: UserCheck,
-    },
-    {
-      key: 'general',
-      label: 'General trainer',
-      value: String(aggregates.generalTrainer),
-      icon: Dumbbell,
-    },
-    {
-      key: 'pt-trainer',
-      label: 'Personal trainer',
-      value: String(aggregates.ptTrainer),
-      icon: Dumbbell,
-    },
-    {
-      key: 'mc',
-      label: 'Membership Coordinator',
-      value: String(aggregates.mc),
-      icon: Users,
-    },
-    {
-      key: 'reci',
-      label: 'Receptionist',
-      value: String(aggregates.reci),
-      icon: Users,
-    },
-    {
-      key: 'clients',
-      label: 'Total clients',
-      value: String(aggregates.totalClients),
-      icon: Users,
-    },
-    {
-      key: 'pt-clients',
-      label: 'PT/clients',
-      value: String(aggregates.ptClients),
-      icon: UserCheck,
-    },
-    {
-      key: 'pt-revenue',
-      label: 'PT/revenue',
-      value: formatCurrency(aggregates.ptRevenue),
-      icon: Dumbbell,
-    },
-    {
-      key: 'membership',
-      label: 'Membership client',
-      value: String(aggregates.membershipClients),
-      icon: Users,
-    },
-    {
-      key: 'sub-revenue',
-      label: 'Membership Revenue',
-      value: formatCurrency(aggregates.subscriptionRevenue),
-      icon: CircleDollarSign,
-    },
-    {
-      key: 'employees',
-      label: 'Total employees',
-      value: String(aggregates.totalEmployees),
-      icon: Activity,
-    },
-    {
-      key: 'total-revenue',
-      label: 'Total revenue',
-      value: formatCurrency(aggregates.totalRevenueAll),
-      icon: CircleDollarSign,
-      hero: true,
-      wide: true,
-    },
-  ];
+      {
+        key: 'branch',
+        label: 'Total branches',
+        value: branchNameLabel,
+        icon: Building2,
+        hero: true,
+      },
+      {
+        key: 'manager',
+        label: 'Manager',
+        value: managerLabel,
+        icon: UserCheck,
+      },
+      {
+        key: 'general',
+        label: 'General trainer',
+        value: String(aggregates.generalTrainer),
+        icon: Dumbbell,
+      },
+      {
+        key: 'pt-trainer',
+        label: 'Personal trainer',
+        value: String(aggregates.ptTrainer),
+        icon: Dumbbell,
+      },
+      {
+        key: 'mc',
+        label: 'Membership Coordinator',
+        value: String(aggregates.mc),
+        icon: Users,
+      },
+      {
+        key: 'reci',
+        label: 'Receptionist',
+        value: String(aggregates.reci),
+        icon: Users,
+      },
+      {
+        key: 'clients',
+        label: 'Total clients',
+        value: String(aggregates.totalClients),
+        icon: Users,
+      },
+      {
+        key: 'pt-clients',
+        label: 'PT/clients',
+        value: String(aggregates.ptClients),
+        icon: UserCheck,
+      },
+      {
+        key: 'pt-revenue',
+        label: 'PT/revenue',
+        value: formatCurrency(aggregates.ptRevenue),
+        icon: Dumbbell,
+      },
+      {
+        key: 'membership',
+        label: 'Membership client',
+        value: String(aggregates.membershipClients),
+        icon: Users,
+      },
+      {
+        key: 'sub-revenue',
+        label: 'Membership Revenue',
+        value: formatCurrency(aggregates.subscriptionRevenue),
+        icon: CircleDollarSign,
+      },
+      {
+        key: 'employees',
+        label: 'Total employees',
+        value: String(aggregates.totalEmployees),
+        icon: Activity,
+      },
+      {
+        key: 'total-revenue',
+        label: 'Total revenue',
+        value: formatCurrency(aggregates.totalRevenueAll),
+        icon: CircleDollarSign,
+        hero: true,
+        wide: true,
+      },
+    ];
 
   return (
     <section className="rpt__overview rpt__overview--branch" aria-label="Branch summary">
@@ -689,7 +681,7 @@ const BranchSummaryTab = ({
       align: 'right',
       render: (value: number) => formatCurrency(value),
     },
-  
+
     {
       title: 'Pending',
       dataIndex: 'pendingAmount',
@@ -779,22 +771,6 @@ const BranchSummaryTab = ({
                   </li>
                 </ul>
 
-                <div className="rpt-branch__hero-metric rpt-branch__hero-metric--pending">
-                  <div className="rpt-branch__hero-metric-icon">
-                    <Hourglass size={18} />
-                  </div>
-                  <div className="rpt-branch__hero-metric-body">
-                    <span className="rpt-branch__hero-label">Pending amount</span>
-                    <strong className="rpt-branch__hero-value">
-                      {formatCurrency(pendingTotal)}
-                    </strong>
-                    <small className="rpt-branch__hero-hint">{pendingHint}</small>
-                  </div>
-                  <span className="rpt-branch__hero-tag rpt-branch__hero-tag--pending">
-                    Pending
-                  </span>
-                </div>
-
                 <div className="rpt-branch__section-label">Customers & Staff</div>
                 <div className="rpt-branch__people">
                   <div className="rpt-branch__person-box">
@@ -820,7 +796,7 @@ const BranchSummaryTab = ({
                   </div>
                 </div>
 
-        
+
               </article>
             );
           })}
@@ -830,7 +806,7 @@ const BranchSummaryTab = ({
         </div>
       </section>
 
-     
+
     </div>
   );
 };
@@ -997,7 +973,7 @@ const RevenueTab = ({
       p.compareSub > 0,
   );
 
-  const bucketLabel = mode === 'monthly' ? 'week' : 'month';
+  const bucketLabel = mode === 'today' ? 'day' : mode === 'monthly' ? 'week' : 'month';
   let peakLabel = '—';
   let lowLabel = '—';
   if (points.length > 0) {
@@ -1016,10 +992,14 @@ const RevenueTab = ({
     <div className="rpt-tab rpt-tab--revenue">
       <header className="rpt-rev-dash__intro">
         <div>
-          <h2>Revenue Comparison</h2>
+          <h2>Revenue Overview</h2>
           <p>
             {primaryLabel} vs {compareLabel} ·{' '}
-            {mode === 'monthly' ? 'Week-wise' : 'Month-wise'} breakdown
+            {mode === 'today'
+              ? 'Day-wise comparison'
+              : mode === 'monthly'
+                ? 'Week-wise breakdown'
+                : 'Month-wise breakdown'}
           </p>
         </div>
       </header>
@@ -1062,9 +1042,11 @@ const RevenueTab = ({
                 <div>
                   <h2>Total Revenue</h2>
                   <p>
-                    {mode === 'monthly'
-                      ? 'Week-wise comparison for both months'
-                      : 'Month-wise comparison for both years'}
+                    {mode === 'today'
+                      ? 'Today vs Yesterday comparison'
+                      : mode === 'monthly'
+                        ? 'Week-wise comparison for both months'
+                        : 'Month-wise comparison for both years'}
                   </p>
                 </div>
                 <div className="rpt-rev-dash__legend">
@@ -1080,7 +1062,7 @@ const RevenueTab = ({
               </header>
               <div className="rpt-card__chart rpt-rev-dash__chart-tall">
                 <ResponsiveContainer width="100%" height={380}>
-                  <BarChart data={points} barGap={6} barCategoryGap="18%">
+                  <BarChart data={points} barGap={6} barCategoryGap="25%">
                     <CartesianGrid
                       strokeDasharray="3 6"
                       vertical={false}
@@ -1116,29 +1098,47 @@ const RevenueTab = ({
                         <span style={{ color: MUTED, fontSize: 12 }}>{value}</span>
                       )}
                     />
-                    <Bar
-                      dataKey="compareTotal"
-                      name={compareLabel}
-                      fill={COMPARE_BAR}
-                      radius={[8, 8, 0, 0]}
-                      maxBarSize={42}
-                    />
-                    <Bar
-                      dataKey="primaryTotal"
-                      name={primaryLabel}
-                      fill={PRIMARY_BAR}
-                      radius={[8, 8, 0, 0]}
-                      maxBarSize={42}
-                    />
+                    {mode === 'today' ? (
+                      <Bar
+                        dataKey="primaryTotal"
+                        name="Total Revenue"
+                        radius={[8, 8, 0, 0]}
+                        maxBarSize={56}
+                      >
+                        {points.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={entry.shortLabel === 'Today' ? PRIMARY_BAR : COMPARE_BAR}
+                          />
+                        ))}
+                      </Bar>
+                    ) : (
+                      <>
+                        <Bar
+                          dataKey="compareTotal"
+                          name={compareLabel}
+                          fill={COMPARE_BAR}
+                          radius={[8, 8, 0, 0]}
+                          maxBarSize={42}
+                        />
+                        <Bar
+                          dataKey="primaryTotal"
+                          name={primaryLabel}
+                          fill={PRIMARY_BAR}
+                          radius={[8, 8, 0, 0]}
+                          maxBarSize={42}
+                        />
+                      </>
+                    )}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
               <div className="rpt-rev-dash__peak">
                 <span>
-                  Highest {bucketLabel} ({primaryLabel}): <strong>{peakLabel}</strong>
+                  Highest {bucketLabel}: <strong>{peakLabel}</strong>
                 </span>
                 <span>
-                  Lowest {bucketLabel} ({primaryLabel}): <strong>{lowLabel}</strong>
+                  Lowest {bucketLabel}: <strong>{lowLabel}</strong>
                 </span>
               </div>
             </article>
@@ -1202,11 +1202,15 @@ const RevenueTab = ({
               <article className="rpt-card">
                 <header>
                   <h2>PT Revenue</h2>
-                  <p>{mode === 'monthly' ? 'Week-wise' : 'Month-wise'} PT comparison</p>
+                  <p>
+                    {mode === 'today'
+                      ? 'Today vs Yesterday PT comparison'
+                      : `${mode === 'monthly' ? 'Week-wise' : 'Month-wise'} PT comparison`}
+                  </p>
                 </header>
                 <div className="rpt-card__chart">
                   <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={points} barGap={4} barCategoryGap="20%">
+                    <BarChart data={points} barGap={4} barCategoryGap="25%">
                       <CartesianGrid
                         strokeDasharray="3 6"
                         vertical={false}
@@ -1234,20 +1238,38 @@ const RevenueTab = ({
                           String(name),
                         ]}
                       />
-                      <Bar
-                        dataKey="comparePt"
-                        name={compareLabel}
-                        fill={COMPARE_BAR}
-                        radius={[6, 6, 0, 0]}
-                        maxBarSize={36}
-                      />
-                      <Bar
-                        dataKey="primaryPt"
-                        name={primaryLabel}
-                        fill={PT_BAR}
-                        radius={[6, 6, 0, 0]}
-                        maxBarSize={36}
-                      />
+                      {mode === 'today' ? (
+                        <Bar
+                          dataKey="primaryPt"
+                          name="PT Revenue"
+                          radius={[6, 6, 0, 0]}
+                          maxBarSize={48}
+                        >
+                          {points.map((entry, index) => (
+                            <Cell
+                              key={`pt-cell-${index}`}
+                              fill={entry.shortLabel === 'Today' ? PT_BAR : COMPARE_BAR}
+                            />
+                          ))}
+                        </Bar>
+                      ) : (
+                        <>
+                          <Bar
+                            dataKey="comparePt"
+                            name={compareLabel}
+                            fill={COMPARE_BAR}
+                            radius={[6, 6, 0, 0]}
+                            maxBarSize={36}
+                          />
+                          <Bar
+                            dataKey="primaryPt"
+                            name={primaryLabel}
+                            fill={PT_BAR}
+                            radius={[6, 6, 0, 0]}
+                            maxBarSize={36}
+                          />
+                        </>
+                      )}
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -1257,12 +1279,14 @@ const RevenueTab = ({
                 <header>
                   <h2>Subscription Revenue</h2>
                   <p>
-                    {mode === 'monthly' ? 'Week-wise' : 'Month-wise'} subscription comparison
+                    {mode === 'today'
+                      ? 'Today vs Yesterday subscription comparison'
+                      : `${mode === 'monthly' ? 'Week-wise' : 'Month-wise'} subscription comparison`}
                   </p>
                 </header>
                 <div className="rpt-card__chart">
                   <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={points} barGap={4} barCategoryGap="20%">
+                    <BarChart data={points} barGap={4} barCategoryGap="25%">
                       <CartesianGrid
                         strokeDasharray="3 6"
                         vertical={false}
@@ -1290,20 +1314,38 @@ const RevenueTab = ({
                           String(name),
                         ]}
                       />
-                      <Bar
-                        dataKey="compareSub"
-                        name={compareLabel}
-                        fill={COMPARE_BAR}
-                        radius={[6, 6, 0, 0]}
-                        maxBarSize={36}
-                      />
-                      <Bar
-                        dataKey="primarySub"
-                        name={primaryLabel}
-                        fill={SUB_BAR}
-                        radius={[6, 6, 0, 0]}
-                        maxBarSize={36}
-                      />
+                      {mode === 'today' ? (
+                        <Bar
+                          dataKey="primarySub"
+                          name="Subscription Revenue"
+                          radius={[6, 6, 0, 0]}
+                          maxBarSize={48}
+                        >
+                          {points.map((entry, index) => (
+                            <Cell
+                              key={`sub-cell-${index}`}
+                              fill={entry.shortLabel === 'Today' ? SUB_BAR : COMPARE_BAR}
+                            />
+                          ))}
+                        </Bar>
+                      ) : (
+                        <>
+                          <Bar
+                            dataKey="compareSub"
+                            name={compareLabel}
+                            fill={COMPARE_BAR}
+                            radius={[6, 6, 0, 0]}
+                            maxBarSize={36}
+                          />
+                          <Bar
+                            dataKey="primarySub"
+                            name={primaryLabel}
+                            fill={SUB_BAR}
+                            radius={[6, 6, 0, 0]}
+                            maxBarSize={36}
+                          />
+                        </>
+                      )}
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -1312,47 +1354,83 @@ const RevenueTab = ({
 
             <div className="rpt-rev-dash__table-wrap">
               <table className="rpt-rev-dash__table">
-                <thead>
-                  <tr>
-                    <th>{mode === 'monthly' ? 'Week' : 'Month'}</th>
-                    <th>{primaryLabel} Total</th>
-                    <th>{compareLabel} Total</th>
-                    <th>{primaryLabel} PT</th>
-                    <th>{compareLabel} PT</th>
-                    <th>{primaryLabel} Sub</th>
-                    <th>{compareLabel} Sub</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {points.map((row) => (
-                    <tr key={row.label}>
-                      <td>{row.label}</td>
-                      <td>{formatCurrency(row.primaryTotal)}</td>
-                      <td>{formatCurrency(row.compareTotal)}</td>
-                      <td>{formatCurrency(row.primaryPt)}</td>
-                      <td>{formatCurrency(row.comparePt)}</td>
-                      <td>{formatCurrency(row.primarySub)}</td>
-                      <td>{formatCurrency(row.compareSub)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td>Total</td>
-                    <td>{formatCurrency(primaryTotals.totalRevenue)}</td>
-                    <td>{formatCurrency(compareTotals.totalRevenue)}</td>
-                    <td>{formatCurrency(primaryTotals.ptRevenue)}</td>
-                    <td>{formatCurrency(compareTotals.ptRevenue)}</td>
-                    <td>{formatCurrency(primaryTotals.subscriberRevenue)}</td>
-                    <td>{formatCurrency(compareTotals.subscriberRevenue)}</td>
-                  </tr>
-                </tfoot>
+                {mode === 'today' ? (
+                  <>
+                    <thead>
+                      <tr>
+                        <th>Period</th>
+                        <th>Total Revenue</th>
+                        <th>PT Revenue</th>
+                        <th>Subscription Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {points.map((row) => (
+                        <tr key={row.label}>
+                          <td>{row.label}</td>
+                          <td>{formatCurrency(row.primaryTotal)}</td>
+                          <td>{formatCurrency(row.primaryPt)}</td>
+                          <td>{formatCurrency(row.primarySub)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td>Difference</td>
+                        <td className={difference >= 0 ? 'rpt-rev-dash__pos' : 'rpt-rev-dash__neg'}>
+                          {difference >= 0 ? '+' : ''}
+                          {formatCurrency(difference)}
+                        </td>
+                        <td>{formatCurrency(primaryTotals.ptRevenue - compareTotals.ptRevenue)}</td>
+                        <td>{formatCurrency(primaryTotals.subscriberRevenue - compareTotals.subscriberRevenue)}</td>
+                      </tr>
+                    </tfoot>
+                  </>
+                ) : (
+                  <>
+                    <thead>
+                      <tr>
+                        <th>{mode === 'monthly' ? 'Week' : 'Month'}</th>
+                        <th>{primaryLabel} Total</th>
+                        <th>{compareLabel} Total</th>
+                        <th>{primaryLabel} PT</th>
+                        <th>{compareLabel} PT</th>
+                        <th>{primaryLabel} Sub</th>
+                        <th>{compareLabel} Sub</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {points.map((row) => (
+                        <tr key={row.label}>
+                          <td>{row.label}</td>
+                          <td>{formatCurrency(row.primaryTotal)}</td>
+                          <td>{formatCurrency(row.compareTotal)}</td>
+                          <td>{formatCurrency(row.primaryPt)}</td>
+                          <td>{formatCurrency(row.comparePt)}</td>
+                          <td>{formatCurrency(row.primarySub)}</td>
+                          <td>{formatCurrency(row.compareSub)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td>Total</td>
+                        <td>{formatCurrency(primaryTotals.totalRevenue)}</td>
+                        <td>{formatCurrency(compareTotals.totalRevenue)}</td>
+                        <td>{formatCurrency(primaryTotals.ptRevenue)}</td>
+                        <td>{formatCurrency(compareTotals.ptRevenue)}</td>
+                        <td>{formatCurrency(primaryTotals.subscriberRevenue)}</td>
+                        <td>{formatCurrency(compareTotals.subscriberRevenue)}</td>
+                      </tr>
+                    </tfoot>
+                  </>
+                )}
               </table>
             </div>
           </section>
         </>
       ) : (
-        <Empty description="No revenue data for these periods" />
+        <Empty description="No revenue data for this period" />
       )}
     </div>
   );
@@ -1423,43 +1501,71 @@ export const ReportsHome = () => {
   );
   const { data: allTrainers = [] } = useTrainersAll();
 
-  const primarySlices = useMemo(
-    () =>
-      revenueMode === 'monthly'
-        ? getMonthWeekSlices(revenuePrimaryMonth)
-        : getYearMonthSlices(revenuePrimaryYear),
-    [revenueMode, revenuePrimaryMonth, revenuePrimaryYear],
-  );
+  const primarySlices = useMemo(() => {
+    if (revenueMode === 'today') {
+      const todayStr = dayjs().format('YYYY-MM-DD');
+      return [
+        {
+          key: 'today',
+          label: 'Today',
+          shortLabel: 'Today',
+          start: todayStr,
+          end: todayStr,
+        },
+      ];
+    }
+    if (revenueMode === 'yearly') {
+      return getYearMonthSlices(revenuePrimaryYear);
+    }
+    return getMonthWeekSlices(revenuePrimaryMonth);
+  }, [revenueMode, revenuePrimaryMonth, revenuePrimaryYear]);
 
-  const compareSlices = useMemo(
-    () =>
-      revenueMode === 'monthly'
-        ? getMonthWeekSlices(revenueCompareMonth)
-        : getYearMonthSlices(revenueCompareYear),
-    [revenueMode, revenueCompareMonth, revenueCompareYear],
-  );
+  const compareSlices = useMemo(() => {
+    if (revenueMode === 'today') {
+      const yesterdayStr = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+      return [
+        {
+          key: 'yesterday',
+          label: 'Yesterday',
+          shortLabel: 'Yesterday',
+          start: yesterdayStr,
+          end: yesterdayStr,
+        },
+      ];
+    }
+    if (revenueMode === 'yearly') {
+      return getYearMonthSlices(revenueCompareYear);
+    }
+    return getMonthWeekSlices(revenueCompareMonth);
+  }, [revenueMode, revenueCompareMonth, revenueCompareYear]);
 
   const primaryLabel =
-    revenueMode === 'monthly'
-      ? revenuePrimaryMonth.format('MMMM YYYY')
-      : revenuePrimaryYear.format('YYYY');
+    revenueMode === 'today'
+      ? `Today (${dayjs().format('DD MMM YYYY')})`
+      : revenueMode === 'yearly'
+        ? revenuePrimaryYear.format('YYYY')
+        : revenuePrimaryMonth.format('MMMM YYYY');
+
   const compareLabel =
-    revenueMode === 'monthly'
-      ? revenueCompareMonth.format('MMMM YYYY')
-      : revenueCompareYear.format('YYYY');
+    revenueMode === 'today'
+      ? `Yesterday (${dayjs().subtract(1, 'day').format('DD MMM YYYY')})`
+      : revenueMode === 'monthly'
+        ? revenueCompareMonth.format('MMMM YYYY')
+        : revenueCompareYear.format('YYYY');
 
   const revenueSliceQueries = useMemo<ReportQuery[]>(() => {
     const toQuery = (slice: RevenueSlice): ReportQuery => ({
       filter: 'custom',
       startDate: slice.start,
       endDate: slice.end,
-      branchId,
-      trainerId,
+      branchId: undefined,
+      trainerId: undefined,
     });
     return [...primarySlices.map(toQuery), ...compareSlices.map(toQuery)];
-  }, [primarySlices, compareSlices, branchId, trainerId]);
+  }, [primarySlices, compareSlices]);
 
-  const revenueReady = primarySlices.length > 0 && compareSlices.length > 0;
+  const revenueReady =
+    primarySlices.length > 0 && compareSlices.length > 0;
   const revenueTabActive = tab === 'revenue' && revenueReady;
 
   const { data, isLoading, isFetching } = useGymReport(query, enabled && tab !== 'revenue');
@@ -1488,6 +1594,33 @@ export const ReportsHome = () => {
   );
 
   const revenuePoints = useMemo<RevenueComparePoint[]>(() => {
+    if (revenueMode === 'today') {
+      const todayReport = revenueReports[0];
+      const yesterdayReport = revenueReports[1];
+      return [
+        {
+          label: compareLabel,
+          shortLabel: 'Yesterday',
+          primaryTotal: yesterdayReport?.totals.totalRevenue ?? 0,
+          compareTotal: 0,
+          primaryPt: yesterdayReport?.totals.ptRevenue ?? 0,
+          comparePt: 0,
+          primarySub: yesterdayReport?.totals.subscriberRevenue ?? 0,
+          compareSub: 0,
+        },
+        {
+          label: primaryLabel,
+          shortLabel: 'Today',
+          primaryTotal: todayReport?.totals.totalRevenue ?? 0,
+          compareTotal: 0,
+          primaryPt: todayReport?.totals.ptRevenue ?? 0,
+          comparePt: 0,
+          primarySub: todayReport?.totals.subscriberRevenue ?? 0,
+          compareSub: 0,
+        },
+      ];
+    }
+
     const len = Math.max(primarySlices.length, compareSlices.length);
     const points: RevenueComparePoint[] = [];
 
@@ -1495,17 +1628,16 @@ export const ReportsHome = () => {
       const primary = primarySlices[i];
       const compare = compareSlices[i];
       const primaryReport = primary ? revenueReports[i] : undefined;
-      const compareReport = compare
-        ? revenueReports[primarySlices.length + i]
-        : undefined;
+      const compareReport =
+        compare ? revenueReports[primarySlices.length + i] : undefined;
       const label =
         primary?.label ??
         compare?.label ??
-        (revenueMode === 'monthly' ? `Week ${i + 1}` : `Month ${i + 1}`);
+        (revenueMode === 'yearly' ? `Month ${i + 1}` : `Week ${i + 1}`);
       const shortLabel =
         primary?.shortLabel ??
         compare?.shortLabel ??
-        (revenueMode === 'monthly' ? `W${i + 1}` : `M${i + 1}`);
+        (revenueMode === 'yearly' ? `M${i + 1}` : `W${i + 1}`);
 
       points.push({
         label,
@@ -1520,7 +1652,7 @@ export const ReportsHome = () => {
     }
 
     return points;
-  }, [primarySlices, compareSlices, revenueReports, revenueMode]);
+  }, [primarySlices, compareSlices, revenueReports, revenueMode, primaryLabel, compareLabel]);
 
   const primaryRevenueTotals = useMemo(
     () => sumSliceTotals(revenueReports, primarySlices.length, 0),
@@ -1528,7 +1660,11 @@ export const ReportsHome = () => {
   );
   const compareRevenueTotals = useMemo(
     () =>
-      sumSliceTotals(revenueReports, compareSlices.length, primarySlices.length),
+      sumSliceTotals(
+        revenueReports,
+        compareSlices.length,
+        primarySlices.length,
+      ),
     [revenueReports, compareSlices.length, primarySlices.length],
   );
 
@@ -1740,7 +1876,7 @@ export const ReportsHome = () => {
                   />
                 </label>
               </div>
-            ) : (
+            ) : revenueMode === 'yearly' ? (
               <div className="rpt__revenue-months">
                 <label className="rpt__revenue-month">
                   <span>Compare year</span>
@@ -1772,7 +1908,7 @@ export const ReportsHome = () => {
                   />
                 </label>
               </div>
-            )}
+            ) : null}
           </div>
         )}
 
@@ -1787,27 +1923,29 @@ export const ReportsHome = () => {
               disabledDate={(d) => d.isAfter(dayjs(), 'day')}
             />
           )}
-          <Select
-            allowClear
-            showSearch
-            optionFilterProp="label"
-            size="large"
-            placeholder="All branches"
-            className="rpt__select"
-            value={branchId}
-            onChange={(v) => {
-              setBranchId(v);
-              setTrainerId(undefined);
-            }}
-            options={[
-              { value: '', label: 'All Branches' },
-              ...(branchesData?.data.map((b) => ({
-                value: b.id,
-                label: shortBranch(b.name),
-              })) || []),
-            ]}
-          />
-          {tab !== 'branch' && (
+          {tab !== 'revenue' && (
+            <Select
+              allowClear
+              showSearch
+              optionFilterProp="label"
+              size="large"
+              placeholder="All branches"
+              className="rpt__select"
+              value={branchId}
+              onChange={(v) => {
+                setBranchId(v);
+                setTrainerId(undefined);
+              }}
+              options={[
+                { value: '', label: 'All Branches' },
+                ...(branchesData?.data.map((b) => ({
+                  value: b.id,
+                  label: shortBranch(b.name),
+                })) || []),
+              ]}
+            />
+          )}
+          {tab !== 'branch' && tab !== 'revenue' && (
             <Select
               allowClear
               showSearch
