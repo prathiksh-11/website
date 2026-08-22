@@ -332,7 +332,7 @@ export default function BellandurComingSoon() {
             { title: '10,000+ Sq. Ft.', desc: 'High ceilings & elite machines' },
             { title: 'Certified Coaches', desc: 'Personalized guidance & diet' },
             { title: 'Biggest Dance Studio', desc: 'Sprung wood acoustic studio' },
-            { title: 'Steam & Recovery', desc: 'Luxury lockers & shower zone' },
+            { title: 'Steam & Recovery', desc: 'Luxury lockers & refresh zone' },
           ].map((item, idx) => (
             <div key={idx} className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-zinc-200/70 shadow-sm text-left">
               <ShieldCheck size={16} className="text-[#ff5000] shrink-0" />
