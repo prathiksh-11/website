@@ -80,6 +80,12 @@ export default function Contact() {
     setStatus('loading');
     await new Promise((r) => setTimeout(r, 600));
 
+    if (typeof window !== 'undefined' && typeof (window as unknown as { gtag?: Function }).gtag === 'function') {
+      (window as unknown as { gtag: Function }).gtag('event', 'conversion', {
+        send_to: 'AW-18403934534/x6wECK6kwOYcEMaC18dE',
+      });
+    }
+
     const message = `Hi, I'd like to get in touch.\n\nName: ${form.name.trim()}\nPhone: ${form.phone.trim()}\nGoal: ${form.goal}`;
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
