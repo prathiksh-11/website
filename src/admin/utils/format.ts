@@ -23,6 +23,24 @@ export const formatCurrency = (
   }).format(num);
 };
 
+export const formatCompactCurrency = (value?: number | null) => {
+  if (value == null || value === 0) return '₹0';
+  const abs = Math.abs(value);
+  if (abs >= 10_000_000) {
+    const formatted = (value / 10_000_000).toFixed(abs >= 100_000_000 ? 0 : 1).replace(/\.0$/, '');
+    return `₹${formatted}Cr`;
+  }
+  if (abs >= 100_000) {
+    const formatted = (value / 100_000).toFixed(abs >= 1_000_000 ? 0 : 1).replace(/\.0$/, '');
+    return `₹${formatted}L`;
+  }
+  if (abs >= 1_000) {
+    const formatted = (value / 1_000).toFixed(abs >= 10_000 ? 0 : 1).replace(/\.0$/, '');
+    return `₹${formatted}k`;
+  }
+  return `₹${value.toLocaleString('en-IN')}`;
+};
+
 export const downloadBlob = (
   content: Blob | ArrayBuffer | string,
   filename: string,

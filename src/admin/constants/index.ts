@@ -176,7 +176,7 @@ export const THEME_TOKENS = {
   fontDisplay: "'Outfit', system-ui, sans-serif",
 } as const;
 
-const FULL_ADMIN_PERMS = [
+export const FULL_ADMIN_PERMS = [
   'dashboard',
   'customers',
   'trainers',
@@ -195,7 +195,7 @@ const FULL_ADMIN_PERMS = [
 
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
   'Super Admin': [...FULL_ADMIN_PERMS],
-  Admin: [...FULL_ADMIN_PERMS],
+  Admin: FULL_ADMIN_PERMS.filter((p) => p !== 'offers'),
   'Branch Manager': [
     'dashboard',
     'customers',
@@ -207,7 +207,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'transactions',
     'coupons',
     'notifications',
-    'offers',
     'profile',
   ],
   Trainer: ['dashboard', 'sessions', 'customers', 'profile'],
@@ -218,7 +217,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'sessions',
     'events',
     'coupons',
-    'offers',
     'profile',
   ],
 };

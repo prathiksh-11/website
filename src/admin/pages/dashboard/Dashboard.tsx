@@ -30,7 +30,7 @@ import { useBranches } from '@/hooks/useBranches';
 import { useDashboard } from '@/hooks/useDashboard';
 import { useAuthStore } from '@/store/auth.store';
 import { getDefaultBranchFilter } from '@/store/settings.store';
-import { formatCurrency } from '@/utils/format';
+import { formatCompactCurrency, formatCurrency } from '@/utils/format';
 
 const BRAND_ORANGE = THEME_TOKENS.colorPrimary || '#ff5000';
 const INK = '#16181f';
@@ -310,12 +310,9 @@ export const Dashboard = () => {
       {/* Header */}
       <header className="bento-top" style={{ alignItems: 'center' }}>
         <div className="bento-greet">
-          <p className="bento-kicker">{dayjs().format('dddd, D MMMM YYYY')}</p>
-          <h1 style={{ fontSize: '1.85rem', fontWeight: 700, letterSpacing: '-0.025em', margin: 0, color: INK }}>
-            Hey {firstName},{' '}
-            <span style={{ fontWeight: 400, color: MUTED }}>
-              here&apos;s {selectedBranch ? shortBranch(selectedBranch.name) : 'your studio'} performance
-            </span>
+          <p className="bento-kicker">{dayjs().format('dddd, D MMM YYYY')}</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em', margin: 0, color: INK }}>
+            Hey {firstName}
           </h1>
         </div>
 
@@ -505,8 +502,8 @@ export const Dashboard = () => {
                   tickLine={false}
                   tick={tickProps}
                   domain={[0, yDomainMax]}
-                  width={56}
-                  tickFormatter={(v) => (v === 0 ? '₹0' : `₹${v.toLocaleString()}`)}
+                  width={60}
+                  tickFormatter={(v) => formatCompactCurrency(Number(v))}
                 />
                 <Tooltip
                   contentStyle={tooltipStyle}
@@ -638,7 +635,7 @@ export const Dashboard = () => {
                   {formatCurrency(summary.todaySubscriptionRevenue)}
                 </strong>
                 <span style={{ fontSize: '0.68rem', fontWeight: 600, color: MUTED }}>
-                  {subShare}% share
+                  {subShare}
                 </span>
               </div>
             </div>
@@ -671,7 +668,7 @@ export const Dashboard = () => {
                   {formatCurrency(summary.todayPtRevenue)}
                 </strong>
                 <span style={{ fontSize: '0.68rem', fontWeight: 600, color: MUTED }}>
-                  {ptShare}% share
+                  {ptShare}
                 </span>
               </div>
             </div>

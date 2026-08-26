@@ -2,12 +2,15 @@ import {
   BellOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Select, Switch, message } from 'antd';
+import { Button, Input, Select, Switch, Upload, message } from 'antd';
 import axios from 'axios';
 import {
   BellRing,
   Building2,
+  Camera,
   Shield,
+  Trash2,
+  UploadCloud,
   UserRound,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -44,7 +47,9 @@ const splitName = (full?: string, lastName?: string) => {
     return { first: stripped || first, last };
   }
   const parts = (full || '').trim().split(/\s+/).filter(Boolean);
-  return { first: parts[0] || '', last: parts.slice(1).join(' ') };
+  if (!parts.length) return { first: '', last: '' };
+  if (parts.length === 1) return { first: parts[0], last: '' };
+  return { first: parts[0], last: parts.slice(1).join(' ') };
 };
 
 type SettingsTab = 'notifications' | 'workspace' | 'account';
@@ -79,6 +84,8 @@ export const Settings = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
+  const [avatarPreview, setAvatarPreview] = useState<string | undefined>(user?.avatar);
+  const [avatarFile, setAvatarFile] = useState<string | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [savingAccount, setSavingAccount] = useState(false);
 
@@ -101,11 +108,15 @@ export const Settings = () => {
         const profile = await authApi.me();
         if (cancelled) return;
         setUser(profile);
+        setAvatarPreview(profile.avatar);
+        setAvatarFile(null);
         const names = splitName(profile.name, profile.lastName);
         setFirstName(names.first);
         setLastName(names.last);
       } catch {
         if (cancelled) return;
+        setAvatarPreview(user?.avatar);
+        setAvatarFile(null);
         const names = splitName(user?.name, user?.lastName);
         setFirstName(names.first);
         setLastName(names.last);
@@ -118,7 +129,7 @@ export const Settings = () => {
     return () => {
       cancelled = true;
     };
-  }, [tab, setUser]);
+  }, [tab, setUser, user?.avatar, user?.lastName, user?.name]);
 
   const saveWorkspace = () => {
     setSavingWorkspace(true);
@@ -134,6 +145,30 @@ export const Settings = () => {
     }
     setSavingWorkspace(false);
     message.success('Default branch will apply on dashboard and lists');
+  };
+
+  const handleAvatarChange = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      message.error('Please select an image file (PNG, JPG, WEBP)');
+      return false;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      message.error('Image size must be less than 5MB');
+      return false;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      setAvatarFile(base64);
+      setAvatarPreview(base64);
+    };
+    reader.readAsDataURL(file);
+    return false;
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarFile('');
+    setAvatarPreview(undefined);
   };
 
   const saveAccount = async () => {
@@ -152,10 +187,13 @@ export const Settings = () => {
         name: firstName.trim(),
         lastName: lastName.trim(),
         password: password || undefined,
+        image: avatarFile !== null ? avatarFile : undefined,
       });
       setUser(next);
+      setAvatarPreview(next.avatar);
+      setAvatarFile(null);
       setPassword('');
-      message.success('Account updated');
+      message.success('Account updated successfully');
     } catch (error) {
       message.error(errorMessage(error, 'Could not update account'));
     } finally {
@@ -306,25 +344,78 @@ export const Settings = () => {
           </div>
 
           <div className="set-account">
-            <div className="set-account__avatar">
-              {user?.avatar ? (
-                <img src={user.avatar} alt="" />
-              ) : (
-                <UserOutlined />
-              )}
+            <div className="set-account__avatar-wrap" style={{ position: 'relative' }}>
+              <div className="set-account__avatar" style={{ width: 80, height: 80, borderRadius: 20 }}>
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <UserOutlined style={{ fontSize: '1.75rem' }} />
+                )}
+              </div>
+              <Upload
+                showUploadList={false}
+                beforeUpload={handleAvatarChange}
+                accept="image/png,image/jpeg,image/jpg,image/webp"
+              >
+                <button
+                  type="button"
+                  title="Upload profile photo"
+                  style={{
+                    position: 'absolute',
+                    bottom: -4,
+                    right: -4,
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    background: 'var(--admin-primary, #ff5000)',
+                    color: '#ffffff',
+                    border: '2px solid #ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                  }}
+                >
+                  <Camera size={14} />
+                </button>
+              </Upload>
             </div>
-            <div className="set-account__info">
-              <h3>{user?.name ?? 'Admin user'}</h3>
-              <p>{user?.role ?? '—'}</p>
-              <dl>
+
+            <div className="set-account__info" style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <h3>{user?.name ?? 'Admin user'}</h3>
+                  <p>{user?.role ?? '—'}</p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                  <Upload
+                    showUploadList={false}
+                    beforeUpload={handleAvatarChange}
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                  >
+                    <Button size="small" icon={<UploadCloud size={14} />}>
+                      Change photo
+                    </Button>
+                  </Upload>
+                  {avatarPreview ? (
+                    <Button
+                      size="small"
+                      danger
+                      icon={<Trash2 size={14} />}
+                      onClick={handleRemoveAvatar}
+                    >
+                      Remove
+                    </Button>
+                  ) : null}
+                </div>
+              </div>
+              <dl style={{ marginTop: '0.65rem' }}>
                 <div>
                   <dt>Mobile</dt>
                   <dd>{user?.phone || '—'}</dd>
                 </div>
-                <div>
-                  <dt>User ID</dt>
-                  <dd>{user?.id || '—'}</dd>
-                </div>
+
               </dl>
             </div>
           </div>

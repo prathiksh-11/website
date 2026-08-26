@@ -43,8 +43,8 @@ export default function CareersPage() {
           </>
         }
         description="The strongest teams build the strongest communities. At Game On Fitness, your impact goes far beyond the gym floor."
-        image="https://images.pexels.com/photos/4164761/pexels-photo-4164761.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop"
-        imagePosition="center center"
+        image="https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg?auto=compress&cs=tinysrgb&w=1600&fit=crop"
+        imagePosition="center 30%"
         actions={
           <a
             href="#open-roles"

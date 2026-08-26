@@ -164,10 +164,13 @@ export const AppSidebar = () => {
           if (item.key === '/my-activity') {
             return Boolean(user?.showActivityDashboard);
           }
+          if (item.key === '/offers') {
+            return user?.roleId === 1 || user?.role === 'Super Admin';
+          }
           return canAccess(item.permission);
         }),
       })).filter((sec) => sec.items.length > 0),
-    [canAccess, user?.showActivityDashboard],
+    [canAccess, user?.role, user?.roleId, user?.showActivityDashboard],
   );
 
   const allItems = useMemo(

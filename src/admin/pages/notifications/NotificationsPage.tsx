@@ -71,11 +71,11 @@ export const NotificationsPage = () => {
     const people = [
       ...customers.map((c) => ({
         value: c.id,
-        label: `${c.name} · Customer`,
+        label: `${c.name} · Customer${c.phone ? ` (${c.phone})` : ''}`,
       })),
       ...trainers.map((t) => ({
         value: t.id,
-        label: `${t.name} · Trainer`,
+        label: `${t.name} · ${t.trainerType || t.roleName || 'Trainer'}${t.phone ? ` (${t.phone})` : ''}`,
       })),
     ];
     const seen = new Set<string>();
@@ -94,17 +94,35 @@ export const NotificationsPage = () => {
 
   const onSend = async (values: SendFormValues) => {
     try {
+      let finalTarget: NotificationSendTarget = values.target;
+      let finalUserIds = values.userIds;
+
+      if (values.target === 'all_customers') {
+        finalTarget = 'user_ids';
+        finalUserIds = customers.map((c) => c.id).filter(Boolean);
+        if (!finalUserIds.length) {
+          message.error('No registered customers found to notify');
+          return;
+        }
+      } else if (values.target === 'all_employees') {
+        finalTarget = 'user_ids';
+        finalUserIds = trainers.map((t) => t.id).filter(Boolean);
+        if (!finalUserIds.length) {
+          message.error('No employees found to notify');
+          return;
+        }
+      }
+
       const result = await send.mutateAsync({
         title: values.title.trim(),
         message: values.message.trim(),
-        target: values.target,
+        target: finalTarget,
         branchId: values.branchId,
-        userIds: values.userIds,
+        userIds: finalUserIds,
         type: 'admin_broadcast',
       });
       message.success(
-        `Sent to ${result.sent} recipient${result.sent === 1 ? '' : 's'}${
-          result.failed ? ` (${result.failed} failed)` : ''
+        `Sent to ${result.sent} recipient${result.sent === 1 ? '' : 's'}${result.failed ? ` (${result.failed} failed)` : ''
         }`,
       );
       form.resetFields(['title', 'message', 'userIds']);
@@ -112,17 +130,17 @@ export const NotificationsPage = () => {
     } catch (error) {
       const apiMessage =
         error &&
-        typeof error === 'object' &&
-        'response' in error &&
-        error.response &&
-        typeof error.response === 'object' &&
-        'data' in error.response &&
-        error.response.data &&
-        typeof error.response.data === 'object' &&
-        'message' in error.response.data
+          typeof error === 'object' &&
+          'response' in error &&
+          error.response &&
+          typeof error.response === 'object' &&
+          'data' in error.response &&
+          error.response.data &&
+          typeof error.response.data === 'object' &&
+          'message' in error.response.data
           ? String(
-              (error.response.data as { message?: string }).message ?? '',
-            )
+            (error.response.data as { message?: string }).message ?? '',
+          )
           : '';
       message.error(apiMessage || 'Failed to send notification');
     }
@@ -211,13 +229,31 @@ export const NotificationsPage = () => {
             <Form.Item
               name="target"
               label="Audience"
-              rules={[{ required: true }]}
+              initialValue="all_customers"
+              rules={[{ required: true, message: 'Please select an audience' }]}
             >
               <Select
                 options={[
-                  { value: 'all_admins', label: 'All admins & managers' },
-                  { value: 'branch', label: 'Everyone at a branch' },
-                  { value: 'user_ids', label: 'Specific people' },
+                  {
+                    value: 'all_customers',
+                    label: `All Customers (${customers.length})`,
+                  },
+                  {
+                    value: 'all_employees',
+                    label: `All Employees & Trainers (${trainers.length})`,
+                  },
+                  {
+                    value: 'all_admins',
+                    label: 'All Admins & Managers',
+                  },
+                  {
+                    value: 'branch',
+                    label: 'Everyone at a branch',
+                  },
+                  {
+                    value: 'user_ids',
+                    label: 'Specific people (Customers / Staff)',
+                  },
                 ]}
               />
             </Form.Item>

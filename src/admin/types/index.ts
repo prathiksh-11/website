@@ -52,7 +52,12 @@ export interface AdminNotification {
   branchId?: string;
 }
 
-export type NotificationSendTarget = 'all_admins' | 'branch' | 'user_ids';
+export type NotificationSendTarget =
+  | 'all_customers'
+  | 'all_employees'
+  | 'all_admins'
+  | 'branch'
+  | 'user_ids';
 
 export interface SendNotificationPayload {
   title: string;
