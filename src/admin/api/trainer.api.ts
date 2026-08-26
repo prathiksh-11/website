@@ -25,8 +25,16 @@ interface BackendListResponse {
   message?: string;
 }
 
-const isTrainerRole = (t: Trainer) =>
-  t.roleId == null || t.roleId === 4 || /employee|trainer/i.test(t.roleName ?? '');
+const isTrainerRole = (t: Trainer) => {
+  if (t.roleId == null || t.roleId === 0) return false;
+  if (t.roleId === 1) return false;
+  return (
+    t.roleId === 4 ||
+    t.roleId === 3 ||
+    t.roleId === 2 ||
+    /employee|trainer|manager|admin/i.test(t.roleName ?? '')
+  );
+};
 
 const fetchAllFromBackend = async (): Promise<Trainer[]> => {
   const { data } = await apiClient.get<BackendListResponse>(

@@ -1,5 +1,6 @@
 import {
   ClockCircleOutlined,
+  EditOutlined,
   MailOutlined,
   PhoneOutlined,
   SearchOutlined,
@@ -7,25 +8,33 @@ import {
 } from '@ant-design/icons';
 import {
   Avatar,
+  Button,
   Drawer,
   Empty,
+  Form,
   Input,
   Select,
   Skeleton,
   Tabs,
   Tag,
+  TimePicker,
 } from 'antd';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { Building2, MapPin } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { StatusBadge, PageSkeleton } from '@/components/common';
 import {
   useBranchDetails,
+  useBranchMutations,
   useBranches,
   useBranchesAll,
 } from '@/hooks/useBranches';
 import { useAuthStore } from '@/store/auth.store';
 import { useTableParams } from '@/hooks/useTableParams';
 import type { Branch, BranchPerson } from '@/types';
+
+dayjs.extend(customParseFormat);
 
 const shortBranch = (name: string) =>
   name
@@ -52,6 +61,9 @@ const formatBranchHours = (opening?: string, closing?: string) => {
   if (!opening && !closing) return '—';
   return `${formatIndianTime(opening)} – ${formatIndianTime(closing)}`;
 };
+
+const parseClock = (value?: string) =>
+  value ? dayjs(value, ['HH:mm:ss', 'HH:mm', 'h:mm A'], true) : undefined;
 
 const initials = (name: string) =>
   name
@@ -90,7 +102,10 @@ export const BranchList = () => {
   });
   const { data: allBranches, isLoading: loadingAll } = useBranchesAll();
   const { data, isLoading } = useBranches(params);
+  const { update } = useBranchMutations();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Branch | null>(null);
+  const [form] = Form.useForm();
   const { data: details, isLoading: loadingDetails } =
     useBranchDetails(selectedId);
 
@@ -112,6 +127,45 @@ export const BranchList = () => {
       : 'Locations assigned to your account';
 
   const openBranch = (branch: Branch) => setSelectedId(branch.id);
+
+  const openEdit = (branch: Branch) => {
+    const opening = parseClock(branch.openingTime);
+    const closing = parseClock(branch.closingTime);
+    setEditing(branch);
+    form.setFieldsValue({
+      name: branch.name,
+      address: branch.address,
+      phone: branch.phone,
+      email: branch.email,
+      location: branch.location || branch.city,
+      status: branch.status || 'active',
+      openingTime: opening?.isValid() ? opening : undefined,
+      closingTime: closing?.isValid() ? closing : undefined,
+    });
+  };
+
+  const onSubmit = async () => {
+    if (!editing) return;
+    const values = await form.validateFields();
+    await update.mutateAsync({
+      id: editing.id,
+      payload: {
+        name: values.name,
+        address: values.address,
+        phone: values.phone,
+        email: values.email,
+        location: values.location,
+        status: values.status,
+        openingTime: values.openingTime
+          ? values.openingTime.format('HH:mm')
+          : '',
+        closingTime: values.closingTime
+          ? values.closingTime.format('HH:mm')
+          : '',
+      },
+    });
+    setEditing(null);
+  };
 
   if (loadingAll && !allBranches) {
     return <PageSkeleton variant="cards" />;
@@ -181,54 +235,69 @@ export const BranchList = () => {
         ) : (
           <div className="brch__grid">
             {data.data.map((branch) => (
-              <button
-                key={branch.id}
-                type="button"
-                className="brch-card"
-                onClick={() => openBranch(branch)}
-              >
-                <div
-                  className={`brch-card__media${branch.image ? '' : ' brch-card__media--empty'}`}
-                  style={
-                    branch.image
-                      ? { backgroundImage: `url(${branch.image})` }
-                      : undefined
-                  }
+              <article key={branch.id} className="brch-card">
+                <button
+                  type="button"
+                  className="brch-card__hit"
+                  onClick={() => openBranch(branch)}
                 >
-                  {!branch.image && (
-                    <span className="brch-card__fallback" aria-hidden>
-                      <Building2 size={36} strokeWidth={1.5} />
-                    </span>
-                  )}
-                  <StatusBadge status={branch.status} />
-                </div>
-
-                <div className="brch-card__body">
-                  <h3>{shortBranch(branch.name)}</h3>
-                  <p className="brch-card__full">{branch.name}</p>
-
-                  <p className="brch-card__addr">
-                    <MapPin size={14} />
-                    <span>{branch.address || 'Address not set'}</span>
-                  </p>
-
-                  <div className="brch-card__meta">
-                    {(branch.openingTime || branch.closingTime) && (
-                      <span>
-                        <ClockCircleOutlined />
-                        {formatBranchHours(branch.openingTime, branch.closingTime)}
+                  <div
+                    className={`brch-card__media${branch.image ? '' : ' brch-card__media--empty'}`}
+                    style={
+                      branch.image
+                        ? { backgroundImage: `url(${branch.image})` }
+                        : undefined
+                    }
+                  >
+                    {!branch.image && (
+                      <span className="brch-card__fallback" aria-hidden>
+                        <Building2 size={36} strokeWidth={1.5} />
                       </span>
                     )}
+                    <StatusBadge status={branch.status} />
                   </div>
 
-                  <div className="brch-card__foot">
-                    <span>
-                      <UserOutlined />
-                      {branch.managerName}
-                    </span>
+                  <div className="brch-card__body">
+                    <h3>{shortBranch(branch.name)}</h3>
+                    <p className="brch-card__full">{branch.name}</p>
+
+                    <p className="brch-card__addr">
+                      <MapPin size={14} />
+                      <span>{branch.address || 'Address not set'}</span>
+                    </p>
+
+                    <div className="brch-card__meta">
+                      {(branch.openingTime || branch.closingTime) && (
+                        <span>
+                          <ClockCircleOutlined />
+                          {formatBranchHours(
+                            branch.openingTime,
+                            branch.closingTime,
+                          )}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="brch-card__foot">
+                      <span>
+                        <UserOutlined />
+                        {branch.managerName}
+                      </span>
+                    </div>
                   </div>
+                </button>
+
+                <div className="brch-card__actions">
+                  <Button
+                    type="text"
+                    icon={<EditOutlined />}
+                    onClick={() => openEdit(branch)}
+                    className="brch-card__btn-edit"
+                  >
+                    Edit
+                  </Button>
                 </div>
-              </button>
+              </article>
             ))}
           </div>
         )}
@@ -265,6 +334,17 @@ export const BranchList = () => {
         destroyOnHidden
         title={null}
         className="brch-drawer"
+        extra={
+          selectedListItem || details ? (
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(details ?? selectedListItem!)}
+            >
+              Edit
+            </Button>
+          ) : null
+        }
       >
         {loadingDetails && !details ? (
           <Skeleton active paragraph={{ rows: 10 }} />
@@ -326,7 +406,9 @@ export const BranchList = () => {
                   </div>
                   <div>
                     <dt>Hours</dt>
-                    <dd>{formatBranchHours(branch.openingTime, branch.closingTime)}</dd>
+                    <dd>
+                      {formatBranchHours(branch.openingTime, branch.closingTime)}
+                    </dd>
                   </div>
                   <div>
                     <dt>Manager</dt>
@@ -399,6 +481,86 @@ export const BranchList = () => {
             );
           })()
         )}
+      </Drawer>
+
+      <Drawer
+        title="Edit branch"
+        open={Boolean(editing)}
+        onClose={() => setEditing(null)}
+        width={480}
+        destroyOnHidden
+        extra={
+          <Button
+            type="primary"
+            onClick={() => void onSubmit()}
+            loading={update.isPending}
+          >
+            Save
+          </Button>
+        }
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Branch name"
+            rules={[{ required: true, message: 'Enter branch name' }]}
+          >
+            <Input placeholder="Game On Fitness – Indiranagar" />
+          </Form.Item>
+
+          <Form.Item name="address" label="Address">
+            <Input.TextArea rows={3} placeholder="Street, area, city" />
+          </Form.Item>
+
+          <Form.Item name="location" label="Location">
+            <Input placeholder="City or locality" />
+          </Form.Item>
+
+          <div className="brch-form-row">
+            <Form.Item name="phone" label="Phone" style={{ flex: 1, marginBottom: 0 }}>
+              <Input placeholder="080 1234 5678" />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[{ type: 'email', message: 'Enter a valid email' }]}
+              style={{ flex: 1, marginBottom: 0 }}
+            >
+              <Input placeholder="branch@example.com" />
+            </Form.Item>
+          </div>
+
+          <div className="brch-form-row" style={{ marginTop: 24 }}>
+            <Form.Item
+              name="openingTime"
+              label="Opening time"
+              style={{ flex: 1, marginBottom: 0 }}
+            >
+              <TimePicker use12Hours format="hh:mm A" style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="closingTime"
+              label="Closing time"
+              style={{ flex: 1, marginBottom: 0 }}
+            >
+              <TimePicker use12Hours format="hh:mm A" style={{ width: '100%' }} />
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            name="status"
+            label="Status"
+            rules={[{ required: true }]}
+            style={{ marginTop: 24 }}
+          >
+            <Select
+              options={[
+                { value: 'active', label: 'Active' },
+                { value: 'inactive', label: 'Inactive' },
+              ]}
+            />
+          </Form.Item>
+        </Form>
       </Drawer>
     </div>
   );

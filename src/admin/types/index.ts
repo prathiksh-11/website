@@ -666,6 +666,16 @@ export interface ReportBranchHighlights {
   sessionUtilization: number;
 }
 
+export interface ReportStaffCounts {
+  generalTrainer: number;
+  ptTrainer: number;
+  membershipCoordinator: number;
+  receptionist: number;
+  manager: number;
+  total: number;
+  managerNames: string[];
+}
+
 export interface ReportTrainerAttendance {
   presentDays: number;
   totalDays: number;
@@ -695,14 +705,17 @@ export interface ReportTrainer {
 export interface ReportBranch {
   id: string;
   name: string;
+  managerName?: string;
   summary: ReportBranchSummary;
   highlights: ReportBranchHighlights;
+  staff?: ReportStaffCounts;
   trainers: ReportTrainer[];
 }
 
 export interface GymReport {
   branchIds: string[];
   branches: ReportBranch[];
+  staff?: ReportStaffCounts;
   totals: ReportBranchSummary &
     ReportBranchHighlights & {
       branchCount: number;

@@ -3,11 +3,17 @@ import type {
   ReportBranch,
   ReportBranchHighlights,
   ReportBranchSummary,
+  ReportStaffCounts,
   ReportTrainer,
   ReportTrainerAttendance,
 } from '@/types';
 
 const asNumber = (value: unknown, fallback = 0) => {
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^0-9.-]/g, '');
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : fallback;
+  }
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
 };
@@ -59,6 +65,21 @@ const mapSummary = (raw: Record<string, unknown> = {}): ReportBranchSummary => {
   };
 };
 
+const mapStaff = (raw: Record<string, unknown> = {}): ReportStaffCounts => ({
+  generalTrainer: asNumber(raw.general_trainer ?? raw.generalTrainer),
+  ptTrainer: asNumber(raw.pt_trainer ?? raw.ptTrainer),
+  membershipCoordinator: asNumber(
+    raw.membership_coordinator ?? raw.membershipCoordinator,
+  ),
+  receptionist: asNumber(raw.receptionist),
+  manager: asNumber(raw.manager),
+  total: asNumber(raw.total),
+  managerNames: Array.isArray(raw.manager_names)
+    ? raw.manager_names.map((n) => asString(n)).filter(Boolean)
+    : Array.isArray(raw.managerNames)
+      ? (raw.managerNames as unknown[]).map((n) => asString(n)).filter(Boolean)
+      : [],
+});
 const mapHighlights = (
   raw: Record<string, unknown> = {},
 ): ReportBranchHighlights => ({
@@ -148,8 +169,10 @@ export const mapBackendGymReport = (
     return {
       id,
       name,
+      managerName: asString(b.manager_name ?? b.managerName) || undefined,
       summary: mapSummary((b.summary as Record<string, unknown>) ?? {}),
       highlights: mapHighlights((b.highlights as Record<string, unknown>) ?? {}),
+      staff: mapStaff((b.staff as Record<string, unknown>) ?? {}),
       trainers: trainersRaw.map((t) =>
         mapTrainer(t as Record<string, unknown>, id, name),
       ),
@@ -206,6 +229,7 @@ export const mapBackendGymReport = (
   return {
     branchIds: branches.map((b) => b.id),
     branches,
+    staff: mapStaff((raw.staff as Record<string, unknown>) ?? {}),
     totals,
   };
 };
@@ -213,6 +237,15 @@ export const mapBackendGymReport = (
 export const emptyGymReport = (): GymReport => ({
   branchIds: [],
   branches: [],
+  staff: {
+    generalTrainer: 0,
+    ptTrainer: 0,
+    membershipCoordinator: 0,
+    receptionist: 0,
+    manager: 0,
+    total: 0,
+    managerNames: [],
+  },
   totals: {
     ...emptySummary(),
     ...emptyHighlights(),

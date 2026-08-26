@@ -130,18 +130,23 @@ export const branchApi = {
       return updated;
     }
 
-    const { data } = await apiClient.patch<BackendListResponse>(
+    const body: Record<string, unknown> = { id: Number(id) };
+    if (payload.name !== undefined) body.name = payload.name;
+    if (payload.address !== undefined) body.address = payload.address || null;
+    if (payload.phone !== undefined) body.phone = payload.phone || null;
+    if (payload.email !== undefined) body.email = payload.email || null;
+    if (payload.status !== undefined) body.status = payload.status;
+    if (payload.location !== undefined) body.location = payload.location || null;
+    if (payload.openingTime !== undefined) {
+      body.opening_time = payload.openingTime || null;
+    }
+    if (payload.closingTime !== undefined) {
+      body.closing_time = payload.closingTime || null;
+    }
+
+    const { data } = await apiClient.post<BackendListResponse>(
       ENDPOINTS.BRANCHES.UPDATE,
-      {
-        id: Number(id),
-        name: payload.name,
-        address: payload.address,
-        phone: payload.phone,
-        email: payload.email,
-        status: payload.status,
-        opening_time: payload.openingTime,
-        closing_time: payload.closingTime,
-      },
+      body,
     );
     const raw = data?.data;
     if (!raw || Array.isArray(raw)) {
