@@ -74,14 +74,18 @@ export const normalizeTrainerType = (
   return undefined;
 };
 
-/** Effective type for display/filter — uses type, description, then role_name */
 export const resolveTrainerType = (
   trainer: {
     trainerType?: TrainerType | string | null;
     description?: string | null;
     roleName?: string | null;
+    roleId?: number | null;
   },
 ): TrainerType | undefined => {
+  if (trainer.roleId === 0) return undefined;
+  if (trainer.roleId === 2) return 'admin';
+  if (trainer.roleId === 3) return 'manager';
+
   const fromFields = normalizeTrainerType(trainer.trainerType, trainer.description);
   if (fromFields) return fromFields;
 
@@ -90,6 +94,9 @@ export const resolveTrainerType = (
     .toLowerCase();
   if (role === 'admin') return 'admin';
   if (role === 'manager') return 'manager';
+  if (role === 'employee' || role === 'trainer' || trainer.roleId === 4) {
+    return 'general_trainer';
+  }
 
   return undefined;
 };
@@ -169,7 +176,7 @@ export const THEME_TOKENS = {
   fontDisplay: "'Outfit', system-ui, sans-serif",
 } as const;
 
-const FULL_ADMIN_PERMS = [
+export const FULL_ADMIN_PERMS = [
   'dashboard',
   'customers',
   'trainers',
@@ -188,7 +195,7 @@ const FULL_ADMIN_PERMS = [
 
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
   'Super Admin': [...FULL_ADMIN_PERMS],
-  Admin: [...FULL_ADMIN_PERMS],
+  Admin: FULL_ADMIN_PERMS.filter((p) => p !== 'offers'),
   'Branch Manager': [
     'dashboard',
     'customers',
@@ -200,7 +207,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'transactions',
     'coupons',
     'notifications',
-    'offers',
     'profile',
   ],
   Trainer: ['dashboard', 'sessions', 'customers', 'profile'],
@@ -211,7 +217,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     'sessions',
     'events',
     'coupons',
-    'offers',
     'profile',
   ],
 };

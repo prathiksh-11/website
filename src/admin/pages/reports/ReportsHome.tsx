@@ -16,6 +16,7 @@ import {
   Dumbbell,
   Hourglass,
   TrendingUp,
+  User,
   UserCheck,
   Users,
   Wallet,
@@ -33,8 +34,9 @@ import {
   YAxis,
 } from 'recharts';
 import { PageSkeleton } from '@/components/common';
-import { normalizeTrainerType } from '@/constants';
+import { normalizeTrainerType, resolveTrainerType } from '@/constants';
 import { useBranches } from '@/hooks/useBranches';
+import { useCustomersAll } from '@/hooks/useCustomers';
 import {
   useGymReport,
   useGymReportQueries,
@@ -43,6 +45,7 @@ import {
 import { useTrainers, useTrainersAll } from '@/hooks/useTrainers';
 import type {
   Branch,
+  Customer,
   GymReport,
   ReportBranch,
   ReportDateFilter,
@@ -340,68 +343,184 @@ const OverviewCards = ({ totals }: { totals: GymReport['totals'] }) => (
 const BranchOverviewCards = ({
   branches,
   totals,
-  branchMeta,
-  allTrainers,
+  staff,
   branchId,
+  branchMeta = [],
+  allTrainers = [],
+  allCustomers = [],
 }: {
   branches: ReportBranch[];
   totals: GymReport['totals'];
-  branchMeta: Branch[];
-  allTrainers: Trainer[];
+  staff?: GymReport['staff'];
   branchId?: string;
+  branchMeta?: Branch[];
+  allTrainers?: Trainer[];
+  allCustomers?: Customer[];
 }) => {
   const reportTotals = totals ?? EMPTY_REPORT_TOTALS;
 
-  const managerByBranchId = useMemo(() => {
-    const map: Record<string, string> = {};
-    for (const branch of branchMeta) {
-      map[branch.id] = branch.managerName || '—';
+  const calculatedStaff = useMemo(() => {
+    if (staff && staff.total > 0) {
+      return {
+        ...staff,
+        manager:
+          staff.manager ||
+          (staff.managerNames ? staff.managerNames.length : 0),
+      };
     }
-    return map;
-  }, [branchMeta]);
+
+    const branchStaffSum = branches.reduce(
+      (acc, b) => {
+        if (b.staff) {
+          acc.generalTrainer += b.staff.generalTrainer || 0;
+          acc.ptTrainer += b.staff.ptTrainer || 0;
+          acc.membershipCoordinator += b.staff.membershipCoordinator || 0;
+          acc.receptionist += b.staff.receptionist || 0;
+          acc.manager +=
+            b.staff.manager ||
+            (b.staff.managerNames ? b.staff.managerNames.length : 0) ||
+            (b.managerName && b.managerName !== 'N/A' && b.managerName !== '—'
+              ? 1
+              : 0);
+          acc.total += b.staff.total || 0;
+          if (b.staff.managerNames) {
+            acc.managerNames.push(...b.staff.managerNames);
+          }
+        } else if (
+          b.managerName &&
+          b.managerName !== 'N/A' &&
+          b.managerName !== '—'
+        ) {
+          acc.manager += 1;
+        }
+        return acc;
+      },
+      {
+        generalTrainer: 0,
+        ptTrainer: 0,
+        membershipCoordinator: 0,
+        receptionist: 0,
+        manager: 0,
+        total: 0,
+        managerNames: [] as string[],
+      },
+    );
+
+    if (branchStaffSum.total > 0 || branchStaffSum.manager > 0) {
+      return branchStaffSum;
+    }
+
+    if (allTrainers.length > 0) {
+      const relevantBranches = branchId
+        ? branches.filter((b) => b.id === branchId)
+        : branches;
+
+      let gen = 0;
+      let pt = 0;
+      let mc = 0;
+      let reci = 0;
+      let mgr = 0;
+      let tot = 0;
+
+      for (const b of relevantBranches) {
+        const counts = countBranchStaff(allTrainers, b.id, b.name);
+        gen += counts.general_trainer || 0;
+        pt += counts.pt_trainer || 0;
+        mc += counts.membership_coordinator || 0;
+        reci += counts.receptionist || 0;
+        mgr +=
+          counts.manager ||
+          (branchMeta.find((m) => m.id === b.id)?.managerName &&
+            branchMeta.find((m) => m.id === b.id)?.managerName !== '—' &&
+            branchMeta.find((m) => m.id === b.id)?.managerName !== 'N/A'
+            ? 1
+            : 0);
+        tot += counts.total || 0;
+      }
+
+      return {
+        generalTrainer: gen,
+        ptTrainer: pt,
+        membershipCoordinator: mc,
+        receptionist: reci,
+        manager: mgr,
+        total: tot,
+        managerNames: [],
+      };
+    }
+
+    const metaManagerCount = branchMeta.filter(
+      (m) =>
+        (branchId ? m.id === branchId : true) &&
+        m.managerName &&
+        m.managerName !== '—' &&
+        m.managerName !== 'N/A',
+    ).length;
+
+    return staff
+      ? {
+        ...staff,
+        manager:
+          staff.manager ||
+          (staff.managerNames ? staff.managerNames.length : 0) ||
+          metaManagerCount,
+      }
+      : {
+        generalTrainer: 0,
+        ptTrainer: 0,
+        membershipCoordinator: 0,
+        receptionist: 0,
+        manager: metaManagerCount,
+        total: 0,
+        managerNames: [],
+      };
+  }, [allTrainers, branchId, branchMeta, branches, staff]);
 
   const aggregates = useMemo(() => {
-    const staff = emptyStaffCounts();
+    const metaManagerCount = branchMeta.filter(
+      (m) =>
+        (branchId ? m.id === branchId : true) &&
+        m.managerName &&
+        m.managerName !== '—' &&
+        m.managerName !== 'N/A',
+    ).length;
 
-    for (const branch of branches) {
-      const counts = countBranchStaff(allTrainers, branch.id, branch.name);
-      staff.general_trainer += counts.general_trainer;
-      staff.pt_trainer += counts.pt_trainer;
-      staff.membership_coordinator += counts.membership_coordinator;
-      staff.receptionist += counts.receptionist;
-      staff.total += counts.total;
-    }
+    const calculatedTotalClients = branchId
+      ? Math.max(
+          reportTotals.totalCustomers,
+          allCustomers.filter(
+            (c) =>
+              c.branchId === branchId ||
+              branches.some(
+                (b) =>
+                  b.id === branchId &&
+                  b.name.toLowerCase() === (c.branchName || '').toLowerCase(),
+              ),
+          ).length,
+        )
+      : Math.max(reportTotals.totalCustomers, allCustomers.length);
 
     return {
-      generalTrainer: staff.general_trainer,
-      ptTrainer: staff.pt_trainer,
-      mc: staff.membership_coordinator,
-      reci: staff.receptionist,
-      totalEmployees: staff.total,
-      totalClients: reportTotals.totalCustomers,
+      manager: calculatedStaff.manager || metaManagerCount || 0,
+      generalTrainer: calculatedStaff.generalTrainer || 0,
+      ptTrainer: calculatedStaff.ptTrainer || 0,
+      mc: calculatedStaff.membershipCoordinator || 0,
+      reci: calculatedStaff.receptionist || 0,
+      totalEmployees: calculatedStaff.total || 0,
+      totalClients: calculatedTotalClients,
       ptClients: reportTotals.ptClients,
       membershipClients: reportTotals.subscriberClients,
       subscriptionRevenue: reportTotals.subscriberRevenue,
       eventRevenue: reportTotals.eventRevenue,
       ptRevenue: reportTotals.ptRevenue,
-      ptCollected: reportTotals.paidAmount,
-      pendingAmount: reportTotals.pendingAmount,
-      totalRevenueAll:
-        reportTotals.totalRevenue +
-        reportTotals.pendingAmount +
-        reportTotals.amountDue,
+      totalRevenueAll: reportTotals.totalRevenue,
     };
-  }, [allTrainers, branches, reportTotals]);
+  }, [allCustomers, branchId, branchMeta, branches, calculatedStaff, reportTotals]);
 
   const branchNameLabel =
     branchId && branches.length === 1
       ? shortBranch(branches[0].name)
       : `${reportTotals.branchCount} branches`;
-
-  const managerLabel =
-    branchId && branches.length === 1
-      ? (managerByBranchId[branches[0].id] ?? '—')
-      : '—';
 
   const cards: Array<{
     key: string;
@@ -421,7 +540,7 @@ const BranchOverviewCards = ({
       {
         key: 'manager',
         label: 'Manager',
-        value: managerLabel,
+        value: String(aggregates.manager),
         icon: UserCheck,
       },
       {
@@ -478,12 +597,7 @@ const BranchOverviewCards = ({
         value: formatCurrency(aggregates.subscriptionRevenue),
         icon: CircleDollarSign,
       },
-      {
-        key: 'employees',
-        label: 'Total employees',
-        value: String(aggregates.totalEmployees),
-        icon: Activity,
-      },
+
       {
         key: 'total-revenue',
         label: 'Total revenue',
@@ -510,7 +624,7 @@ const BranchOverviewCards = ({
               .join(' ')}
           >
             <div className="rpt-stat__icon">
-              <Icon size={18} />
+              <Icon size={14} />
             </div>
             <div className="rpt-stat__body">
               <span>{card.label}</span>
@@ -554,11 +668,22 @@ const countBranchStaff = (
   const counts = emptyStaffCounts();
 
   for (const trainer of trainers) {
+    if (trainer.roleId == null || trainer.roleId === 0) continue;
+    if (trainer.roleId === 1) continue;
     if (!trainerBelongsToBranch(trainer, branchId, branchName)) continue;
+
     const type =
+      resolveTrainerType(trainer) ??
       normalizeTrainerType(trainer.trainerType, trainer.description) ??
-      'general_trainer';
-    counts[type] += 1;
+      (trainer.roleId === 3
+        ? 'manager'
+        : trainer.roleId === 2
+          ? 'admin'
+          : 'general_trainer');
+
+    if (counts[type] != null) {
+      counts[type] += 1;
+    }
     counts.total += 1;
   }
 
@@ -589,10 +714,12 @@ const BranchSummaryTab = ({
   branches,
   branchMeta,
   allTrainers,
+  allCustomers = [],
 }: {
   branches: ReportBranch[];
   branchMeta: Branch[];
   allTrainers: Trainer[];
+  allCustomers?: Customer[];
 }) => {
   const managerByBranchId = useMemo(() => {
     const map: Record<string, string> = {};
@@ -607,6 +734,12 @@ const BranchSummaryTab = ({
       branches.map((branch) => {
         const staff = countBranchStaff(allTrainers, branch.id, branch.name);
         const { summary } = branch;
+        const branchCustCount = allCustomers.filter(
+          (c) =>
+            c.branchId === branch.id ||
+            (c.branchName &&
+              c.branchName.toLowerCase() === branch.name.toLowerCase()),
+        ).length;
 
         return {
           key: branch.id,
@@ -616,7 +749,7 @@ const BranchSummaryTab = ({
           ptTrainer: staff.pt_trainer,
           mc: staff.membership_coordinator,
           reci: staff.receptionist,
-          totalClients: summary.totalCustomers,
+          totalClients: Math.max(summary.totalCustomers, branchCustCount),
           ptClients: summary.ptClients,
           membershipClients: summary.subscriberClients,
           subscriptionRevenue: summary.subscriberRevenue,
@@ -631,7 +764,7 @@ const BranchSummaryTab = ({
           totalEmployees: staff.total,
         };
       }),
-    [allTrainers, branches, managerByBranchId],
+    [allCustomers, allTrainers, branches, managerByBranchId],
   );
 
   const columns: ColumnsType<BranchTableRow> = [
@@ -650,8 +783,8 @@ const BranchSummaryTab = ({
     { title: 'Manager', dataIndex: 'manager', width: 140 },
     { title: 'General trainer', dataIndex: 'generalTrainer', width: 120, align: 'center' },
     { title: 'Personal trainer', dataIndex: 'ptTrainer', width: 120, align: 'center' },
-    { title: 'Membership Coordinator', dataIndex: 'Membership Coordinator', width: 70, align: 'center' },
-    { title: 'Receptionist', dataIndex: 'Receptionist', width: 70, align: 'center' },
+    { title: 'Membership Coordinator', dataIndex: 'mc', width: 70, align: 'center' },
+    { title: 'Receptionist', dataIndex: 'reci', width: 70, align: 'center' },
     { title: 'Total clients', dataIndex: 'totalClients', width: 100, align: 'center' },
     { title: 'PT/clients', dataIndex: 'ptClients', width: 100, align: 'center' },
     {
@@ -715,83 +848,92 @@ const BranchSummaryTab = ({
         </div>
         <div className="rpt__branch-grid">
           {branches.map((b) => {
-            const util = Math.min(100, b.highlights.sessionUtilization);
-            const totalCustomers = b.summary.totalCustomers;
-            const ptCustomers = b.summary.ptClients;
-            const pendingTotal =
-              b.summary.pendingAmount + b.summary.partialPaidAmount;
-            const pendingHint =
-              b.summary.pendingCount > 0
-                ? `${b.summary.pendingCount} awaiting approval`
-                : b.summary.partialPaidCount > 0
-                  ? `${b.summary.partialPaidCount} installment payments`
-                  : 'No pending payments';
+            const util = Math.round(Math.min(100, Math.max(0, b.highlights.sessionUtilization || 0)));
+            const branchCustCount = allCustomers.filter(
+              (c) =>
+                c.branchId === b.id ||
+                (c.branchName &&
+                  c.branchName.toLowerCase() === b.name.toLowerCase()),
+            ).length;
+            const totalCustomers = Math.max(
+              b.summary.totalCustomers || 0,
+              branchCustCount,
+            );
+            const ptCustomers = b.summary.ptClients || 0;
+            const staff = countBranchStaff(allTrainers, b.id, b.name);
+            const manager = managerByBranchId[b.id] || b.managerName || '—';
+
             return (
               <article key={b.id} className="rpt-branch">
-                <header className="rpt-branch__head">
-                  <div className="rpt-branch__title-group">
-                    <span className="rpt-branch__badge">
-                      <Building2 size={15} />
-                    </span>
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <h3>{shortBranch(b.name)}</h3>
-                      <p className="rpt-branch__full" title={b.name}>{b.name}</p>
+                {/* Header */}
+                <div className="rpt-branch__header">
+                  <div className="rpt-branch__title-wrap">
+                    <div className="rpt-branch__badge">
+                      <Building2 size={16} />
                     </div>
+                    <h3 title={b.name}>{b.name}</h3>
                   </div>
-                  <div
-                    className="rpt-branch__util-ring"
-                    style={{ ['--util' as string]: `${util}%` }}
-                    aria-label={`${util}% utilization`}
-                  >
-                    <strong>{util}%</strong>
-                  </div>
-                </header>
-
-                <div className="rpt-branch__hero-metric">
-                  <div>
-                    <span className="rpt-branch__hero-label">Paid Amount</span>
-                    <strong className="rpt-branch__hero-value">{formatCurrency(b.summary.paidAmount)}</strong>
-                  </div>
-                  <span className="rpt-branch__hero-tag">Collected</span>
                 </div>
 
-                <div className="rpt-branch__section-label">Revenue Streams</div>
-                <ul className="rpt-branch__streams">
-                  <li>
-                    <span>PT</span>
-                    <strong title={formatCurrency(b.summary.ptRevenue)}>{formatCurrency(b.summary.ptRevenue)}</strong>
-                  </li>
-                  <li>
-                    <span>Subs</span>
-                    <strong title={formatCurrency(b.summary.subscriberRevenue)}>{formatCurrency(b.summary.subscriberRevenue)}</strong>
-                  </li>
-                  <li>
-                    <span>Events</span>
-                    <strong title={formatCurrency(b.summary.eventRevenue)}>{formatCurrency(b.summary.eventRevenue)}</strong>
-                  </li>
-                </ul>
+                {/* Total Revenue Below Branch */}
+                <div className="rpt-branch__revenue-block">
+                  <span className="rpt-branch__rev-label">Total Revenue</span>
+                  <strong className="rpt-branch__amt">
+                    {formatCurrency(b.summary.paidAmount)}
+                  </strong>
+                </div>
 
-                <div className="rpt-branch__section-label">Customers & Staff</div>
-                <div className="rpt-branch__people">
-                  <div className="rpt-branch__person-box">
-                    <Users size={16} />
-                    <div>
-                      <strong>{totalCustomers}</strong>
-                      <span>Total Customers</span>
+                {/* Revenue Streams Breakdown */}
+                <div className="rpt-branch__streams">
+                  <div className="rpt-branch__stream-item rpt-branch__stream-item--pt">
+                    <span className="rpt-branch__stream-label">PT</span>
+                    <strong className="rpt-branch__stream-val">
+                      {formatCurrency(b.summary.ptRevenue)}
+                    </strong>
+                  </div>
+                  <div className="rpt-branch__stream-item rpt-branch__stream-item--subs">
+                    <span className="rpt-branch__stream-label">Subs</span>
+                    <strong className="rpt-branch__stream-val">
+                      {formatCurrency(b.summary.subscriberRevenue)}
+                    </strong>
+                  </div>
+                  <div className="rpt-branch__stream-item rpt-branch__stream-item--event">
+                    <span className="rpt-branch__stream-label">Events</span>
+                    <strong className="rpt-branch__stream-val">
+                      {formatCurrency(b.summary.eventRevenue)}
+                    </strong>
+                  </div>
+                </div>
+
+                {/* Stats Grid */}
+                <div className="rpt-branch__stats-grid">
+                  <div className="rpt-branch__stat-chip" title="Total Customers">
+                    <div className="rpt-branch__stat-icon-wrap rpt-branch__stat-icon-wrap--members">
+                      <Users size={13} />
+                    </div>
+                    <div className="rpt-branch__stat-text">
+                      <span className="rpt-branch__stat-val">{totalCustomers}</span>
+                      <span className="rpt-branch__stat-name">Total Customers</span>
                     </div>
                   </div>
-                  <div className="rpt-branch__person-box rpt-branch__person-box--pt">
-                    <UserCheck size={16} />
-                    <div>
-                      <strong>{ptCustomers}</strong>
-                      <span>PT Customers</span>
+
+                  <div className="rpt-branch__stat-chip" title="PT Customers">
+                    <div className="rpt-branch__stat-icon-wrap rpt-branch__stat-icon-wrap--pt">
+                      <UserCheck size={13} />
+                    </div>
+                    <div className="rpt-branch__stat-text">
+                      <span className="rpt-branch__stat-val">{ptCustomers}</span>
+                      <span className="rpt-branch__stat-name">PT Customers</span>
                     </div>
                   </div>
-                  <div className="rpt-branch__person-box">
-                    <Dumbbell size={16} />
-                    <div>
-                      <strong>{b.highlights.activeTrainers}</strong>
-                      <span>Trainers</span>
+
+                  <div className="rpt-branch__stat-chip" title="Trainers">
+                    <div className="rpt-branch__stat-icon-wrap rpt-branch__stat-icon-wrap--staff">
+                      <Dumbbell size={13} />
+                    </div>
+                    <div className="rpt-branch__stat-text">
+                      <span className="rpt-branch__stat-val">{b.highlights.activeTrainers || staff.pt_trainer + staff.general_trainer || staff.total || 0}</span>
+                      <span className="rpt-branch__stat-name">Trainers</span>
                     </div>
                   </div>
                 </div>
@@ -1438,7 +1580,7 @@ const RevenueTab = ({
 
 export const ReportsHome = () => {
   const [tab, setTab] = useState<ReportTab>('branch');
-  const [filter, setFilter] = useState<ReportDateFilter>('monthly');
+  const [filter, setFilter] = useState<ReportDateFilter>('all');
   const [range, setRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [branchId, setBranchId] = useState<string | undefined>();
   const [trainerId, setTrainerId] = useState<string | undefined>();
@@ -1500,6 +1642,7 @@ export const ReportsHome = () => {
     branchNameById,
   );
   const { data: allTrainers = [] } = useTrainersAll();
+  const { data: allCustomers = [] } = useCustomersAll();
 
   const primarySlices = useMemo(() => {
     if (revenueMode === 'today') {
@@ -1980,9 +2123,11 @@ export const ReportsHome = () => {
             <BranchOverviewCards
               branches={branches}
               totals={totals}
+              staff={data?.staff}
+              branchId={branchId}
               branchMeta={branchesData?.data ?? []}
               allTrainers={allTrainers}
-              branchId={branchId}
+              allCustomers={allCustomers}
             />
           ) : null}
           {tab === 'branch' ? (
@@ -1990,6 +2135,7 @@ export const ReportsHome = () => {
               branches={branches}
               branchMeta={branchesData?.data ?? []}
               allTrainers={allTrainers}
+              allCustomers={allCustomers}
             />
           ) : tab === 'attendance' ? (
             <AttendanceTab

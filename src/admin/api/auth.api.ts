@@ -117,6 +117,7 @@ export const authApi = {
     name?: string;
     lastName?: string;
     password?: string;
+    image?: string;
   }): Promise<User> => {
     if (USE_MOCK) {
       await delay(200);
@@ -125,6 +126,7 @@ export const authApi = {
         ...current,
         name: [payload.name, payload.lastName].filter(Boolean).join(' ') || current.name,
         lastName: payload.lastName ?? current.lastName,
+        avatar: payload.image ?? current.avatar,
       };
       localStorage.setItem('gym_admin_user', JSON.stringify(next));
       return next;
@@ -134,6 +136,7 @@ export const authApi = {
     if (payload.name?.trim()) body.name = payload.name.trim();
     if (payload.lastName != null) body.last_name = payload.lastName.trim();
     if (payload.password) body.password = payload.password;
+    if (payload.image) body.image = payload.image;
 
     await apiClient.put(ENDPOINTS.AUTH.UPDATE_PROFILE, body);
     return authApi.me();

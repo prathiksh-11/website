@@ -96,7 +96,7 @@ export default function LocationsPage() {
           </>
         }
         description="Not every journey begins in the same place. But every great journey begins with the right one."
-        image="https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop"
+        image="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&h=1000&q=80"
         imagePosition="center center"
         actions={
           <a
