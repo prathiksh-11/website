@@ -2964,6 +2964,30 @@
   gap: 0.75rem;
 }
 
+.brch-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brch-upload img,
+.brch-upload__empty {
+  width: 88px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.brch-upload__empty {
+  display: grid;
+  place-items: center;
+  color: #8a7a6a;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 80, 0, 0.14), transparent 55%),
+    #ebe4dc;
+}
+
 .brch__pager {
   display: flex;
   align-items: center;

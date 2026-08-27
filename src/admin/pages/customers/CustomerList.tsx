@@ -14,7 +14,7 @@ import {
   Calendar,
   Clock,
   CreditCard,
-  DollarSign,
+  IndianRupee,
   Download,
   Dumbbell,
   Mail,
@@ -507,7 +507,7 @@ export const CustomerList = () => {
               <div className="cust-detail__kpi-card">
                 <div className="cust-detail__kpi-header">
                   <span>Payment Due</span>
-                  <DollarSign
+                  <IndianRupee
                     size={14}
                     style={{
                       color: Number(customerDetails.payment_due) > 0 ? '#ef4444' : '#10b981',
