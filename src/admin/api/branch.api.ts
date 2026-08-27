@@ -112,6 +112,8 @@ export const branchApi = {
         email: payload.email,
         opening_time: payload.openingTime,
         closing_time: payload.closingTime,
+        branch_image: payload.image || null,
+        image: payload.image || null,
       },
     );
     const raw = data?.data;
@@ -142,6 +144,10 @@ export const branchApi = {
     }
     if (payload.closingTime !== undefined) {
       body.closing_time = payload.closingTime || null;
+    }
+    if (payload.image !== undefined) {
+      body.branch_image = payload.image || null;
+      body.image = payload.image || null;
     }
 
     const { data } = await apiClient.post<BackendListResponse>(

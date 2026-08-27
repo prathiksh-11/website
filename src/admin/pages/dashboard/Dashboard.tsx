@@ -5,7 +5,7 @@ import {
   Check,
   ChevronDown,
   CreditCard,
-  DollarSign,
+  IndianRupee,
   Dumbbell,
   Sparkles,
   TrendingUp,
@@ -254,7 +254,7 @@ export const Dashboard = () => {
       value: formatCurrency(totalOverallRevenue),
       badge: 'OVERALL',
       hint: 'PT + Subscription revenue',
-      icon: <DollarSign size={18} />,
+      icon: <IndianRupee size={18} />,
     },
     {
       label: 'Total Employees',

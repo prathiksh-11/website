@@ -18,6 +18,7 @@ import {
   Tabs,
   Tag,
   TimePicker,
+  Upload,
 } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -95,6 +96,14 @@ const PersonList = ({ people }: { people: BranchPerson[] }) => {
   );
 };
 
+const readFileAsDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
 export const BranchList = () => {
   const user = useAuthStore((s) => s.user);
   const { params, setSearch, setStatus, setPage } = useTableParams({
@@ -105,6 +114,7 @@ export const BranchList = () => {
   const { update } = useBranchMutations();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Branch | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | undefined>();
   const [form] = Form.useForm();
   const { data: details, isLoading: loadingDetails } =
     useBranchDetails(selectedId);
@@ -132,6 +142,7 @@ export const BranchList = () => {
     const opening = parseClock(branch.openingTime);
     const closing = parseClock(branch.closingTime);
     setEditing(branch);
+    setImagePreview(branch.image);
     form.setFieldsValue({
       name: branch.name,
       address: branch.address,
@@ -162,6 +173,7 @@ export const BranchList = () => {
         closingTime: values.closingTime
           ? values.closingTime.format('HH:mm')
           : '',
+        image: imagePreview,
       },
     });
     setEditing(null);
@@ -500,6 +512,29 @@ export const BranchList = () => {
         }
       >
         <Form form={form} layout="vertical">
+          <Form.Item label="Branch image">
+            <div className="brch-upload">
+              {imagePreview ? (
+                <img src={imagePreview} alt="" />
+              ) : (
+                <span className="brch-upload__empty">
+                  <Building2 size={28} strokeWidth={1.5} />
+                </span>
+              )}
+              <Upload
+                accept="image/*"
+                showUploadList={false}
+                beforeUpload={async (file) => {
+                  const dataUrl = await readFileAsDataUrl(file);
+                  setImagePreview(dataUrl);
+                  return false;
+                }}
+              >
+                <Button>Upload image</Button>
+              </Upload>
+            </div>
+          </Form.Item>
+
           <Form.Item
             name="name"
             label="Branch name"
