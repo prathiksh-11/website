@@ -302,7 +302,7 @@ export const branchData: Record<string, {
 
     comfort: 'Premium',
 
-tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
+    tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     hours: [
 
@@ -510,7 +510,7 @@ tagline: 'WE TRAIN YOU SMARTER, NOT HARDER!',
 
     mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5!2d77.62!3d12.90!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzAwLjAiTiA3N8KwMzcnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890',
 
-    mapsLink: 'https://maps.app.goo.gl/oHZDcSENCPx86TMJ7?g_st=ac',
+    mapsLink: 'https://maps.app.goo.gl/CX43f4uxn71A13999',
 
   },
 
@@ -1142,7 +1142,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
 
   return (
     <div className="min-h-screen gym-surface text-[#3a3f4b] font-sans selection:bg-[#ff5000]/25 selection:text-[#16181f]">
-  
+
       {/* Hero Header Section */}
       <div className={`relative h-[75vh] min-h-[520px] w-full overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
         <div className={`absolute inset-0 transition-transform duration-[25s] ease-linear ${isVisible ? 'scale-100' : 'scale-110'}`}>
@@ -1154,7 +1154,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#f7f8fb] via-[#16181f]/35 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#16181f]/30 via-transparent to-transparent" />
-        
+
         {/* Floating Navigation Back Button */}
         <button
           onClick={onBack}
@@ -1162,7 +1162,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         >
           <ChevronLeft size={22} className="group-hover:-translate-x-1 transition-transform" />
         </button>
-        
+
         {/* Hero Content Overlay */}
         <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 lg:px-16 pb-16">
           <div className="max-w-7xl mx-auto">
@@ -1172,7 +1172,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
             <h1 className={`text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-tight uppercase max-w-4xl drop-shadow-lg transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {branch.name}
             </h1>
-        
+
             <div className={`flex flex-wrap items-center gap-8 mt-8 pt-8 border-t border-white/25 transition-all duration-700 delay-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <div className="flex items-center gap-3 text-white/80 hover:text-white transition-colors group">
                 <div className="p-2 bg-white/90 rounded-lg border border-white/40">
@@ -1219,53 +1219,51 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           </a>
         </div>
       </div>
-      
+
       {/* Main Content Wrapper */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pb-24">
 
         {/* Gallery - shown early so banner is visible */}
         {branch.gallery.length > 0 && (
-        <div className="mb-16 group">
-          <div className="flex items-center justify-center gap-4 mb-10">
-            <div className="w-1.5 h-8 bg-gradient-to-b from-[#ff5000] to-[#e04800] rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-[#ff5000]/20" />
-            <h2 className="text-2xl md:text-3xl font-black tracking-wider text-[#16181f] uppercase group-hover:text-[#ff5000] transition-colors duration-300">Gallery</h2>
-          </div>
-          <div className="relative w-full aspect-[21/9] max-h-[450px] rounded-3xl overflow-hidden border border-[rgba(18,20,26,0.08)] bg-white group/gallery hover:border-[#ff5000]/30 transition-all duration-500 hover:shadow-2xl hover:shadow-[#ff5000]/20">
-            {branch.gallery.map((imgUrl, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-1000 ${
-                  index === currentGallery ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
-                }`}
-              >
-                <img
-                  src={imgUrl}
-                  alt="Gym Interior"
-                  className="w-full h-full object-cover group-hover/gallery:scale-105 transition-transform duration-[2s] ease-out"
-                />
-              </div>
-            ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/65 via-[#16181f]/20 to-transparent" />
-
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-              {branch.gallery.map((_, index) => (
-                <button
+          <div className="mb-16 group">
+            <div className="flex items-center justify-center gap-4 mb-10">
+              <div className="w-1.5 h-8 bg-gradient-to-b from-[#ff5000] to-[#e04800] rounded-full group-hover:h-12 transition-all duration-500 shadow-lg shadow-[#ff5000]/20" />
+              <h2 className="text-2xl md:text-3xl font-black tracking-wider text-[#16181f] uppercase group-hover:text-[#ff5000] transition-colors duration-300">Gallery</h2>
+            </div>
+            <div className="relative w-full aspect-[21/9] max-h-[450px] rounded-3xl overflow-hidden border border-[rgba(18,20,26,0.08)] bg-white group/gallery hover:border-[#ff5000]/30 transition-all duration-500 hover:shadow-2xl hover:shadow-[#ff5000]/20">
+              {branch.gallery.map((imgUrl, index) => (
+                <div
                   key={index}
-                  onClick={() => setCurrentGallery(index)}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    index === currentGallery ? 'bg-[#ff5000] w-12 shadow-lg shadow-[#ff5000]/50' : 'bg-[#d4d7de] hover:bg-[#ff5000] hover:w-6'
-                  }`}
-                />
+                  className={`absolute inset-0 transition-all duration-1000 ${index === currentGallery ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                    }`}
+                >
+                  <img
+                    src={imgUrl}
+                    alt="Gym Interior"
+                    className="w-full h-full object-cover group-hover/gallery:scale-105 transition-transform duration-[2s] ease-out"
+                  />
+                </div>
               ))}
-            </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#16181f]/65 via-[#16181f]/20 to-transparent" />
 
-            <div className="absolute top-6 right-6 bg-[#16181f]/70 px-5 py-2.5 rounded-full text-sm font-bold text-white border border-[rgba(18,20,26,0.08)] group-hover/gallery:border-[#ff5000]/30 transition-all duration-300">
-              {currentGallery + 1} / {branch.gallery.length}
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+                {branch.gallery.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentGallery(index)}
+                    className={`h-2 rounded-full transition-all duration-500 ${index === currentGallery ? 'bg-[#ff5000] w-12 shadow-lg shadow-[#ff5000]/50' : 'bg-[#d4d7de] hover:bg-[#ff5000] hover:w-6'
+                      }`}
+                  />
+                ))}
+              </div>
+
+              <div className="absolute top-6 right-6 bg-[#16181f]/70 px-5 py-2.5 rounded-full text-sm font-bold text-white border border-[rgba(18,20,26,0.08)] group-hover/gallery:border-[#ff5000]/30 transition-all duration-300">
+                {currentGallery + 1} / {branch.gallery.length}
+              </div>
             </div>
           </div>
-        </div>
         )}
-      
+
         {/* Dynamic Typography Tagline */}
         <div className="text-center max-w-3xl mx-auto mb-16 group">
           <span className="text-5xl block text-[#ff5000]/30 font-serif mb-3 group-hover:text-[#ff5000]/50 transition-colors duration-500">"</span>
@@ -1274,20 +1272,20 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
           </p>
           <div className="w-16 h-[3px] bg-gradient-to-r from-transparent via-[#ff5000] to-transparent mx-auto mt-8 group-hover:w-32 transition-all duration-700 rounded-full" />
         </div>
-      
+
         {/* Modern Grid Layout */}
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
 
           {/* Left Column (7 Columns) */}
           <div className="lg:col-span-7 space-y-10">
-          
+
             {/* Training Programs Section */}
             <div className="transform transition-all duration-500 hover:scale-[1.01]">
               <div className="flex items-center gap-4 mb-8 group">
                 <div className="w-1.5 h-8 bg-gradient-to-b from-[#ff5000] to-[#e04800] rounded-full group-hover:h-10 transition-all duration-300 shadow-lg shadow-[#ff5000]/20" />
                 <h2 className="text-xl md:text-2xl font-black tracking-wider text-[#16181f] uppercase group-hover:text-[#ff5000] transition-colors duration-300">Our Training</h2>
               </div>
-          
+
               <div className="space-y-5">
                 {branch.programs.map((program, idx) => (
                   <div key={idx} className="bg-white border border-[rgba(18,20,26,0.08)] rounded-2xl p-6 hover:border-[#ff5000]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#ff5000]/10 hover:-translate-y-1">
@@ -1313,7 +1311,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 <div className="w-1.5 h-8 bg-gradient-to-b from-[#ff5000] to-[#e04800] rounded-full group-hover:h-10 transition-all duration-300 shadow-lg shadow-[#ff5000]/20" />
                 <h2 className="text-xl md:text-2xl font-black tracking-wider text-[#16181f] uppercase group-hover:text-[#ff5000] transition-colors duration-300">Club Facilities</h2>
               </div>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {branch.facilities.map((facility, i) => {
                   const IconComponent = facility.icon;
@@ -1373,11 +1371,10 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                     return (
                       <div
                         key={i}
-                        className={`rounded-[28px] border p-4 transition-all duration-300 ${
-                          isBest
-                            ? 'bg-[#ff5000]/10 border-[#ff5000]/30 shadow-lg shadow-[#ff5000]/10'
-                            : 'bg-[#f7f8fb] border-[rgba(18,20,26,0.08)] hover:bg-white hover:border-[#ff5000]/20'
-                        }`}
+                        className={`rounded-[28px] border p-4 transition-all duration-300 ${isBest
+                          ? 'bg-[#ff5000]/10 border-[#ff5000]/30 shadow-lg shadow-[#ff5000]/10'
+                          : 'bg-[#f7f8fb] border-[rgba(18,20,26,0.08)] hover:bg-white hover:border-[#ff5000]/20'
+                          }`}
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div>
@@ -1407,47 +1404,47 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
         </div>
 
         {/* Our Team - Trainer Cards */}
-       <div className="mt-20">
-  {/* Section Title */}
-  <div className="flex items-center justify-center gap-3 mb-12">
-    <div className="w-1.5 h-10 bg-[#ff5000] rounded-full" />
-    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-wider text-[#16181f]">
-      Meet Our Trainers
-    </h2>
-  </div>
+        <div className="mt-20">
+          {/* Section Title */}
+          <div className="flex items-center justify-center gap-3 mb-12">
+            <div className="w-1.5 h-10 bg-[#ff5000] rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-wider text-[#16181f]">
+              Meet Our Trainers
+            </h2>
+          </div>
 
-  {/* Trainer Cards */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-    {branch.team.map((member, index) => (
-      <div
-        key={index}
-        className="bg-white border border-[rgba(18,20,26,0.08)] rounded-3xl overflow-hidden hover:border-[#ff5000]/40 transition-all duration-300 hover:-translate-y-2"
-      >
-        {/* Trainer Image */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-[#f7f8fb]">
-          <img
-            src={member.image}
-            alt={member.name}
-            className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
-          />
+          {/* Trainer Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {branch.team.map((member, index) => (
+              <div
+                key={index}
+                className="bg-white border border-[rgba(18,20,26,0.08)] rounded-3xl overflow-hidden hover:border-[#ff5000]/40 transition-all duration-300 hover:-translate-y-2"
+              >
+                {/* Trainer Image */}
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#f7f8fb]">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                  />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-[#16181f]/20 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-[#16181f]/20 to-transparent pointer-events-none" />
+                </div>
+
+                {/* Trainer Details */}
+                <div className="p-6 text-center">
+                  <h3 className="text-xl font-bold text-white">
+                    {member.name}
+                  </h3>
+
+                  <p className="mt-2 text-[#ff5000] uppercase tracking-widest text-sm">
+                    {member.role}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-
-        {/* Trainer Details */}
-        <div className="p-6 text-center">
-          <h3 className="text-xl font-bold text-white">
-            {member.name}
-          </h3>
-
-          <p className="mt-2 text-[#ff5000] uppercase tracking-widest text-sm">
-            {member.role}
-          </p>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
 
 
         {/* Location Map Section - Full Screen Big */}
@@ -1462,7 +1459,7 @@ export default function BranchDetail({ branchId, onBack }: BranchDetailProps) {
                 {branch.address}
               </p>
             </div>
-            
+
             <div className="relative w-full aspect-video max-h-[600px] rounded-3xl overflow-hidden border border-[rgba(18,20,26,0.08)] bg-white hover:border-[#ff5000]/40 transition-all duration-700 hover:shadow-2xl hover:shadow-[#ff5000]/20 group/map">
               <iframe
                 src={branch.mapUrl}
