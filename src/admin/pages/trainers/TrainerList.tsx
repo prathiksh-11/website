@@ -206,26 +206,48 @@ export const TrainerList = () => {
   const openCreate = () => {
     setEditing(null);
     form.resetFields();
-    form.setFieldsValue({ gender: 'Male', trainerType: 'general_trainer' });
+    form.setFieldsValue({
+      gender: 'Male',
+      trainerType: 'general_trainer',
+      branchIds: params.branchId ? [String(params.branchId)] : [],
+    });
     setFormOpen(true);
   };
 
   const openEdit = (record: Trainer) => {
     setEditing(record);
-    const matchedBranchId =
-      record.branchId ||
-      branchesData?.data.find((b) =>
-        record.branchNames.some(
-          (n) => n.toLowerCase() === b.name.toLowerCase(),
-        ),
-      )?.id;
+    let initialBranchIds: string[] = [];
+
+    if (record.branchIds && record.branchIds.length > 0) {
+      initialBranchIds = Array.from(new Set(record.branchIds.map(String)));
+    } else {
+      const namesSet = new Set(
+        (record.branchNames?.length ? record.branchNames : [record.branchName])
+          .filter(Boolean)
+          .map((n) => n.trim().toLowerCase()),
+      );
+
+      const matchedIds = (branchesData?.data ?? [])
+        .filter((b) => {
+          const fullName = b.name.trim().toLowerCase();
+          const shortName = shortBranch(b.name).trim().toLowerCase();
+          return namesSet.has(fullName) || namesSet.has(shortName);
+        })
+        .map((b) => String(b.id));
+
+      if (matchedIds.length > 0) {
+        initialBranchIds = Array.from(new Set(matchedIds));
+      } else if (record.branchId) {
+        initialBranchIds = [String(record.branchId)];
+      }
+    }
 
     form.setFieldsValue({
       name: record.name,
       phone: record.phone,
       trainerType: record.trainerType ?? 'general_trainer',
       gender: record.gender ?? 'Male',
-      branchId: matchedBranchId ? String(matchedBranchId) : undefined,
+      branchIds: initialBranchIds,
       specialization: record.description ?? record.specialization ?? '',
     });
     setFormOpen(true);
@@ -233,11 +255,20 @@ export const TrainerList = () => {
 
   const onSubmit = async () => {
     const values = await form.validateFields();
-    const branchObj = branchesData?.data.find(
-      (b) => String(b.id) === String(values.branchId),
+    const rawBranchIds: unknown = values.branchIds;
+    const selectedBranchIds: string[] = Array.isArray(rawBranchIds)
+      ? (rawBranchIds as unknown[]).map((id) => String(id))
+      : rawBranchIds != null && rawBranchIds !== ''
+        ? [String(rawBranchIds)]
+        : [];
+
+    const selectedBranches = (branchesData?.data ?? []).filter((b) =>
+      selectedBranchIds.includes(String(b.id)),
     );
-    const branchName = branchObj ? shortBranch(branchObj.name) : undefined;
-    const branchNames = branchName ? [branchName] : [];
+    const branchNames = selectedBranches.map((b) => shortBranch(b.name));
+    const firstBranchId = selectedBranchIds[0] ?? '';
+    const firstBranchName =
+      branchNames[0] ?? editing?.branchName ?? 'Unassigned';
 
     const payload: Omit<Trainer, 'id'> = {
       name: values.name as string,
@@ -245,8 +276,9 @@ export const TrainerList = () => {
       email: editing?.email ?? '',
       specialization:
         (values.description || values.specialization || 'Trainer') as string,
-      branchId: values.branchId ? String(values.branchId) : '',
-      branchName: branchName ?? editing?.branchName ?? 'Unassigned',
+      branchId: firstBranchId,
+      branchIds: selectedBranchIds,
+      branchName: firstBranchName,
       branchNames: branchNames.length ? branchNames : editing?.branchNames ?? [],
       status: editing?.status ?? 'active',
       experienceYears: editing?.experienceYears ?? 0,
@@ -972,9 +1004,17 @@ export const TrainerList = () => {
               ]}
             />
           </Form.Item>
-          <Form.Item name="branchId" label="Branch">
+          <Form.Item
+            name="branchIds"
+            label="Branches"
+            rules={[{ required: true, message: 'Please select at least one branch' }]}
+          >
             <Select
+              mode="multiple"
               allowClear
+              showSearch
+              optionFilterProp="label"
+              placeholder="Select branch(es)"
               options={branchesData?.data.map((b) => ({
                 value: String(b.id),
                 label: shortBranch(b.name),

@@ -63,7 +63,12 @@ const applyLocalFilters = (list: Trainer[], params: PaginatedRequest) => {
     mapped = mapped.filter((t) => t.status === params.status);
   }
   if (params.branchId) {
-    mapped = mapped.filter((t) => t.branchId === params.branchId);
+    const branchId = params.branchId;
+    mapped = mapped.filter(
+      (t) =>
+        t.branchId === branchId ||
+        (t.branchIds && t.branchIds.includes(branchId)),
+    );
   }
   return mapped;
 };
@@ -150,14 +155,20 @@ export const trainerApi = {
       return created;
     }
 
+    const branchIds =
+      payload.branchIds && payload.branchIds.length > 0
+        ? payload.branchIds.map(Number)
+        : payload.branchId
+          ? [Number(payload.branchId)]
+          : undefined;
+
     await apiClient.post(ENDPOINTS.TRAINERS.CREATE, {
       name: payload.name,
       mobile: payload.phone,
-      role_id: 4,
       type: payload.trainerType,
       gender: payload.gender,
       description: payload.description ?? payload.specialization,
-      branch_id: payload.branchId ? [Number(payload.branchId)] : undefined,
+      branch_id: branchIds,
     });
 
     return {
@@ -178,6 +189,13 @@ export const trainerApi = {
       return updated;
     }
 
+    const branchIds =
+      payload.branchIds && payload.branchIds.length > 0
+        ? payload.branchIds.map(Number)
+        : payload.branchId
+          ? [Number(payload.branchId)]
+          : undefined;
+
     const { data } = await apiClient.post<BackendListResponse>(
       ENDPOINTS.TRAINERS.UPDATE,
       {
@@ -187,7 +205,7 @@ export const trainerApi = {
         type: payload.trainerType,
         gender: payload.gender,
         description: payload.description ?? payload.specialization,
-        branch_id: payload.branchId ? [Number(payload.branchId)] : undefined,
+        branch_id: branchIds,
       },
     );
     const raw = data?.data;
