@@ -198,6 +198,7 @@ export interface Trainer {
   phone: string;
   specialization: string;
   branchId: string;
+  branchIds?: string[];
   branchName: string;
   branchNames: string[];
   status: Status;

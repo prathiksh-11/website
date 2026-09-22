@@ -190,8 +190,22 @@ export const mapBackendTrainer = (raw: Record<string, unknown>): Trainer => {
     })
     .filter(Boolean);
 
-  const branchId =
-    pickBranchId(raw.branch_id ?? raw.branchId) || branchIdsFromRows[0] || '';
+  const branchIdRaw = raw.branch_id ?? raw.branchId;
+  const branchIds = Array.isArray(branchIdRaw)
+    ? branchIdRaw.map((id) => asString(id)).filter(Boolean)
+    : branchIdsFromRows.length
+      ? branchIdsFromRows
+      : branchIdRaw != null && branchIdRaw !== ''
+        ? [asString(branchIdRaw)]
+        : [];
+
+  const branchId = branchIds[0] || pickBranchId(branchIdRaw) || '';
+  const fallbackBranchName = asString(raw.branch_name ?? raw.branchName, 'Unassigned');
+  const finalBranchNames = branchNames.length
+    ? branchNames
+    : fallbackBranchName && fallbackBranchName !== 'Unassigned'
+      ? [fallbackBranchName]
+      : [];
 
   return {
     id: asString(raw.id),
@@ -200,8 +214,9 @@ export const mapBackendTrainer = (raw: Record<string, unknown>): Trainer => {
     phone: asString(raw.mobile ?? raw.phone),
     specialization: description || roleName || 'Trainer',
     branchId,
-    branchName: branchNames[0] || asString(raw.branch_name ?? raw.branchName, 'Unassigned'),
-    branchNames,
+    branchIds,
+    branchName: branchNames[0] || fallbackBranchName,
+    branchNames: finalBranchNames,
     status: normalizeStatus(raw.status ?? 'active'),
     experienceYears: asNumber(raw.experience_years ?? raw.experienceYears),
     avatar: resolveImageUrl(raw.image),

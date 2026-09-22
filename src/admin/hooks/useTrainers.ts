@@ -24,9 +24,11 @@ export const filterTrainers = (
   }
 
   if (params.branchId) {
-    const branchName = branchNameById?.[params.branchId];
+    const branchId = params.branchId;
+    const branchName = branchNameById?.[branchId];
     filtered = filtered.filter((t) => {
-      if (t.branchId && t.branchId === params.branchId) return true;
+      if (t.branchId && t.branchId === branchId) return true;
+      if (t.branchIds && t.branchIds.includes(branchId)) return true;
       if (!branchName) return false;
       return t.branchNames.some(
         (n) => n.toLowerCase() === branchName.toLowerCase(),
