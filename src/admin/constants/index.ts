@@ -2,6 +2,7 @@ import type { TrainerType, UserRole } from '@/types';
 
 export const APP_NAME = import.meta.env.VITE_APP_NAME ?? 'Game On';
 export const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+export { ENABLE_CONSOLE_LOGS, ALLOW_CONSOLE_ERRORS, logger } from '../../config/logger';
 
 export const TRAINER_TYPE_OPTIONS: { value: TrainerType; label: string }[] = [
   { value: 'general_trainer', label: 'General Trainer' },
