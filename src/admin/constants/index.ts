@@ -7,7 +7,7 @@ export const TRAINER_TYPE_OPTIONS: { value: TrainerType; label: string }[] = [
   { value: 'general_trainer', label: 'General Trainer' },
   { value: 'pt_trainer', label: 'Personal Trainer' },
   { value: 'membership_coordinator', label: 'Membership Coordinator' },
-  { value: 'receptionist', label: 'Receptionist' },
+  { value: 'branch_manager', label: 'Branch Manager' },
   { value: 'admin', label: 'Admin' },
   { value: 'manager', label: 'Manager' },
 ];
@@ -25,13 +25,14 @@ const TRAINER_TYPE_ALIASES: Record<string, TrainerType> = {
   membership_coordinator: 'membership_coordinator',
   membership_corider: 'membership_coordinator',
   coordinator: 'membership_coordinator',
-  receptionist: 'receptionist',
-  recept: 'receptionist',
-  reception: 'receptionist',
+  branch_manager: 'branch_manager',
+  branchmanager: 'branch_manager',
+  receptionist: 'branch_manager',
+  recept: 'branch_manager',
+  reception: 'branch_manager',
   admin: 'admin',
   administrator: 'admin',
   manager: 'manager',
-  branch_manager: 'manager',
 };
 
 export const normalizeTrainerType = (
@@ -52,10 +53,13 @@ export const normalizeTrainerType = (
   ) {
     return 'membership_coordinator';
   }
-  if (d.includes('reception') || d.includes('recept')) {
-    return 'receptionist';
+  if (d.includes('branch manager') || d.includes('branch_manager')) {
+    return 'branch_manager';
   }
-  if (d.includes('branch manager') || (d.includes('manager') && !d.includes('membership'))) {
+  if (d.includes('reception') || d.includes('recept')) {
+    return 'branch_manager';
+  }
+  if (d.includes('manager') && !d.includes('membership')) {
     return 'manager';
   }
   if (d.includes('admin')) {
@@ -84,7 +88,7 @@ export const resolveTrainerType = (
 ): TrainerType | undefined => {
   if (trainer.roleId === 0) return undefined;
   if (trainer.roleId === 2) return 'admin';
-  if (trainer.roleId === 3) return 'manager';
+  if (trainer.roleId === 3) return 'branch_manager';
 
   const fromFields = normalizeTrainerType(trainer.trainerType, trainer.description);
   if (fromFields) return fromFields;
@@ -93,6 +97,7 @@ export const resolveTrainerType = (
     .trim()
     .toLowerCase();
   if (role === 'admin') return 'admin';
+  if (role === 'branch manager' || role === 'branch_manager') return 'branch_manager';
   if (role === 'manager') return 'manager';
   if (role === 'employee' || role === 'trainer' || trainer.roleId === 4) {
     return 'general_trainer';
@@ -116,6 +121,7 @@ export const trainerTypeTagColor = (type?: TrainerType | string | null) => {
       return 'orange';
     case 'membership_coordinator':
       return 'purple';
+    case 'branch_manager':
     case 'receptionist':
       return 'green';
     case 'admin':

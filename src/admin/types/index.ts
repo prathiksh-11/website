@@ -12,6 +12,7 @@ export type TrainerType =
   | 'general_trainer'
   | 'pt_trainer'
   | 'membership_coordinator'
+  | 'branch_manager'
   | 'receptionist'
   | 'admin'
   | 'manager';
