@@ -1,5 +1,6 @@
 import { initializeApp, type FirebaseApp, getApps } from 'firebase/app';
 import { getMessaging, type Messaging, isSupported } from 'firebase/messaging';
+import { getAuth, type Auth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,
@@ -15,14 +16,14 @@ const firebaseConfig = {
 export const isFirebaseConfigured = () =>
   Boolean(
     firebaseConfig.apiKey &&
-      firebaseConfig.projectId &&
-      firebaseConfig.messagingSenderId &&
-      firebaseConfig.appId &&
-      import.meta.env.VITE_FIREBASE_VAPID_KEY,
+    firebaseConfig.projectId &&
+    firebaseConfig.messagingSenderId &&
+    firebaseConfig.appId,
   );
 
 let app: FirebaseApp | null = null;
 let messaging: Messaging | null = null;
+let auth: Auth | null = null;
 
 export const getFirebaseApp = () => {
   if (!isFirebaseConfigured()) return null;
@@ -30,6 +31,15 @@ export const getFirebaseApp = () => {
     app = getApps().length ? getApps()[0]! : initializeApp(firebaseConfig);
   }
   return app;
+};
+
+export const getFirebaseAuth = (): Auth | null => {
+  const firebaseApp = getFirebaseApp();
+  if (!firebaseApp) return null;
+  if (!auth) {
+    auth = getAuth(firebaseApp);
+  }
+  return auth;
 };
 
 export const getFirebaseMessaging = async () => {
