@@ -1,6 +1,8 @@
 export const ENDPOINTS = {
   AUTH: {
     LOGIN: '/auth/login',
+    CHECK_MOBILE: '/auth/check-mobile',
+    VERIFY_OTP: '/auth/verify-otp',
     LOGOUT: '/auth/logout',
     ME: '/auth/get-profile',
     UPDATE_PROFILE: '/auth/update-profile',

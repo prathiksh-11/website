@@ -10,6 +10,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<void>;
+  loginWithOtp: (payload: { idToken: string; fcmToken?: string }) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: User | null) => void;
 }
@@ -26,6 +27,30 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           const response = await authApi.login(payload);
+          localStorage.setItem(STORAGE_KEYS.TOKEN, response.token);
+          if (response.refreshToken) {
+            localStorage.setItem(
+              STORAGE_KEYS.REFRESH_TOKEN,
+              response.refreshToken,
+            );
+          }
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.user));
+          set({
+            token: response.token,
+            user: response.user,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      loginWithOtp: async (payload) => {
+        set({ isLoading: true });
+        try {
+          const response = await authApi.loginWithOtp(payload);
           localStorage.setItem(STORAGE_KEYS.TOKEN, response.token);
           if (response.refreshToken) {
             localStorage.setItem(

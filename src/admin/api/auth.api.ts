@@ -1,4 +1,4 @@
-import { USE_MOCK } from '@/constants';
+import { STORAGE_KEYS, USE_MOCK } from '@/constants';
 import { delay, MOCK_USERS } from '@/mocks/data';
 import type { AuthResponse, LoginPayload, User } from '@/types';
 import {
@@ -87,6 +87,153 @@ export const authApi = {
     };
   },
 
+  checkMobile: async (
+    mobile: string,
+  ): Promise<{
+    isRegistered: boolean;
+    roleId?: number;
+    roleName?: string;
+    isSuperAdminOrAdmin: boolean;
+    message?: string;
+  }> => {
+    const cleanMobile = normalizeMobile(mobile);
+    if (USE_MOCK) {
+      await delay(200);
+      return {
+        isRegistered: true,
+        roleId: 1,
+        roleName: 'Super Admin',
+        isSuperAdminOrAdmin: true,
+      };
+    }
+
+    try {
+      const { data } = await apiClient.post<{
+        success?: boolean;
+        message?: string;
+        status?: {
+          status?: string;
+          user?: {
+            role_id?: number;
+            role_name?: string;
+            level?: number;
+          };
+        };
+        user?: {
+          role_id?: number;
+          role_name?: string;
+          level?: number;
+        };
+      }>(ENDPOINTS.AUTH.CHECK_MOBILE, { mobile: cleanMobile });
+
+      if (!data?.success && data?.status == null) {
+        return {
+          isRegistered: false,
+          isSuperAdminOrAdmin: false,
+          message: data?.message ?? 'Mobile number not registered',
+        };
+      }
+
+      const userData = data.status?.user ?? data.user;
+      const roleId = userData?.role_id != null ? Number(userData.role_id) : undefined;
+      const roleName = String(userData?.role_name || '').trim().toLowerCase();
+      const level = userData?.level != null ? Number(userData.level) : undefined;
+
+      const isSuperAdminOrAdmin =
+        roleId === 1 ||
+        roleId === 2 ||
+        level === 1 ||
+        level === 2 ||
+        roleName === 'super admin' ||
+        roleName === 'super_admin' ||
+        roleName === 'admin';
+
+      return {
+        isRegistered: true,
+        roleId,
+        roleName: userData?.role_name,
+        isSuperAdminOrAdmin,
+      };
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ??
+        (err as { message?: string })?.message ??
+        'Mobile number not registered';
+      return {
+        isRegistered: false,
+        isSuperAdminOrAdmin: false,
+        message: msg,
+      };
+    }
+  },
+
+  loginWithOtp: async (payload: {
+    idToken: string;
+    fcmToken?: string;
+  }): Promise<AuthResponse> => {
+    if (USE_MOCK) {
+      await delay(300);
+      const mockUser = MOCK_USERS[0] ?? {
+        id: '1',
+        name: 'Super Admin',
+        role: 'Super Admin' as const,
+        phone: '9999999999',
+      };
+      const user: User = {
+        id: String(mockUser.id),
+        name: mockUser.name,
+        role: mockUser.role,
+        phone: mockUser.phone,
+      };
+      return {
+        token: `mock_jwt_otp_${Date.now()}`,
+        refreshToken: 'mock_refresh_otp',
+        user,
+      };
+    }
+
+    const { data } = await apiClient.post<BackendLoginResponse>(
+      ENDPOINTS.AUTH.VERIFY_OTP,
+      {
+        idToken: payload.idToken,
+        ...(payload.fcmToken ? { fcm_token: payload.fcmToken } : {}),
+      },
+    );
+
+    if (!data?.token) {
+      throw {
+        message: data?.message ?? 'OTP verification failed',
+        status: 401,
+      };
+    }
+
+    // Persist token so that immediate authApi.me() or subsequent requests work
+    localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+    if (data.refreshToken) {
+      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+    }
+
+    let user: User;
+    if (data.user && (data.user.role_id != null || data.user.role_name)) {
+      try {
+        user = mapBackendUser(data.user);
+      } catch {
+        user = await authApi.me();
+      }
+    } else {
+      user = await authApi.me();
+    }
+
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+
+    return {
+      token: data.token,
+      refreshToken: data.refreshToken,
+      user,
+    };
+  },
+
   logout: async (): Promise<void> => {
     if (USE_MOCK) {
       await delay(200);
@@ -140,5 +287,29 @@ export const authApi = {
 
     await apiClient.put(ENDPOINTS.AUTH.UPDATE_PROFILE, body);
     return authApi.me();
+  },
+
+  changePassword: async (password: string): Promise<void> => {
+    if (USE_MOCK) {
+      await delay(200);
+      return;
+    }
+    try {
+      const { data } = await apiClient.post<{
+        status?: boolean;
+        token?: string;
+        refreshToken?: string;
+      }>(ENDPOINTS.AUTH.SET_PASSWORD, { password });
+
+      if (data?.token) {
+        localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+        if (data.refreshToken) {
+          localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+        }
+      }
+    } catch {
+      // Fallback to updateProfile if set-password encounters an error
+      await authApi.updateProfile({ password });
+    }
   },
 };
