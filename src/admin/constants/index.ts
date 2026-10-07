@@ -88,8 +88,6 @@ export const resolveTrainerType = (
   },
 ): TrainerType | undefined => {
   if (trainer.roleId === 0) return undefined;
-  if (trainer.roleId === 2) return 'admin';
-  if (trainer.roleId === 3) return 'branch_manager';
 
   const fromFields = normalizeTrainerType(trainer.trainerType, trainer.description);
   if (fromFields) return fromFields;
@@ -97,9 +95,10 @@ export const resolveTrainerType = (
   const role = String(trainer.roleName || '')
     .trim()
     .toLowerCase();
-  if (role === 'admin') return 'admin';
+  if (role === 'admin' || trainer.roleId === 2) return 'admin';
   if (role === 'branch manager' || role === 'branch_manager') return 'branch_manager';
   if (role === 'manager') return 'manager';
+  if (trainer.roleId === 3) return 'manager';
   if (role === 'employee' || role === 'trainer' || trainer.roleId === 4) {
     return 'general_trainer';
   }

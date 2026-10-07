@@ -245,7 +245,7 @@ export const TrainerList = () => {
     form.setFieldsValue({
       name: record.name,
       phone: record.phone,
-      trainerType: record.trainerType ?? 'general_trainer',
+      trainerType: resolveTrainerType(record) ?? record.trainerType ?? 'general_trainer',
       gender: record.gender ?? 'Male',
       branchIds: initialBranchIds,
       specialization: record.description ?? record.specialization ?? '',
