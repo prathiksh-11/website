@@ -1303,6 +1303,35 @@
   color: #ff5000;
 }
 
+.bento-date-pill {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(22, 24, 31, 0.08);
+  background: #f8fafc;
+  color: #16181f;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.bento-date-pill:hover {
+  background: #f1f5f9;
+  border-color: rgba(22, 24, 31, 0.16);
+}
+
+.bento-date-pill--active {
+  background: #ff5000;
+  color: #fff;
+  border-color: #ff5000;
+}
+
+.bento-date-pill--active:hover {
+  background: #e04600;
+}
+
 .bento-date {
   display: flex;
   align-items: center;

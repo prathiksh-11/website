@@ -2,9 +2,9 @@ import dayjs from 'dayjs';
 import {
   ArrowUpRight,
   Building2,
+  Calendar as CalendarIcon,
   Check,
   ChevronDown,
-  CreditCard,
   IndianRupee,
   Dumbbell,
   Sparkles,
@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { DatePicker } from 'antd';
 import {
   Bar,
   BarChart,
@@ -181,6 +182,187 @@ const BranchSwitcher = ({
   );
 };
 
+export type DateFilterMode = 'today' | 'yesterday' | 'single' | 'range' | 'all';
+
+export interface DateFilterValue {
+  mode: DateFilterMode;
+  date?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+const getDateFilterLabel = (val: DateFilterValue) => {
+  if (val.mode === 'today') return `Today (${dayjs().format('D MMM')})`;
+  if (val.mode === 'yesterday') return `Yesterday (${dayjs().subtract(1, 'day').format('D MMM')})`;
+  if (val.mode === 'all') return 'All time';
+  if (val.mode === 'single' && val.date) return dayjs(val.date).format('D MMM YYYY');
+  if (val.mode === 'range' && val.startDate && val.endDate) {
+    return `${dayjs(val.startDate).format('D MMM')} – ${dayjs(val.endDate).format('D MMM')}`;
+  }
+  return 'Select date';
+};
+
+const DateFilterSwitcher = ({
+  value,
+  onChange,
+}: {
+  value: DateFilterValue;
+  onChange: (next: DateFilterValue) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDoc = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (
+        rootRef.current?.contains(target as Node) ||
+        target?.closest?.('.ant-picker-dropdown') ||
+        target?.closest?.('.ant-picker-panel-container') ||
+        target?.closest?.('.ant-picker')
+      ) {
+        return;
+      }
+      setOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
+
+  const label = getDateFilterLabel(value);
+
+  return (
+    <div className="bento-branch" ref={rootRef}>
+      <button
+        type="button"
+        className={open ? 'bento-branch__trigger bento-branch__trigger--open' : 'bento-branch__trigger'}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-haspopup="dialog"
+      >
+        <span className="bento-branch__icon" style={{ background: '#16181f' }}>
+          <CalendarIcon size={16} />
+        </span>
+        <span className="bento-branch__copy">
+          <small>Revenue Period</small>
+          <strong>{label}</strong>
+        </span>
+        <ChevronDown size={16} className="bento-branch__chevron" />
+      </button>
+
+      {open ? (
+        <div
+          className="bento-branch__menu"
+          style={{ width: '310px', padding: '14px', zIndex: 100 }}
+        >
+          <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
+            <button
+              type="button"
+              className={`bento-date-pill ${value.mode === 'today' ? 'bento-date-pill--active' : ''}`}
+              onClick={() => {
+                const t = dayjs().format('YYYY-MM-DD');
+                onChange({ mode: 'today', date: t, startDate: t, endDate: t });
+                setOpen(false);
+              }}
+            >
+              Today
+            </button>
+            <button
+              type="button"
+              className={`bento-date-pill ${value.mode === 'yesterday' ? 'bento-date-pill--active' : ''}`}
+              onClick={() => {
+                const y = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+                onChange({ mode: 'yesterday', date: y, startDate: y, endDate: y });
+                setOpen(false);
+              }}
+            >
+              Yesterday
+            </button>
+            <button
+              type="button"
+              className={`bento-date-pill ${value.mode === 'all' ? 'bento-date-pill--active' : ''}`}
+              onClick={() => {
+                onChange({ mode: 'all' });
+                setOpen(false);
+              }}
+            >
+              All Time
+            </button>
+          </div>
+
+          <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '10px' }}>
+            <small
+              style={{
+                display: 'block',
+                fontSize: '0.72rem',
+                color: MUTED,
+                marginBottom: '6px',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Select Specific Day
+            </small>
+            <DatePicker
+              style={{ width: '100%', marginBottom: '10px' }}
+              value={value.date ? dayjs(value.date) : dayjs()}
+              onChange={(d) => {
+                if (d) {
+                  const formatted = d.format('YYYY-MM-DD');
+                  onChange({
+                    mode: 'single',
+                    date: formatted,
+                    startDate: formatted,
+                    endDate: formatted,
+                  });
+                  setOpen(false);
+                }
+              }}
+              allowClear={false}
+              format="YYYY-MM-DD"
+            />
+
+            <small
+              style={{
+                display: 'block',
+                fontSize: '0.72rem',
+                color: MUTED,
+                marginBottom: '6px',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Or Date Range
+            </small>
+            <DatePicker.RangePicker
+              style={{ width: '100%' }}
+              value={
+                value.startDate && value.endDate
+                  ? [dayjs(value.startDate), dayjs(value.endDate)]
+                  : undefined
+              }
+              onChange={(dates) => {
+                if (dates && dates[0] && dates[1]) {
+                  onChange({
+                    mode: 'range',
+                    startDate: dates[0].format('YYYY-MM-DD'),
+                    endDate: dates[1].format('YYYY-MM-DD'),
+                  });
+                  setOpen(false);
+                }
+              }}
+              allowClear={false}
+              format="YYYY-MM-DD"
+            />
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 export const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const [branchId, setBranchId] = useState<string | undefined>(() => {
@@ -194,14 +376,24 @@ export const Dashboard = () => {
     }
   });
 
+  const [dateFilter, setDateFilter] = useState<DateFilterValue>({
+    mode: 'today',
+    date: dayjs().format('YYYY-MM-DD'),
+    startDate: dayjs().format('YYYY-MM-DD'),
+    endDate: dayjs().format('YYYY-MM-DD'),
+  });
+
+  const dateParams = useMemo(() => {
+    if (dateFilter.mode === 'all') return { allTime: true };
+    if (dateFilter.mode === 'range') {
+      return { startDate: dateFilter.startDate, endDate: dateFilter.endDate };
+    }
+    return { date: dateFilter.date || dayjs().format('YYYY-MM-DD') };
+  }, [dateFilter]);
+
   const { data: branchesData } = useBranches({ page: 1, pageSize: 200 });
   const branches = branchesData?.data ?? [];
-  const { data, isLoading, isError, isFetching } = useDashboard(branchId);
-
-  const selectedBranch = useMemo(
-    () => branches.find((b) => b.id === branchId),
-    [branches, branchId],
-  );
+  const { data, isLoading, isError, isFetching } = useDashboard(branchId, dateParams);
 
   const onBranchChange = (next?: string) => {
     setBranchId(next);
@@ -246,15 +438,44 @@ export const Dashboard = () => {
         ? 100
         : 0;
 
-  const totalOverallRevenue = summary.totalRevenue ?? (summary.totalSubscriptionRevenue + summary.totalPtRevenue);
+  // Filtered revenue values and contextual badge/hint
+  const isYesterday = dateFilter.mode === 'yesterday';
+  const isAllTime = dateFilter.mode === 'all';
 
+  let dateBadgeText = 'TODAY';
+  let dateHintPrefix = "Today's";
+  if (isYesterday) {
+    dateBadgeText = 'YESTERDAY';
+    dateHintPrefix = "Yesterday's";
+  } else if (isAllTime) {
+    dateBadgeText = 'ALL TIME';
+    dateHintPrefix = 'All-time';
+  } else if (dateFilter.mode === 'single' && dateFilter.date) {
+    dateBadgeText = dayjs(dateFilter.date).format('D MMM').toUpperCase();
+    dateHintPrefix = `${dayjs(dateFilter.date).format('D MMM')} total`;
+  } else if (dateFilter.mode === 'range' && dateFilter.startDate && dateFilter.endDate) {
+    dateBadgeText = 'RANGE';
+    dateHintPrefix = `${dayjs(dateFilter.startDate).format('D MMM')} – ${dayjs(dateFilter.endDate).format('D MMM')}`;
+  }
+
+  const currentTotalRevenue = summary.filteredRevenue ?? summary.todayRevenue ?? 0;
+  const currentPtRevenue = summary.filteredPtRevenue ?? summary.todayPtRevenue ?? 0;
+
+  // 4 Top Cards as requested: Total Revenue, PT Revenue, Total Employees, Total Branches
   const topCards = [
     {
       label: 'Total Revenue',
-      value: formatCurrency(totalOverallRevenue),
-      badge: 'OVERALL',
-      hint: 'PT + Subscription revenue',
+      value: formatCurrency(currentTotalRevenue),
+      badge: dateBadgeText,
+      hint: `${dateHintPrefix} PT + Subscription revenue`,
       icon: <IndianRupee size={18} />,
+    },
+    {
+      label: 'PT Revenue',
+      value: formatCurrency(currentPtRevenue),
+      badge: dateBadgeText,
+      hint: `${dateHintPrefix} session & package sales`,
+      icon: <Dumbbell size={18} />,
     },
     {
       label: 'Total Employees',
@@ -269,20 +490,6 @@ export const Dashboard = () => {
       badge: 'LOCATIONS',
       hint: 'Active studio locations',
       icon: <Building2 size={18} />,
-    },
-    {
-      label: 'Subscription Revenue',
-      value: formatCurrency(summary.totalSubscriptionRevenue),
-      badge: 'MEMBERSHIPS',
-      hint: 'All-time plan sales',
-      icon: <CreditCard size={18} />,
-    },
-    {
-      label: 'PT Revenue',
-      value: formatCurrency(summary.totalPtRevenue),
-      badge: 'PACKAGES',
-      hint: 'All-time session sales',
-      icon: <Dumbbell size={18} />,
     },
   ];
 
@@ -317,6 +524,10 @@ export const Dashboard = () => {
         </div>
 
         <div className="bento-top__actions">
+          <DateFilterSwitcher
+            value={dateFilter}
+            onChange={setDateFilter}
+          />
           <BranchSwitcher
             value={branchId}
             onChange={onBranchChange}
@@ -333,7 +544,7 @@ export const Dashboard = () => {
       <section
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
           gap: '1rem',
         }}
       >
@@ -511,7 +722,7 @@ export const Dashboard = () => {
                   formatter={(value) => [formatCurrency(Number(value)), 'Revenue']}
                 />
                 <Bar dataKey="revenue" radius={[10, 10, 4, 4]} maxBarSize={56}>
-                  {yesterdayVsTodayData.map((entry, index) => (
+                  {yesterdayVsTodayData.map((_, index) => (
                     <Cell key={`bar-${index}`} fill={index === 0 ? '#94a3b8' : BRAND_ORANGE} />
                   ))}
                 </Bar>
