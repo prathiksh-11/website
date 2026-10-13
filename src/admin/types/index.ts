@@ -407,6 +407,12 @@ export interface DashboardSummary {
   todayRevenue: number;
   todayPtRevenue: number;
   todaySubscriptionRevenue: number;
+  filteredRevenue?: number;
+  filteredPtRevenue?: number;
+  filteredSubscriptionRevenue?: number;
+  filterDate?: string | null;
+  filterStartDate?: string | null;
+  filterEndDate?: string | null;
 }
 
 export interface DashboardData {
